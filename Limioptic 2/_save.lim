@@ -1,0 +1,119 @@
+AUSGANG = 0
+
+"""
+INPUT[0]	=	0.2597	# INPUT[5]
+INPUT[1]	=	0.3331	# INPUT[4]
+INPUT[2]	=	0.5689	# INPUT[3]
+INPUT[3]	=	0.41	# INPUT[2]
+INPUT[4]	=	0.6025	# INPUT[1]
+INPUT[5]	=	0.2381	# INPUT[0]
+"""
+
+########## GEPLANTE GEOMETRIE #########
+
+# Variablen
+linse1 = INPUT[0]
+linse2 = INPUT[1]
+linse3 = INPUT[2]
+linse4 = INPUT[3]
+linse5 = INPUT[4]
+linse6 = INPUT[5]
+
+v_ext = 20.e3 * INPUT[7]
+print "Extraktion = ", v_ext
+v_vb  = 50.e3
+v_inj  = v_ext + v_vb
+
+v_tandem = 7.e6
+q = 1.
+
+#########################
+AddBeam(.15, 40., .15, 40., 0, 0,10)
+#########################
+
+AddDrift(1,1,.17)
+
+# Linse 1
+AddThinLens(linse1, linse1, 50)
+
+
+AddDrift(1,1,.78)
+
+# Vorbeschleunigung
+AddVBFN(v_ext, v_inj, b = .575*2., laenge = .28)
+
+AddDrift(1,1,1.026)
+AddDrift(1,1,0.259)
+
+# 20 Grad Magnet
+AddEdgeFocusing(.9906, .174533,0, 15)
+AddMSA(10, 1, 0.9906, 0.34906585/10., 15)
+AddEdgeFocusing(.9906, 0., 0., 15)
+
+AddDrift(1, 1, .14) # Magnetkammer aus
+
+AddDrift(1, 1, .31)
+
+# Linse 2
+#AddThinLens(linse2, linse2, 80)	# (fx, fy, R)
+
+AddDrift(1, 1, .31)
+
+# Schlitz und Cup
+AddSlit(0,30,0,30)
+
+AddDrift(1, 1, 1.1)
+
+## Quellenkasten 2 Eingang D=30mm
+AddSlit(0, 30, 0, 30)
+
+AddDrift(1, 1, .25)
+
+# Linse 3
+AddThinLens(linse3, linse3, 75)	# (fx, fy, R)
+
+AddDrift(1, 1, .25)
+### TARGET
+AddDrift(1, 1, .10)
+
+## Quellenkasten 2 Ausgang D=30mm
+AddSlit(0, 30, 0, 30)
+
+AddDrift(1,1,.259) 
+
+# 20 Grad Magnet
+AddEdgeFocusing(.9906, .174533, 0, 15)
+AddMSA(10, 1, .9906, .34906585/10., 15)
+AddEdgeFocusing(.9906, 0, 0, 15)
+
+AddDrift(1, 1, .265)
+
+# Schlitz
+AddSlit(0,30,0,30)
+
+AddDrift(1, 1, .485)
+
+# Linse 4
+AddThinLens(linse4, linse4, 30)	# (fx, fy, R)
+
+AddDrift(1, 1, 1.29)
+
+# Blende D = 4 mm
+AddSlit(0,14,0,14)
+
+AddDrift(1, 1, 1.26)
+
+#  Linse 5
+AddThinLens(linse5, linse5, 30)
+
+AddDrift(1,1,.51)
+### Tankdeckel
+AddDrift(1,1,.17)
+
+# Linse 6 = Gitterlinse
+AddThinLens(linse6, linse6, 40)
+
+AddDrift(1, 1, .50)
+
+# Tandem
+AddFNAccNeu(v_tandem, v_inj, q, b1 = 0.57, b2 = 0.57,  D1 = .05)
