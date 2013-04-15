@@ -1124,13 +1124,6 @@ class CQtLimioptic(QtGui.QMainWindow):
                                 print "Your version:", VERSION, "Latest Version:", ver, "\n"
                 except:
                         print "update check failed\n"
-                        
-                try:
-                        a = open("runtoken","w")
-                        print >> a, "writetest"
-                        a.close()
-                except:
-                        print "Auf Medium konnte nicht geschrieben werden, es ist kein autosave moeglich! Es ist ratsam den Limioptic 2 Ordner auf Festplatte zu kopieren.\n"
                 
                 
                 
