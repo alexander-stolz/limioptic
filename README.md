@@ -1,4 +1,4 @@
-Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slowing down the program enormous.
+Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously.
 
 Installation (Windows):
 1. Download the Limioptic 2 folder
