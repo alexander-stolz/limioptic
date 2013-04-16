@@ -938,7 +938,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_insert_so110el.setStatusTip('Cologne AMS SO110 einzel lens')
                 self.connect(self.menu_insert_so110el,QtCore.SIGNAL('triggered()'),self.InsertSO110EL)
                 # FN-EL
-                self.menu_insert_fnel=QtGui.QAction('FN-EL',self)
+                self.menu_insert_fnel=QtGui.QAction('FN EL',self)
                 self.menu_insert_fnel.setStatusTip('HVEC-FN 7 einzel lens')
                 self.connect(self.menu_insert_fnel,QtCore.SIGNAL('triggered()'),self.InsertFNEL)
                 # BI-EL
@@ -1351,7 +1351,8 @@ class CQtLimioptic(QtGui.QMainWindow):
           self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
 
         def InsertFNAcc(self):
-          self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
+          #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
+          self.InsertFNAccNeu()
 
         def InsertFNAccNeu(self):
           self.textedit.textCursor().insertText('AddFNAccNeu(vt, T0, q, b = 0.57, b1 = -1., b2 = -1., D1 = .088, factor1 = 1., factor2 = 1., beamprofile = False)\n\n')
@@ -1397,7 +1398,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.textedit.textCursor().insertText('AddAMSBIEL(vext,vlens)\n\n')
 
         def InsertFNEL(self):
-                self.textedit.textCursor().insertText('AddAMSBIEL(35.e3,17.e3)\t# (v_ext, v_lens)\n\n')
+                self.textedit.textCursor().insertText('AddFNEL(v_ext,17.e3)\t# (v_ext, v_lens)\n\n')
 
         def InsertAMSQPT(self):
                 self.textedit.textCursor().insertText('AddAMSQPT(gamma2,prozent,astigm,v_terminal,v_ext,q,geo)\n\n')
