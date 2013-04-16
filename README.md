@@ -11,3 +11,8 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 
 1. Download the Limioptic 2 folder
 2. Install python-qt4 and python-vtk
+
+<br>
+<b>Licence</b>
+
+The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.
