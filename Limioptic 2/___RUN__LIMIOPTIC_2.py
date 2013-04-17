@@ -481,8 +481,8 @@ class doitXY(threading.Thread):
                 
                 limioptic.optic.CalculateTrajectories()
 
-                parts   =   limioptic.optic.GetParticleNum()    # Anzahl Partikel
-                segs    =   limioptic.optic.GetParticleSize()-1 # Anzahl Segmente im Strahlengang
+                parts   =   limioptic.optic.GetParticleNum()              # Anzahl Partikel
+                segs    =   limioptic.optic.GetTrajectoriesSize()/parts/8 # Anzahl Segmente im Strahlengang
 
                 if (parts == 0):    raise StandardError("No particles were defined!")
 
