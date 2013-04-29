@@ -1836,7 +1836,7 @@ try:
     optic=ctypes.CDLL("./liblimioptic.so")
 except:
     try: 
-        optic=ctypes.CDLL("./liblimioptic-win.so")
+        optic=ctypes.CDLL("./liblimioptic-linux.so")
     except:    
         print "\n\nFirst start?\nTrying to compile C++ code. ", 
         from os import system
