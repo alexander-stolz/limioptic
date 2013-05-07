@@ -1081,9 +1081,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 
 ##############################
         def setxy(self):
-                """
-                Nur x, nur y, oder beides zeichnen.
-                """
+                """ Nur x, nur y, oder beides zeichnen. """
                 global xy, plotx, ploty
                 xy = 0
                 plotx = False
@@ -1097,17 +1095,13 @@ class CQtLimioptic(QtGui.QMainWindow):
 
 #############################
         def spicker(self):
-                """
-                Der AMS-Spicker.
-                """
+                """ Der AMS-Spicker """
                 self.swidget = ams_spicker.Spicker()
                 self.swidget.show()
 
 #############################
         def todat(self):
-                """
-                Ausgabe in Datei.
-                """
+                """ Ausgabe in Datei """
                 if (self.menu_output_file.isChecked()):
                         if (RUNNING2D):
                                 msg = QtGui.QMessageBox()
@@ -1197,7 +1191,7 @@ class CQtLimioptic(QtGui.QMainWindow):
 
 #############################
         def plot2d(self):
-                global RUNNING2D
+                global RUNNING2D, RUNNING
                 myfile=open("_save.lim","w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
@@ -1207,18 +1201,17 @@ class CQtLimioptic(QtGui.QMainWindow):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
                                 
-                if (RUNNING2D==False):
+                if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindow2d = inputcontrol("2d", 1)
-                        RUNNING2D = True
+                        RUNNING2D = RUNNING = True
                         self.inputwindow2d.exec_()
-                        RUNNING2D = False
-                else:
+                        RUNNING2D = RUNNING = False
+                elif RUNNING2D:
                         self.inputwindow2d.plotwindow.neu()
-                        if (RUNNING3D): self.inputwindow3d.plotwindow.neu()
 
         def plotqt(self):
-                global RUNNINGQT
+                global RUNNINGQT, RUNNING
                 myfile=open("_save.lim","w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
@@ -1228,18 +1221,17 @@ class CQtLimioptic(QtGui.QMainWindow):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
                                 
-                if (RUNNINGQT == False):
+                if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindowqt = inputcontrol("qt", 1)
-                        RUNNINGQT = True
+                        RUNNINGQT = RUNNING = True
                         self.inputwindowqt.exec_()
-                        RUNNINGQT = False
-                else:
-                        self.inputwindowqt.plotwindow.neu()
-                        if (RUNNING3D): self.inputwindow3d.plotwindow.neu()                           
+                        RUNNINGQT = RUNNING = False
+                elif RUNNINGQT:
+                        self.inputwindowqt.plotwindow.update()
                         
         def plot3d(self):
-                global RUNNING3D
+                global RUNNING3D, RUNNING
                 myfile=open("_save.lim","w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
@@ -1249,15 +1241,14 @@ class CQtLimioptic(QtGui.QMainWindow):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
 
-                if (RUNNING3D == False):
+                if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindow3d = inputcontrol("3d", 0)
-                        RUNNING3D = True
+                        RUNNING3D = RUNNING = True
                         self.inputwindow3d.exec_()
-                        RUNNING3D = False
-                else:
+                        RUNNING3D = RUNNING = False
+                elif RUNNING3D:
                         self.inputwindow3d.plotwindow.neu()
-                        if (RUNNING2D): self.inputwindow2d.plotwindow.neu()
 
 
 ##### INSERT Funktionen #####
@@ -1428,6 +1419,7 @@ plotx = True
 ploty = True
 xy = 2
 
+RUNNING   = False
 RUNNINGQT = False
 RUNNING2D = False
 RUNNING3D = False
