@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
 """
-Hier wird hauptsaechlich die GUI definiert. 
-Der Text wird mit limioptic.ExecText() an limioptic.py uebergeben. 
-Dort sind die verschiedenen Funktionen definiert. 
+Hier wird hauptsaechlich die GUI definiert.
+Der Text wird mit limioptic.ExecText() an limioptic.py uebergeben.
+Dort sind die verschiedenen Funktionen definiert.
 Die eigentliche Berechnung findet in limioptic.cpp statt.
 """
 
@@ -20,7 +20,7 @@ import threading        #multithreading
 print "time",
 import time             #debuggen+sleep
 #import serial          #auslesen des potis
-print "vtk",            
+print "vtk",
 try:
     import vtk          #grafische ausgabe ueber OpenGL
 except:
@@ -40,7 +40,6 @@ try:
 except:
     print "NOT FOUND"
     pg = False
-    
 
 
 #################################################
@@ -48,27 +47,24 @@ except:
 
 
 class inputcontrol(QtGui.QDialog):
-        """
-        Hier wird das Fenster mit den Schiebereglern zur Variablenmanipulation definiert. 
-        """
-        def __init__(self, mode, index):
-                QtGui.QDialog.__init__(self)  
-                self.index = index      # ist mittlerweile hinfaellig
-                self.mode  = mode
+        """ Hier wird das Fenster mit den Schiebereglern zur Variablenmanipulation definiert """
+        def __init__(self, mode):
+                QtGui.QDialog.__init__(self)
+                self.mode = mode
                 self.changing = False
-                
+
                 if (mode == "qt"):  self.plotwindow = doitqt2(self)    # PyQtGraph
                 if (mode == "2d"):  self.plotwindow = doitXY(self)     # VTK
                 if (mode == "3d"):  self.plotwindow = doit3d(self)     # VTK
 
-                ### Ab hier Definition des Layouts  
+                ### Ab hier Definition des Layouts
                 self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
                 self.setGeometry(100, screen.height() - 300, 500, 50)
-                
+
                 self.setWindowTitle("input control")
                 self.vbox = QtGui.QVBoxLayout()
                 layout = QtGui.QGridLayout()
-                                
+
                 CheckInputNumber = True
                 myapp.textedit.moveCursor(QtGui.QTextCursor.Start)
                 NumberOfInputs = -1
@@ -79,11 +75,11 @@ class inputcontrol(QtGui.QDialog):
                 NumberOfInputs += 1
                 if (NumberOfInputs < 8): NumberOfInputs = 8
 
-                self.min        =       []
-                self.input      =       []
-                self.slider     =       []
-                self.info       =       []
-                self.infobox    =       []
+                self.min     = []
+                self.input   = []
+                self.slider  = []
+                self.info    = []
+                self.infobox = []
 
                 for i in xrange(0, NumberOfInputs):
                         self.info.append(QtGui.QLabel("#%1.0f" % (i)))
@@ -104,7 +100,7 @@ class inputcontrol(QtGui.QDialog):
                         self.min[i].setSingleStep(.01)
                         self.input[i].setValue(INPUT[i])
 
-                        if (INPUT[i]>5.):       self.min[i].setValue(INPUT[i] - 5.)
+                        if (INPUT[i] > 5.):   self.min[i].setValue(INPUT[i] - 5.)
                         self.slider[i].setValue(int(INPUT[i] * 100000.))
 
                         layout.addWidget(self.info[i], i, 0)
@@ -116,15 +112,15 @@ class inputcontrol(QtGui.QDialog):
                 self.vbox.addLayout(layout)
 
                 if (self.mode == "3d"):
-                        opacitybox    =   QtGui.QHBoxLayout()
-                        self.olabel   =   QtGui.QLabel("Opacity")
-                        self.oslider  =   QtGui.QSlider(QtCore.Qt.Horizontal, self)
+                        opacitybox   = QtGui.QHBoxLayout()
+                        self.olabel  = QtGui.QLabel("Opacity")
+                        self.oslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
                         self.oslider.setRange(0, 100)
                         self.oslider.setValue(OPACITY)
                         opacitybox.addWidget(self.olabel)
                         opacitybox.addWidget(self.oslider)
                         self.vbox.addLayout(opacitybox)
-                                                
+
                 self.setLayout(self.vbox)
 
                 # Die Elementgroessen werden neu angepasst (Buttons, Slider, ...)
@@ -132,25 +128,25 @@ class inputcontrol(QtGui.QDialog):
 
                 # Der Thread des Output-Fensters wird gestartet
                 self.plotwindow.start()
-                
+
                 # Wichtig, damit Aenderungen von Variablen nicht waerend des Berechnens/Plottens stattfinden
                 self.threadlock = threading.Lock()
-                
+
                 for i in xrange(0, NumberOfInputs):
                         self.connect(self.slider[i], QtCore.SIGNAL("valueChanged(int)"), self.slidertoinput)
                         self.connect(self.input[i], QtCore.SIGNAL("valueChanged(double)"), self.inputtoslider)
                         self.connect(self.min[i], QtCore.SIGNAL("valueChanged(double)"), self.slidertoinput)
                         self.connect(self.infobox[i], QtCore.SIGNAL("textChanged(const QString)"), self.infochange)
                 if (self.mode == "3d"): self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
-                
+
                 self.show()
-                
+
                 # Solange True findet Kommunikation mit Interface statt.
                 self.update_on = True
 
                 # Serielle Kommunikation findet in eigenem Thread statt.
                 if (PORT != "NONE"):
-                        t_readserial = threading.Thread(target = self.readserial, args=())
+                        t_readserial = threading.Thread(target=self.readserial, args=())
                         t_readserial.start()
 
         def setopacity(self):
@@ -158,9 +154,9 @@ class inputcontrol(QtGui.QDialog):
                 OPACITY = self.oslider.value()
                 self.plotwindow.actor.GetProperty().SetOpacity(OPACITY/1000.)
                 self.plotwindow.render = True
-       
+
         def readserial(self):
-                """ Serielle Kommunikation mit dem Interface """
+                """ Serielle Kommunikation mit dem Interface (obsolet) """
                 ser = serial.Serial(PORT, 9600)
                 time.sleep(2)
                 print "serial start"
@@ -173,7 +169,7 @@ class inputcontrol(QtGui.QDialog):
                         self.slider[1].setValue(int(a[1]) * 488)
                         self.slider[2].setValue(int(a[2]) * 488)
                 print "serial end"
-                        
+
         def inputtoslider(self):
                 """ Variablenaenderungen werden auf Slider uebertragen. """
                 if not self.changing:
@@ -183,11 +179,11 @@ class inputcontrol(QtGui.QDialog):
                             INPUT[i] = self.input[i].value()
                     for i in xrange(0, NumberOfInputs):
                             self.slider[i].setValue(int((INPUT[i] - self.min[i].value()) * 100000.))
-                    if (RUNNINGQT):         self.plotwindow.update(self.calculate())
-                    if (RUNNING2D):         self.plotwindow.update = True
-                    if (RUNNING3D):         self.plotwindow.neu()    
+                    if (RUNNINGQT): self.plotwindow.update(self.calculate())
+                    if (RUNNING2D): self.plotwindow.update = True
+                    if (RUNNING3D): self.plotwindow.neu()
                     self.changing = False
-                
+
         def slidertoinput(self):
                 """ Aenderung des Sliders wird auf self.INPUT uebertragen. """
                 if not self.changing:
@@ -197,19 +193,19 @@ class inputcontrol(QtGui.QDialog):
                             self.input[i].setValue(self.slider[i].value() / 100000. + self.min[i].value())
                     for i in xrange(0, NumberOfInputs):
                             INPUT[i] = self.input[i].value()
-                    if (RUNNINGQT):         self.plotwindow.update(self.calculate())
-                    if (RUNNING2D):         self.plotwindow.update = True
-                    if (RUNNING3D):         self.plotwindow.neu()    
+                    if (RUNNINGQT): self.plotwindow.update(self.calculate())
+                    if (RUNNING2D): self.plotwindow.update = True
+                    if (RUNNING3D): self.plotwindow.neu()
                     self.changing = False
-                            
+
         def closeit(self):
                 """ Wird aufgerufen, wenn das Outputfenster geschlossen wird. """
                 global BEZEICHNUNGEN, RUNNING2D, RUNNING3D
                 for i in range(0, NumberOfInputs):
                         BEZEICHNUNGEN[i] = self.infobox[i].text()
-                
+
                 self.update_on = False
-                
+
                 try:
                     self.plotwindow.iren.Disable()
                     self.plotwindow.iren.EnableRenderOff()
@@ -236,16 +232,14 @@ class inputcontrol(QtGui.QDialog):
                 print "closed"
                 time.sleep(.1)
                 self.close()
-                
+
         def infochange(self):
-                """
-                Spezialbefehle im "Beschreibung" Feld.
-                """
-                for i in xrange(0,NumberOfInputs):
-                        if (self.infobox[i].text()[-1:] ==      ">"):   
+                """ Spezialbefehle im "Beschreibung" Feld """
+                for i in xrange(NumberOfInputs):
+                        if self.infobox[i].text()[-1:] == ">":
                                 myapp.textedit.setText("{0}\t=\tINPUT[{1}]\t# {2}\n{3}".format(self.infobox[i].text()[:-1], i, INPUT[i], myapp.textedit.toPlainText()))
                                 self.infobox[i].setText(self.infobox[i].text()[:-1])
-                        if (self.infobox[i].text()[-1:] ==      "#"):   
+                        if self.infobox[i].text()[-1:] == "#":
                                 myapp.textedit.setText("{0}\t=\t{2}\t# INPUT[{1}]\n{3}".format(self.infobox[i].text()[:-1], i, INPUT[i], myapp.textedit.toPlainText()))
                                 self.infobox[i].setText(self.infobox[i].text()[:-1])
 
@@ -253,20 +247,20 @@ class inputcontrol(QtGui.QDialog):
             """ Neuberechnung """
             limioptic.optic.Clear()
             try:
-                    limioptic.ExecText(str(myapp.textedit.toPlainText()),INPUT,SourceObj.Source)
+                    limioptic.ExecText(str(myapp.textedit.toPlainText()), INPUT, SourceObj.Source)
                     limioptic.optic.CalculateTrajectories()
             except:
                     print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction)
                     self.threadlock.release()
                     return -1
 
-            parts   =   limioptic.optic.GetParticleNum()                    # Anz. Partikel
-            segs    =   limioptic.optic.GetTrajectoriesSize()/parts/8       # Anz. Segmente
+            parts = limioptic.optic.GetParticleNum()                    # Anz. Partikel
+            segs = limioptic.optic.GetTrajectoriesSize() / parts / 8    # Anz. Segmente
 
             # Die Trajektorien liegen als array.array("d", ..) vor
-            _xi = [limioptic.GetTrajectory(i,0) for i in xrange(parts)]
-            _yi = [limioptic.GetTrajectory(i,2) for i in xrange(parts)]
-            _z = limioptic.GetTrajectory(0,6)
+            _xi = [limioptic.GetTrajectory(i, 0) for i in xrange(parts)]
+            _yi = [limioptic.GetTrajectory(i, 2) for i in xrange(parts)]
+            _z = limioptic.GetTrajectory(0, 6)
 
             # Umwandlung in float arrays
             xi = [None] * parts
@@ -280,16 +274,16 @@ class inputcontrol(QtGui.QDialog):
             zi = [float(_z[seg]) for seg in xrange(segs)]
 
             return xi, yi, zi, segs, parts
- 
+
 
 class doitqt2(threading.Thread):
     """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
         threading.Thread.__init__(self)
         self.parent = parent
-        self.win = pg.GraphicsWindow(title = "PyQtGraph Output Test")
+        self.win = pg.GraphicsWindow(title="PyQtGraph Output Test")
         self.win.resize(800, 600)
-        self.plot1 = self.win.addPlot(title = "myplot")
+        self.plot1 = self.win.addPlot(title="myplot")
         self.lineX = self.plot1.plot()
         self.lineY = self.plot1.plot()
 
@@ -297,7 +291,7 @@ class doitqt2(threading.Thread):
         self.update(self.parent.calculate())
 
     def update(self, (xi, yi, zi, segs, parts) = (None, None, None, None, None)):
-        if xi == None:   (xi, yi, zi, segs, parts) = self.parent.calculate()
+        if xi is None:   (xi, yi, zi, segs, parts) = self.parent.calculate()
 
         # viel schneller, als mehrere plots
         x_all = []
@@ -307,29 +301,29 @@ class doitqt2(threading.Thread):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
-        self.lineX.setData(x = z_all, y = x_all, pen = (255,0,0))
-        self.lineY.setData(x = z_all, y = y_all, pen = (0,255,0))
-  
+        self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
+        self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
+
 
 class doit3d(threading.Thread):
         """ 3D-Ausgabe """
         def __init__(self, parent):
                 threading.Thread.__init__(self)
-                self.parent = parent        
+                self.parent = parent
                 self.render = False
                 self.threadlock = threading.Lock()
-                
-        def run(self):              
+
+        def run(self):
                 (xi, yi, zi, segs, parts) = self.parent.calculate()
 
                 # Hier landen alle Punkte
-                self.mypoints = vtk.vtkPoints()  
+                self.mypoints = vtk.vtkPoints()
 
-                # Wir erzeugen nur eine Cell, dh. eine lange Polyline (Geschwindigkeit)       
-                self.mycells = vtk.vtkCellArray()  
+                # Wir erzeugen nur eine Cell, dh. eine lange Polyline (Geschwindigkeit)
+                self.mycells = vtk.vtkCellArray()
 
-                # Alle Punkte in mypoints laden.     
-                for part in xrange(0, parts):      
+                # Alle Punkte in mypoints laden
+                for part in xrange(0, parts):
                         for seg in xrange(0, segs):
                                 self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
                         self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, .0, .0)
@@ -338,39 +332,39 @@ class doit3d(threading.Thread):
                 # Eine neue Polygonlinie definieren.
                 self.polylines = vtk.vtkPolyLine()
                 self.polylines.GetPointIds().SetNumberOfIds(parts * segs + parts * 2)
-                
+
                 # Der i-te Punkt der Polyline entspricht dem i-ten Punkt des PointArrays (noch nicht verknuepft)
-                for i in xrange(parts * segs + parts * 2):   self.polylines.GetPointIds().SetId(i,i)
+                for i in xrange(parts * segs + parts * 2):   self.polylines.GetPointIds().SetId(i, i)
 
                 # Polylinie an Cell uebergeben
-                self.mycells.InsertNextCell(self.polylines)     
+                self.mycells.InsertNextCell(self.polylines)
 
                 # Datenobjekt erzeugen
-                self.mydata = vtk.vtkPolyData()   
+                self.mydata = vtk.vtkPolyData()
 
                 # Punkte hinzufuegen              
-                self.mydata.SetPoints(self.mypoints)   
+                self.mydata.SetPoints(self.mypoints)
 
-                # Polyline hinzufuegen. Ab nun verknuepft       
-                self.mydata.SetLines(self.mycells)              
-        
+                # Polyline hinzufuegen. Ab nun verknuepft
+                self.mydata.SetLines(self.mycells)
+
                 # Der Mapper macht aus Daten mehr
-                self.mapper = vtk.vtkPolyDataMapper() 
+                self.mapper = vtk.vtkPolyDataMapper()
 
-                # Hier bekommt er die Daten          
-                self.mapper.SetInput(self.mydata)  
+                # Hier bekommt er die Daten
+                self.mapper.SetInput(self.mydata)
 
                 # Der Actor platziert den Mapper im Raum
-                self.actor = vtk.vtkActor()      
+                self.actor = vtk.vtkActor()
 
-                # Hier bekommt er den Mapper               
+                # Hier bekommt er den Mapper
                 self.actor.SetMapper(self.mapper)
                 self.actor.GetProperty().SetOpacity(OPACITY / 1000.)
 
                 self.ren = vtk.vtkRenderer()
                 self.ren.SetBackground(.1, .2, .4)
                 self.ren.AddActor(self.actor)
-                
+
                 ### Axen
                 self.axisactor = vtk.vtkCubeAxesActor()
                 self.axisactor.SetXAxisRange(0., zi[-1])
@@ -388,24 +382,24 @@ class doit3d(threading.Thread):
                 self.renwin.SetSize(900, 450)
 
                 self.iren = vtk.vtkRenderWindowInteractor()
-                
+
                 self.iren.SetRenderWindow(self.renwin)
                 self.iren.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
 
                 # Damit der Speicher wieder freigegeben wird, wenn das Fenster geschlossen wird.
-                self.iren.AddObserver("ExitEvent", lambda o, e, a = myapp.inputwindow3d: a.closeit())
-                
+                self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow3d: a.closeit())
+
                 # Linien glatter machen
                 if (myapp.menu_output_smoothing.isChecked()):   self.renwin.LineSmoothingOn()
 
                 # Rot-Gruen-Brille (aktivieren mit '3')
                 self.renwin.SetStereoTypeToAnaglyph()
-                
+
                 self.iren.Initialize()
                 self.renwin.Render()
-                
+
                 self.renwin.SetWindowName("Limioptic 2 - Output (3D)")
-                
+
                 # self.animate wird aufgerufen wenn der Timer zuschlaegt (alle 50 ms)
                 self.iren.AddObserver("TimerEvent", self.animate)
                 self.timer = self.iren.CreateRepeatingTimer(50)
@@ -413,11 +407,10 @@ class doit3d(threading.Thread):
                 # Ab hier laeuft die Schleife bis das Fenster geschlossen wird
                 self.iren.Start()
 
-
         def neu(self, (xi, yi, zi, segs, parts) = (None, None, None, None, None)):
                 """ Wird aufgerufen wenn eine Variable geaendert wird, oder Strg + H gedrueckt wird """
 
-                if xi == None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
 
                 self.mypoints = vtk.vtkPoints()
                 for part in xrange(parts):
@@ -439,7 +432,7 @@ class doit3d(threading.Thread):
                 self.actor.SetMapper(self.mapper)
 
                 self.render = True
-                               
+
         def animate(self, obj=None, event=None):
                 """ Nur animieren, wenn etwas geaendert wurde. Die Funktion wird alle 50 ms aufgerufen """
                 if self.render:
@@ -447,11 +440,11 @@ class doit3d(threading.Thread):
                         self.threadlock.acquire()
                         self.renwin.Render()
                         self.threadlock.release()
-                
+
 
 class doitXY(threading.Thread):
         """ Die Ausgabe in 2D """
-        def __init__(self, parent): 
+        def __init__(self, parent):
                 self.parent = parent
                 threading.Thread.__init__(self)
                 self.activeInput = 0
@@ -459,25 +452,25 @@ class doitXY(threading.Thread):
                 self.update = False
                 self.threadlock = threading.Lock()
 
-        def run(self):          
+        def run(self):
                 ### 2d Szene und xy Chart erzeugen.
-                self.view = vtk.vtkContextView() 
-                self.view.GetRenderer().SetBackground(1., 1., 1.) 
-                if myapp.menu_plot_bg.isChecked(): self.view.GetRenderer().SetBackground(0., 0., 0.) 
-                self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40) 
+                self.view = vtk.vtkContextView()
+                self.view.GetRenderer().SetBackground(1., 1., 1.)
+                if myapp.menu_plot_bg.isChecked(): self.view.GetRenderer().SetBackground(0., 0., 0.)
+                self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
 
-                self.chart = vtk.vtkChartXY() 
+                self.chart = vtk.vtkChartXY()
                 self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTitle("beamline (m)")
                 self.chart.GetAxis(vtk.vtkAxis.LEFT).SetTitle("deviation (mm)")
-                
-                self.Ticks  = vtk.vtkDoubleArray()
-                self.Labels = vtk.vtkStringArray()                
-                
-                self.view.GetScene().AddItem(self.chart)                
 
-                if (myapp.menu_plot_geo.isChecked()):  
+                self.Ticks  = vtk.vtkDoubleArray()
+                self.Labels = vtk.vtkStringArray()
+
+                self.view.GetScene().AddItem(self.chart)
+
+                if (myapp.menu_plot_geo.isChecked()):
                     limioptic.geo_s.Reset()
-                    limioptic.geo_y.Reset()   
+                    limioptic.geo_y.Reset()
                     limioptic.s = 0.
                 else:
                     limioptic.s = -1.
@@ -498,21 +491,21 @@ class doitXY(threading.Thread):
                         self.markertable.AddColumn(self.markersY)
 
                         self.markersX = []
-                
-                        self.linelist = []                
+
+                        self.linelist = []
                         if (len(iele) > 0):
                                 for i in xrange(1, len(iele)):
                                         if (iele[i] != iele[i-1]):
                                                 self.linelist.append(zi[i-1])
                                 self.linelist.append(zi[len(iele)-1])
 
-                        if (myapp.menu_output_file.isChecked()):        print >> ausgabe, 0, 0
+                        if (myapp.menu_output_file.isChecked()):    print >> ausgabe, 0, 0
                         for i in xrange(1, len(self.linelist)):
                                 self.markersX.append(vtk.vtkFloatArray())
                                 self.markersX[i-1].SetName("Marker %1.0f" % (i))
                                 self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                 self.markersX[i-1].InsertNextValue(self.linelist[i-1])
-                                if (myapp.menu_output_file.isChecked()):        
+                                if (myapp.menu_output_file.isChecked()):
                                         print >> ausgabe, self.linelist[i-1], 0
                                         print >> ausgabe, self.linelist[i-1], 10
                                         print >> ausgabe, self.linelist[i-1], -10
@@ -522,21 +515,21 @@ class doitXY(threading.Thread):
                                 self.line2.SetInput(self.markertable, i, 0)
                                 self.line2.SetColor(.7, .7, .7)
                                 self.line2.SetWidth(1.)
-                        if (myapp.menu_output_file.isChecked()):    ausgabe.close() 
-   
+                        if (myapp.menu_output_file.isChecked()):    ausgabe.close()
+
                 ### Erzeuge Wertetabelle
                 self.table = vtk.vtkTable()
                 self.arrZ = vtk.vtkFloatArray()
                 self.arrZ.SetName("Z Achse")
                 self.arrX = []
                 self.arrY = []
-           
+
                 self.arrZ.SetNumberOfValues(segs)
                 self.arrZ.Reset()
                 for seg in xrange(segs):    self.arrZ.InsertNextValue(zi[seg])
 
                 self.table.AddColumn(self.arrZ)
-                     
+
                 j = 0
                 if (plotx):
                         if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_xbeam.dat", "w")
@@ -548,7 +541,7 @@ class doitXY(threading.Thread):
                                         if (myapp.menu_output_file.isChecked()):    print >> ausgabe, zi[i], xi[j][i]
                                 self.table.AddColumn(self.arrX[j])
                                 if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
-    
+
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, j + 1)
                                 self.line.SetColor(255, 0, 0, 255)
@@ -564,42 +557,42 @@ class doitXY(threading.Thread):
                                         if (myapp.menu_output_file.isChecked()):    print >> ausgabe, zi[i], yi[l][i]
                                 self.table.AddColumn(self.arrY[l])
                                 if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
-    
+
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, l + j + xy)
                                 self.line.SetColor(0, 255, 0, 255)
                                 self.line.SetWidth(.7)
-                        if (myapp.menu_output_file.isChecked()):        ausgabe.close()
-                
+                        if (myapp.menu_output_file.isChecked()):    ausgabe.close()
+
                 if (myapp.menu_plot_geo.isChecked()):
                         limioptic.geolines.AddColumn(limioptic.geo_s)
                         limioptic.geolines.AddColumn(limioptic.geo_y)
                         self.line3 = self.chart.AddPlot(0)
                         self.line3.SetInput(limioptic.geolines, 0, 1)
                         self.line3.SetColor(0., 0., 1.)
-                        self.line3.SetWidth(.7)                    
-                
+                        self.line3.SetWidth(.7)
+
                 for name in limioptic.textArray:
                     self.Ticks.InsertNextValue(name[0])
                     self.Labels.InsertNextValue(name[1])
-                        
+
                 if (myapp.menu_output_smoothing.isChecked()):   self.view.GetRenderWindow().LineSmoothingOn()
                 self.view.Render()
 
                 self.iren = self.view.GetInteractor()
                 self.iren.AddObserver("TimerEvent", self.animate)
                 self.iren.AddObserver("KeyPressEvent", self.keypress)
-                self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit()) #a=myapp.input_window2d[self.threadID]: a.close())
+                self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit())
                 self.timer = self.iren.CreateRepeatingTimer(50)
-                
+
                 self.view.GetRenderWindow().SetWindowName("Limioptic 2 - Output (2D)")
 
                 self.iren.Start()
-                
-        def keypress(self, obj = None, event = None):
+
+        def keypress(self, obj=None, event=None):
             key = obj.GetKeySym()
             if key == "space":
-                if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM: 
+                if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.AUTO)
                 else:
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.CUSTOM)
@@ -611,7 +604,7 @@ class doitXY(threading.Thread):
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
                 self.render = True
-            elif key in (str(i) for i in xrange(0,8)):
+            elif key in (str(i) for i in xrange(0, 8)):
                 self.activeInput = int(key)
                 self.parent.setWindowTitle("input control (INPUT[{}])".format(self.activeInput))
             elif key in ("Up", "Down", "Left", "Right"):
@@ -621,8 +614,8 @@ class doitXY(threading.Thread):
                 if key == "Right":  self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
                 if key == "Left":   self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
                 self.threadlock.release()
-     
-        def animate(self, obj = None, event = None): 
+
+        def animate(self, obj=None, event=None):
                 if self.render:
                     self.render = False
                     self.threadlock.acquire()
@@ -631,8 +624,8 @@ class doitXY(threading.Thread):
                 if self.update:
                     self.update = False
                     self.neu()
-                        
-        def neu(self, (xi, yi, zi, segs, parts) = (None, None, None, None, None)):
+
+        def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
                 self.threadlock.acquire()
                 if (myapp.menu_plot_geo.isChecked()):
                         limioptic.geo_s.Reset()
@@ -641,10 +634,10 @@ class doitXY(threading.Thread):
                 else:
                         limioptic.s = -1.
 
-                if xi == None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
-                iele = limioptic.GetTrajectory(0,7)
-                  
-                ### erzeuge wertetabelle                                
+                if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                iele = limioptic.GetTrajectory(0, 7)
+
+                ### erzeuge wertetabelle
                 if (plotx):
                         for part in xrange(parts):
                                 self.arrX[part].Reset()
@@ -658,16 +651,16 @@ class doitXY(threading.Thread):
 
                 self.arrZ.Reset()
                 for i in xrange(segs):  self.arrZ.InsertNextValue(zi[i])
-                                
+
                 ### Marker setzen
-                if (myapp.menu_plot_marker.isChecked() == True):
-                        self.linelist = []                
+                if myapp.menu_plot_marker.isChecked():
+                        self.linelist = []
                         if (len(iele) > 0):
                                 for i in xrange(1, len(iele)):
                                         if (iele[i] != iele[i-1]):
                                                 self.linelist.append(zi[i-1])
                                 self.linelist.append(zi[len(iele) - 1])
-                                
+
                         for i in xrange(1, len(self.linelist)):
                                 try:    # error falls neues element hinzugefuegt wurde
                                         self.markersX[i-1].Reset()
@@ -683,16 +676,16 @@ class doitXY(threading.Thread):
                                         msg = QtGui.QMessageBox()
                                         msg.setText("you need to close the output-window and rerender\n(Ctrl+G) to show the markers correctly")
                                         msg.exec_()
-                                        
+
                 self.table.Modified()
                 self.markertable.Modified()
                 if (myapp.menu_plot_geo.isChecked()):   limioptic.geolines.Modified()
-                if myapp.menu_plot_bg.isChecked(): 
-                    self.view.GetRenderer().SetBackground(0, 0, 0) 
+                if myapp.menu_plot_bg.isChecked():
+                    self.view.GetRenderer().SetBackground(0, 0, 0)
                 else:
-                    self.view.GetRenderer().SetBackground(1, 1, 1) 
-                    
-                if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM: 
+                    self.view.GetRenderer().SetBackground(1, 1, 1)
+
+                if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
                     self.Ticks.Reset()
                     self.Labels.Reset()
                     for name in limioptic.textArray:
@@ -700,7 +693,7 @@ class doitXY(threading.Thread):
                         self.Labels.InsertNextValue(name[1])
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
-                    
+
                 self.threadlock.release()
 
                 self.render = True
@@ -709,42 +702,37 @@ class doitXY(threading.Thread):
 #################################################
 #################################################
 class CQtLimioptic(QtGui.QMainWindow):
-        """
-        Hier wird das Hauptfenster definiert in dem die Beamline eingegeben werden kann.
-        """
+        """ Hier wird das Hauptfenster definiert in dem die Beamline eingegeben werden kann """
         def __init__(self):
                 QtGui.QMainWindow.__init__(self)
-                #self.setFixedWidth(340)
-                #self.showMaximized()
-                #self.move(screen.width() - 350, 0)
                 self.setGeometry(screen.width()-350, 30, 350-10, screen.height()-40)
-                #platzoben = self.y()-self.geometry().y()
-                
                 self.setWindowTitle('Limioptic 2')
-                self.statusBar().showMessage('') # enable the staus bar
+
+                # enable the staus bar
+                self.statusBar().showMessage('')
 
                 # erzeuge Menu->File->Load Action
-                menu_file_load=QtGui.QAction('Open',self)
+                menu_file_load = QtGui.QAction('Open', self)
                 menu_file_load.setShortcut('Ctrl+O')
                 menu_file_load.setStatusTip('Load Data from File')
-                self.connect(menu_file_load,QtCore.SIGNAL('triggered()'),self.LoadFile)
-                
-                menu_file_loadauto=QtGui.QAction('Open _save.lim',self)
+                self.connect(menu_file_load, QtCore.SIGNAL('triggered()'), self.LoadFile)
+
+                menu_file_loadauto = QtGui.QAction('Open _save.lim', self)
                 menu_file_loadauto.setShortcut('Ctrl+-')
                 menu_file_loadauto.setStatusTip('Load last autosave')
-                self.connect(menu_file_loadauto,QtCore.SIGNAL('triggered()'),self.LoadAutosave)
-                
+                self.connect(menu_file_loadauto, QtCore.SIGNAL('triggered()'), self.LoadAutosave)
+
                 # erzeuge Menu->File->SaveAs Action
-                menu_file_saveas=QtGui.QAction('Save as..',self)
+                menu_file_saveas=QtGui.QAction('Save as..', self)
                 menu_file_saveas.setStatusTip('Save File as')
                 menu_file_saveas.setShortcut('Ctrl+Alt+S')
-                self.connect(menu_file_saveas,QtCore.SIGNAL('triggered()'),self.SaveFileAs)
-                
+                self.connect(menu_file_saveas, QtCore.SIGNAL('triggered()'), self.SaveFileAs)
+
                 menu_file_save=QtGui.QAction('Save',self)
                 menu_file_save.setStatusTip('Save File')
                 menu_file_save.setShortcut('Ctrl+S')
                 self.connect(menu_file_save,QtCore.SIGNAL('triggered()'),self.SaveFile)
-                
+
                 # erzeuge Menu->File->Exit Action
                 menu_file_exit=QtGui.QAction(QtGui.QIcon('icon/exit.png'),'Exit',self)
                 menu_file_exit.setShortcut('Ctrl+Q')
@@ -1039,9 +1027,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 updatethread.start()
                 
         def update(self):
-                """
-                Check uebers Internet ob Updates verfuegbar sind
-                """
+                """ Check uebers Internet ob Updates verfuegbar sind """
                 print "checking for updates..",
                 try:
                         a = urllib.urlopen("http://ams.amstolz.de/version.txt")
@@ -1203,7 +1189,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                                 
                 if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
-                        self.inputwindow2d = inputcontrol("2d", 1)
+                        self.inputwindow2d = inputcontrol("2d")
                         RUNNING2D = RUNNING = True
                         self.inputwindow2d.exec_()
                         RUNNING2D = RUNNING = False
@@ -1223,7 +1209,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                                 
                 if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
-                        self.inputwindowqt = inputcontrol("qt", 1)
+                        self.inputwindowqt = inputcontrol("qt")
                         RUNNINGQT = RUNNING = True
                         self.inputwindowqt.exec_()
                         RUNNINGQT = RUNNING = False
@@ -1243,7 +1229,7 @@ class CQtLimioptic(QtGui.QMainWindow):
 
                 if (RUNNING == False):
                         print "Sicherungsdatei: _save.lim"
-                        self.inputwindow3d = inputcontrol("3d", 0)
+                        self.inputwindow3d = inputcontrol("3d")
                         RUNNING3D = RUNNING = True
                         self.inputwindow3d.exec_()
                         RUNNING3D = RUNNING = False
@@ -1348,18 +1334,17 @@ class CQtLimioptic(QtGui.QMainWindow):
 ##### Dialoge #####
 ###################
 class CInsertParticleDialog(QtGui.QDialog):
-        """
-        Wird nicht mehr benoetigt
-        """
+        """ Wird nicht mehr benoetigt """
         def __init__(self,myarg1):
                 QtGui.QDialog.__init__(self)
-                self.setFixedSize(400,200)
+                self.setFixedSize(400, 200)
                 self.setWindowTitle('Insert Particle Dialog')
 
-                self.parent_textedit=myarg1  # Zeiger auf das QTextEdit speichern
+                # Zeiger auf das QTextEdit speichern
+                self.parent_textedit = myarg1 
 
-                self.insert_syntax_button=QtGui.QPushButton('just insert syntax',self)
-                self.insert_syntax_button.setGeometry(50,50,160,25)
+                self.insert_syntax_button = QtGui.QPushButton('just insert syntax',self)
+                self.insert_syntax_button.setGeometry(50, 50, 160, 25)
                 self.connect(self.insert_syntax_button,QtCore.SIGNAL('clicked()'),self.InsertSyntax)
 
 
@@ -1382,9 +1367,10 @@ class CInsertMatrixDialog(QtGui.QDialog):
                 self.setFixedSize(200,100)
                 self.setWindowTitle('Insert general 6x6 Matrix Dialog')
 
-                self.parent_textedit=myarg1 # Zeiger auf das QTextEdit speichern
+                # Zeiger auf das QTextEdit speichern
+                self.parent_textedit = myarg1
 
-                self.insert_ThinLens_example_button=QtGui.QPushButton('insert unity matrix',self)
+                self.insert_ThinLens_example_button = QtGui.QPushButton('insert unity matrix',self)
                 self.insert_ThinLens_example_button.setGeometry(50,50,100,50)
                 self.connect(self.insert_ThinLens_example_button,QtCore.SIGNAL('clicked()'),self.InsertThinLensExample)
 
