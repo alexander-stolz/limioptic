@@ -1,119 +1,119 @@
-AUSGANG = 0
+INPUT[7] = 0.0469 # INPUT[7] 
+INPUT[6] = 0.7584 # INPUT[6]
+INPUT[5] = 1.0 # INPUT[5]
+INPUT[4] = 1.02 # INPUT[4]
+INPUT[3] = 1.0 # INPUT[3]
+INPUT[2] = 1.0023 # INPUT[2]
 
-"""
-INPUT[0]	=	0.2597	# INPUT[5]
-INPUT[1]	=	0.3331	# INPUT[4]
-INPUT[2]	=	0.5689	# INPUT[3]
-INPUT[3]	=	0.41	# INPUT[2]
-INPUT[4]	=	0.6025	# INPUT[1]
-INPUT[5]	=	0.2381	# INPUT[0]
-"""
+AUSGANG = "GIC" #oder "TOF", "SiGI", "AFD"
 
-########## GEPLANTE GEOMETRIE #########
+VT = 4.5e6/3.*(2+10./26) #Terminalspannung
+q = 2 #Ladungszustand
+t = 1.05686#*INPUT[6] #Korrektur Terminalspannung
+e1 = 17000. #SO110-EL
+e2 = 23502.*.9523*INPUT[7] #BI-EL
+g = 25.2 #
+q_snout = 41.99e3 #Q-Snout lens
 
-# Variablen
-linse1 = INPUT[0]
-linse2 = INPUT[1]
-linse3 = INPUT[2]
-linse4 = INPUT[3]
-linse5 = INPUT[4]
-linse6 = INPUT[5]
+## Schlitze
+s5 = 30.0 # INPUT[0]
+s4 = 30.0 # INPUT[0]
+s3 = 30.0 # INPUT[0]
+s1 = INPUT[0]*10
 
-v_ext = 20.e3 * INPUT[7]
-print "Extraktion = ", v_ext
-v_vb  = 50.e3
-v_inj  = v_ext + v_vb
+## Quadrupole
+q4b = -4.97*INPUT[7]
+q4a = 57.799*INPUT[6]
+q3b = -8.5986*INPUT[5]
+q3a = 35.816*INPUT[4]
+q2b = -2.1748*INPUT[3]
+q2a = 47.19*INPUT[2]
+q1b = -5.3415*INPUT[1]
+q1a = 58.294*INPUT[0]
 
-v_tandem = 7.e6
-q = 1.
+## div. Variablen
+K1 = 0.52818
+K2 = 0.52818
+beta1 =1 #INPUT[6]
 
-#########################
-AddBeam(.15, 40., .15, 40., 0, 0,10)
-#########################
+###################################
 
-AddDrift(1,1,.17)
+AddBeam(.5*1.4384,.1*28.9,.5*1.4384,.1*28.9,INPUT[0],-0,10)
+#AddBeamRandomGauss(1.4384,28.9,1.4384,28.9,0,0,1500)
 
-# Linse 1
-AddThinLens(linse1, linse1, 50)
+###################################
 
 
-AddDrift(1,1,.78)
+### WAIST ###
+#AddSlit(0,s3,0,30)
+AddDrift(1,1.00362,1.3487)
 
-# Vorbeschleunigung
-AddVBFN(v_ext, v_inj, b = .575*2., laenge = .28)
+# QPT 2 - HES
+#####################
+#c
+#AddAMSQPT_YXY(1,52.99,-0.5,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_YXY(1,44.127,0.305,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,35.95,-2.43,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_YXY(1,37.14,-4.16,3.e6*t,35000,3,g)
+#sonst
+AddAMSQPT_YXY(1,q2a,q2b,VT*t,35000,q,g)
+#####################
 
-AddDrift(1,1,1.026)
-AddDrift(1,1,0.259)
+#90grad magnet
+AddDrift(1,1.00362,.7574)
+AddEdgeFocusing(2,.47,K2,50.)
+AddMSA(10,1.00362,2,0.15707963,50)
+AddEdgeFocusing(2,.47,K2,50.)
 
-# 20 Grad Magnet
-AddEdgeFocusing(.9906, .174533,0, 15)
-AddMSA(10, 1, 0.9906, 0.34906585/10., 15)
-AddEdgeFocusing(.9906, 0., 0., 15)
+AddDrift(1,1.00362,2.0003)
+### WAIST ###
+#AddSlit(0,s4,0,30)
+AddDrift(1,1.00362,1.9888)
 
-AddDrift(1, 1, .14) # Magnetkammer aus
+# 35grad deflektor
+AddESD(10,1.00362,0.06108652,2.6,1.e6,0.0605,26)
+AddDrift(1,1.00362,.3011)
 
-AddDrift(1, 1, .31)
+# QPT 3 - HEE
+#####################
+#c
+#AddAMSQPT_YXY(1,37.51,-7.8,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_YXY(1,36.923,-7.998,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,22.17,-6.21,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_YXY(1,22.74,-5.26,3.e6*t,35000,3,g)
+#sonst
+AddAMSQPT_YXY(1,q3a,q3b,VT*t,35000,q,g)
+#####################
 
-# Linse 2
-#AddThinLens(linse2, linse2, 80)	# (fx, fy, R)
+# 35grad deflektor
+AddDrift(1,1.00362,.3078)
+AddESD(10,1.00362,0.06108652,2.6,1.e6,0.0605,26)
 
-AddDrift(1, 1, .31)
+AddDrift(1,1.00362,2.2995)
+### WAIST ###
+#AddSlit(0,s5,0,30)
+#AddBeamProfile()
+AddDrift(1,1.00362,3.5456)
 
-# Schlitz und Cup
-AddSlit(0,30,0,30)
+# QPT 4 - DSW
+#####################
+#c
+#AddAMSQPT_XYX(1,54.65,-2.5,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_XYX(1,46.5,-0.6,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,37.39,-1.94,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_XYX(1,23.67,1.18,3.e6*t,35000,3,g)
+#sonst
+AddAMSQPT_XYX(1,q4a,q4b,VT*t,35000,q,g)
+#####################
 
-AddDrift(1, 1, 1.1)
+AddDrift(1,1.00362,0.5055)
 
-## Quellenkasten 2 Eingang D=30mm
-AddSlit(0, 30, 0, 30)
-
-AddDrift(1, 1, .25)
-
-# Linse 3
-AddThinLens(linse3, linse3, 75)	# (fx, fy, R)
-
-AddDrift(1, 1, .25)
-### TARGET
-AddDrift(1, 1, .10)
-
-## Quellenkasten 2 Ausgang D=30mm
-AddSlit(0, 30, 0, 30)
-
-AddDrift(1,1,.259) 
-
-# 20 Grad Magnet
-AddEdgeFocusing(.9906, .174533, 0, 15)
-AddMSA(10, 1, .9906, .34906585/10., 15)
-AddEdgeFocusing(.9906, 0, 0, 15)
-
-AddDrift(1, 1, .265)
-
-# Schlitz
-AddSlit(0,30,0,30)
-
-AddDrift(1, 1, .485)
-
-# Linse 4
-AddThinLens(linse4, linse4, 30)	# (fx, fy, R)
-
-AddDrift(1, 1, 1.29)
-
-# Blende D = 4 mm
-AddSlit(0,14,0,14)
-
-AddDrift(1, 1, 1.26)
-
-#  Linse 5
-AddThinLens(linse5, linse5, 30)
-
-AddDrift(1,1,.51)
-### Tankdeckel
-AddDrift(1,1,.17)
-
-# Linse 6 = Gitterlinse
-AddThinLens(linse6, linse6, 40)
-
-AddDrift(1, 1, .50)
-
-# Tandem
-AddFNAccNeu(v_tandem, v_inj, q, b1 = 0.57, b2 = 0.57,  D1 = .05)
