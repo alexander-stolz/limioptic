@@ -9,7 +9,7 @@ Die eigentliche Berechnung findet in limioptic.cpp statt.
 
 print "loading:",
 
-print "imp",
+print "imp",            # unterdruecken von import fehlern
 import imp
 print "sys",
 import sys
@@ -24,8 +24,8 @@ import time             # debuggen + sleep
 #import serial          # auslesen des potis
 print "vtk",
 try:
-    imp.find_module("vtk")  # grafische ausgabe ueber VTK
-    import vtk
+    imp.find_module("vtk")
+    import vtk          # grafische ausgabe ueber VTK
 except:
     print "NOT FOUND",
     vtk = False
@@ -85,7 +85,7 @@ class inputcontrol(QtGui.QDialog):
                 self.info    = []
                 self.infobox = []
 
-                for i in xrange(0, NumberOfInputs):
+                for i in xrange(NumberOfInputs):
                         self.info.append(QtGui.QLabel("#%1.0f" % (i)))
                         self.min.append(QtGui.QDoubleSpinBox())
                         self.slider.append(QtGui.QSlider(QtCore.Qt.Horizontal, self))
@@ -136,7 +136,7 @@ class inputcontrol(QtGui.QDialog):
                 # Wichtig, damit Aenderungen von Variablen nicht waerend des Berechnens/Plottens stattfinden
                 self.threadlock = threading.Lock()
 
-                for i in xrange(0, NumberOfInputs):
+                for i in xrange(NumberOfInputs):
                         self.connect(self.slider[i], QtCore.SIGNAL("valueChanged(int)"), self.slidertoinput)
                         self.connect(self.input[i], QtCore.SIGNAL("valueChanged(double)"), self.inputtoslider)
                         self.connect(self.min[i], QtCore.SIGNAL("valueChanged(double)"), self.slidertoinput)
@@ -179,9 +179,9 @@ class inputcontrol(QtGui.QDialog):
                 if not self.changing:
                     global INPUT
                     self.changing = True
-                    for i in xrange(0, NumberOfInputs):
+                    for i in xrange(NumberOfInputs):
                             INPUT[i] = self.input[i].value()
-                    for i in xrange(0, NumberOfInputs):
+                    for i in xrange(NumberOfInputs):
                             self.slider[i].setValue(int((INPUT[i] - self.min[i].value()) * 100000.))
                     if (RUNNINGQT): self.plotwindow.update(self.calculate())
                     if (RUNNING2D): self.plotwindow.update = True
@@ -193,9 +193,9 @@ class inputcontrol(QtGui.QDialog):
                 if not self.changing:
                     global INPUT
                     self.changing = True
-                    for i in xrange(0, NumberOfInputs):
+                    for i in xrange(NumberOfInputs):
                             self.input[i].setValue(self.slider[i].value() / 100000. + self.min[i].value())
-                    for i in xrange(0, NumberOfInputs):
+                    for i in xrange(NumberOfInputs):
                             INPUT[i] = self.input[i].value()
                     if (RUNNINGQT): self.plotwindow.update(self.calculate())
                     if (RUNNING2D): self.plotwindow.update = True
@@ -205,7 +205,7 @@ class inputcontrol(QtGui.QDialog):
         def closeit(self):
                 """ Wird aufgerufen, wenn das Outputfenster geschlossen wird. """
                 global BEZEICHNUNGEN, RUNNING2D, RUNNING3D
-                for i in range(0, NumberOfInputs):
+                for i in xrange(NumberOfInputs):
                         BEZEICHNUNGEN[i] = self.infobox[i].text()
 
                 self.update_on = False
@@ -327,8 +327,8 @@ class doit3d(threading.Thread):
                 self.mycells = vtk.vtkCellArray()
 
                 # Alle Punkte in mypoints laden
-                for part in xrange(0, parts):
-                        for seg in xrange(0, segs):
+                for part in xrange(parts):
+                        for seg in xrange(segs):
                                 self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
                         self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, .0, .0)
                         self.mypoints.InsertNextPoint(.0, .0, .0)
@@ -537,10 +537,10 @@ class doitXY(threading.Thread):
                 j = 0
                 if (plotx):
                         if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_xbeam.dat", "w")
-                        for j in xrange(0, parts):
+                        for j in xrange(parts):
                                 self.arrX.append(vtk.vtkFloatArray())
                                 self.arrX[j].SetName("X-Strahl %1.0f Start: %1.2f" % (j, xi[j][0]))
-                                for i in xrange(0, segs):
+                                for i in xrange(segs):
                                         self.arrX[j].InsertNextValue(xi[j][i])
                                         if (myapp.menu_output_file.isChecked()):    print >> ausgabe, zi[i], xi[j][i]
                                 self.table.AddColumn(self.arrX[j])
@@ -608,7 +608,7 @@ class doitXY(threading.Thread):
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
                 self.render = True
-            elif key in (str(i) for i in xrange(0, 8)):
+            elif key in (str(i) for i in xrange(8)):
                 self.activeInput = int(key)
                 self.parent.setWindowTitle("input control (INPUT[{}])".format(self.activeInput))
             elif key in ("Up", "Down", "Left", "Right"):
@@ -1188,7 +1188,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 myfile.close()
 
                 myfile = open("_save.var", "w")
-                for i in xrange(0, NumberOfInputs):
+                for i in xrange(NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
 
@@ -1208,7 +1208,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 myfile.close()
 
                 myfile = open("_save.var", "w")
-                for i in xrange(0, NumberOfInputs):
+                for i in xrange(NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
 
@@ -1401,7 +1401,7 @@ OPACITY = 50
 NumberOfInputs = 8
 SCALE3D = 10.
 
-for i in xrange(0, 32):
+for i in xrange(32):
         INPUT.append(1.)
         BEZEICHNUNGEN.append("")
 
