@@ -1,4 +1,4 @@
-Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously.
+Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously. Plot->PyQtGraph should work until this problem is fixed.
 
 
 <b>Installation (Windows):</b>
