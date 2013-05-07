@@ -290,14 +290,14 @@ class doitqt2(threading.Thread):
     def run(self):
         self.update(self.parent.calculate())
 
-    def update(self, (xi, yi, zi, segs, parts) = (None, None, None, None, None)):
+    def update(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
         if xi is None:   (xi, yi, zi, segs, parts) = self.parent.calculate()
 
         # viel schneller, als mehrere plots
         x_all = []
         y_all = []
         z_all = []
-        for part in range(parts): 
+        for part in range(parts):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
@@ -342,7 +342,7 @@ class doit3d(threading.Thread):
                 # Datenobjekt erzeugen
                 self.mydata = vtk.vtkPolyData()
 
-                # Punkte hinzufuegen              
+                # Punkte hinzufuegen
                 self.mydata.SetPoints(self.mypoints)
 
                 # Polyline hinzufuegen. Ab nun verknuepft
@@ -407,7 +407,7 @@ class doit3d(threading.Thread):
                 # Ab hier laeuft die Schleife bis das Fenster geschlossen wird
                 self.iren.Start()
 
-        def neu(self, (xi, yi, zi, segs, parts) = (None, None, None, None, None)):
+        def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
                 """ Wird aufgerufen wenn eine Variable geaendert wird, oder Strg + H gedrueckt wird """
 
                 if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
@@ -456,7 +456,7 @@ class doitXY(threading.Thread):
                 ### 2d Szene und xy Chart erzeugen.
                 self.view = vtk.vtkContextView()
                 self.view.GetRenderer().SetBackground(1., 1., 1.)
-                if myapp.menu_plot_bg.isChecked(): self.view.GetRenderer().SetBackground(0., 0., 0.)
+                if myapp.menu_plot_bg.isChecked():  self.view.GetRenderer().SetBackground(0., 0., 0.)
                 self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
 
                 self.chart = vtk.vtkChartXY()
@@ -723,240 +723,239 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.connect(menu_file_loadauto, QtCore.SIGNAL('triggered()'), self.LoadAutosave)
 
                 # erzeuge Menu->File->SaveAs Action
-                menu_file_saveas=QtGui.QAction('Save as..', self)
+                menu_file_saveas = QtGui.QAction('Save as..', self)
                 menu_file_saveas.setStatusTip('Save File as')
                 menu_file_saveas.setShortcut('Ctrl+Alt+S')
                 self.connect(menu_file_saveas, QtCore.SIGNAL('triggered()'), self.SaveFileAs)
 
-                menu_file_save=QtGui.QAction('Save',self)
+                menu_file_save = QtGui.QAction('Save', self)
                 menu_file_save.setStatusTip('Save File')
                 menu_file_save.setShortcut('Ctrl+S')
-                self.connect(menu_file_save,QtCore.SIGNAL('triggered()'),self.SaveFile)
+                self.connect(menu_file_save, QtCore.SIGNAL('triggered()'), self.SaveFile)
 
                 # erzeuge Menu->File->Exit Action
-                menu_file_exit=QtGui.QAction(QtGui.QIcon('icon/exit.png'),'Exit',self)
+                menu_file_exit = QtGui.QAction(QtGui.QIcon('icon/exit.png'), 'Exit', self)
                 menu_file_exit.setShortcut('Ctrl+Q')
                 menu_file_exit.setStatusTip('Exit Program')
-                self.connect(menu_file_exit,QtCore.SIGNAL('triggered()'),QtCore.SLOT('close()'))
+                self.connect(menu_file_exit, QtCore.SIGNAL('triggered()'), QtCore.SLOT('close()'))
 
                 # translate 2d
-                menu_translate_2d=QtGui.QAction('2D (VTK)',self)
+                menu_translate_2d = QtGui.QAction('2D (VTK)', self)
                 menu_translate_2d.setShortcut('Ctrl+G')
                 menu_translate_2d.setStatusTip('Translate Text to GUI 2D')
                 if not vtk: menu_translate_2d.setEnabled(False)
-                self.connect(menu_translate_2d,QtCore.SIGNAL('triggered()'),self.plot2d)
+                self.connect(menu_translate_2d, QtCore.SIGNAL('triggered()'), self.plot2d)
                 # translate 3d
-                menu_translate_3d=QtGui.QAction('3D (VTK)',self)
+                menu_translate_3d = QtGui.QAction('3D (VTK)', self)
                 menu_translate_3d.setShortcut('Ctrl+H')
                 menu_translate_3d.setStatusTip('Translate Text to GUI 3D')
                 if not vtk: menu_translate_3d.setEnabled(False)
-                self.connect(menu_translate_3d,QtCore.SIGNAL('triggered()'),self.plot3d)
+                self.connect(menu_translate_3d, QtCore.SIGNAL('triggered()'), self.plot3d)
                 # translate qt 2d
-                menu_translate_qt=QtGui.QAction('2D (PyQtGraph)',self)
+                menu_translate_qt = QtGui.QAction('2D (PyQtGraph)', self)
                 menu_translate_qt.setShortcut('Ctrl+F')
                 menu_translate_qt.setStatusTip('Translate Text to GUI 2D')
                 if not pg: menu_translate_qt.setEnabled(False)
-                self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'),self.plotqt)
+                self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'), self.plotqt)
 
                 # Plot markers
-                self.menu_plot_marker=QtGui.QAction('marker',self)
+                self.menu_plot_marker = QtGui.QAction('marker', self)
                 self.menu_plot_marker.setCheckable(True)
                 self.menu_plot_marker.setChecked(True)
-#               self.connect(self.menu_plot_marker,QtCore.SIGNAL('triggered()'),)
+#               self.connect(self.menu_plot_marker, QtCore.SIGNAL('triggered()'),)
                 # Plot geo
-                self.menu_plot_geo=QtGui.QAction('geometry',self)
+                self.menu_plot_geo = QtGui.QAction('geometry', self)
                 self.menu_plot_geo.setCheckable(True)
                 self.menu_plot_geo.setChecked(True)
                 # Plot x
-                self.menu_plot_x=QtGui.QAction('x',self)
+                self.menu_plot_x = QtGui.QAction('x', self)
                 self.menu_plot_x.setCheckable(True)
                 self.menu_plot_x.setChecked(True)
-                self.connect(self.menu_plot_x,QtCore.SIGNAL('triggered()'),self.setxy)
+                self.connect(self.menu_plot_x, QtCore.SIGNAL('triggered()'), self.setxy)
                 # Plot y
-                self.menu_plot_y=QtGui.QAction('y',self)
+                self.menu_plot_y = QtGui.QAction('y', self)
                 self.menu_plot_y.setCheckable(True)
                 self.menu_plot_y.setChecked(True)
-                self.connect(self.menu_plot_y,QtCore.SIGNAL('triggered()'),self.setxy)
+                self.connect(self.menu_plot_y, QtCore.SIGNAL('triggered()'), self.setxy)
                 # Background
-                self.menu_plot_bg=QtGui.QAction('black background',self)
+                self.menu_plot_bg = QtGui.QAction('black background', self)
                 self.menu_plot_bg.setCheckable(True)
                 self.menu_plot_bg.setChecked(False)
-                
+
                 # Source
-                self.menu_insert_source=QtGui.QAction('Source',self)
+                self.menu_insert_source = QtGui.QAction('Source', self)
                 self.menu_insert_source.setStatusTip('Use input file')
-                self.connect(self.menu_insert_source,QtCore.SIGNAL('triggered()'),self.InsertSource)
+                self.connect(self.menu_insert_source, QtCore.SIGNAL('triggered()'), self.InsertSource)
                 # Particle
-                self.menu_insert_particle=QtGui.QAction('Particle',self)
+                self.menu_insert_particle = QtGui.QAction('Particle', self)
                 self.menu_insert_particle.setStatusTip('Insert a particle')
-                self.connect(self.menu_insert_particle,QtCore.SIGNAL('triggered()'),self.InsertParticle)
+                self.connect(self.menu_insert_particle, QtCore.SIGNAL('triggered()'), self.InsertParticle)
                 # Beam
-                self.menu_insert_beam=QtGui.QAction('Beam',self)
+                self.menu_insert_beam = QtGui.QAction('Beam', self)
                 self.menu_insert_beam.setShortcut('Ctrl+Shift+B')
                 self.menu_insert_beam.setStatusTip('Insert a particle beam')
-                self.connect(self.menu_insert_beam,QtCore.SIGNAL('triggered()'),self.InsertBeam)
+                self.connect(self.menu_insert_beam, QtCore.SIGNAL('triggered()'), self.InsertBeam)
                 # Beam X
-                self.menu_insert_beamx=QtGui.QAction('BeamX (3d)',self)
+                self.menu_insert_beamx = QtGui.QAction('BeamX (3d)', self)
                 self.menu_insert_beamx.setStatusTip('Insert a simple 3d beam')
-                self.connect(self.menu_insert_beamx,QtCore.SIGNAL('triggered()'),self.InsertBeamX)
+                self.connect(self.menu_insert_beamx, QtCore.SIGNAL('triggered()'), self.InsertBeamX)
                 # Beam 3D
-                self.menu_insert_beam3d=QtGui.QAction('Beam3D (3d)',self)
+                self.menu_insert_beam3d = QtGui.QAction('Beam3D (3d)', self)
                 self.menu_insert_beam3d.setStatusTip('Insert a NICE 3d beam')
-                self.connect(self.menu_insert_beam3d,QtCore.SIGNAL('triggered()'),self.InsertBeam3d)
+                self.connect(self.menu_insert_beam3d, QtCore.SIGNAL('triggered()'), self.InsertBeam3d)
                 # Beam Gauss
-                self.menu_insert_rgauss=QtGui.QAction('BeamRandomGauss (3d)',self)
+                self.menu_insert_rgauss = QtGui.QAction('BeamRandomGauss (3d)', self)
                 self.menu_insert_rgauss.setStatusTip('Insert a gaussian beam')
-                self.connect(self.menu_insert_rgauss,QtCore.SIGNAL('triggered()'),self.InsertRGauss)
-          
+                self.connect(self.menu_insert_rgauss, QtCore.SIGNAL('triggered()'), self.InsertRGauss)
+
                 # Slit
-                self.menu_insert_slit=QtGui.QAction('Slit',self)
+                self.menu_insert_slit = QtGui.QAction('Slit', self)
                 self.menu_insert_slit.setStatusTip('Insert a slit')
                 self.menu_insert_slit.setShortcut('Ctrl+Shift+S')
-                self.connect(self.menu_insert_slit,QtCore.SIGNAL('triggered()'),self.InsertSlit)
+                self.connect(self.menu_insert_slit, QtCore.SIGNAL('triggered()'), self.InsertSlit)
                 # BeamProfile
-                self.menu_insert_bpm=QtGui.QAction('Beam Profile Monitor',self)
+                self.menu_insert_bpm = QtGui.QAction('Beam Profile Monitor', self)
                 self.menu_insert_bpm.setStatusTip('Insert a BPM')
-                self.connect(self.menu_insert_bpm,QtCore.SIGNAL('triggered()'),self.InsertBPM)
+                self.connect(self.menu_insert_bpm, QtCore.SIGNAL('triggered()'), self.InsertBPM)
                 # Modify Emittance
-                self.menu_insert_modifyemittance=QtGui.QAction('Modify Emittance',self)
-                self.connect(self.menu_insert_modifyemittance,QtCore.SIGNAL('triggered()'),self.InsertModifyEmittance)
+                self.menu_insert_modifyemittance = QtGui.QAction('Modify Emittance', self)
+                self.connect(self.menu_insert_modifyemittance, QtCore.SIGNAL('triggered()'), self.InsertModifyEmittance)
                 # general 6x6 Matrix
-                self.menu_insert_matrix=QtGui.QAction('General 6x6 matrix',self)
+                self.menu_insert_matrix = QtGui.QAction('General 6x6 matrix', self)
                 self.menu_insert_matrix.setStatusTip('Insert a general 6x6 transfer matrix')
-                self.connect(self.menu_insert_matrix,QtCore.SIGNAL('triggered()'),self.InsertMatrix)
+                self.connect(self.menu_insert_matrix, QtCore.SIGNAL('triggered()'), self.InsertMatrix)
                 # Drift
-                self.menu_insert_drift=QtGui.QAction('Drift',self)
+                self.menu_insert_drift = QtGui.QAction('Drift', self)
                 self.menu_insert_drift.setShortcut('Ctrl+Shift+D')
                 self.menu_insert_drift.setStatusTip('Insert a drift')
-                self.connect(self.menu_insert_drift,QtCore.SIGNAL('triggered()'),self.InsertDrift)
+                self.connect(self.menu_insert_drift, QtCore.SIGNAL('triggered()'), self.InsertDrift)
                 # ESD
-                self.menu_insert_esd=QtGui.QAction('ESD',self)
+                self.menu_insert_esd = QtGui.QAction('ESD', self)
                 self.menu_insert_esd.setShortcut('Ctrl+Shift+E')
                 self.menu_insert_esd.setStatusTip('Insert an ESD')
-                self.connect(self.menu_insert_esd,QtCore.SIGNAL('triggered()'),self.InsertESD)
+                self.connect(self.menu_insert_esd, QtCore.SIGNAL('triggered()'), self.InsertESD)
                 # MSA
-                self.menu_insert_hdm=QtGui.QAction('MSA',self)
+                self.menu_insert_hdm = QtGui.QAction('MSA', self)
                 self.menu_insert_hdm.setShortcut('Ctrl+Shift+M')
                 self.menu_insert_hdm.setStatusTip('Insert a homogeneous deflecting magnet')
-                self.connect(self.menu_insert_hdm,QtCore.SIGNAL('triggered()'),self.InsertHomDeflectingMagnet)
+                self.connect(self.menu_insert_hdm, QtCore.SIGNAL('triggered()'), self.InsertHomDeflectingMagnet)
                 # Quadrupol
-                self.menu_insert_quadrupol=QtGui.QAction('Quadrupol',self)
+                self.menu_insert_quadrupol = QtGui.QAction('Quadrupol', self)
                 self.menu_insert_quadrupol.setShortcut('Ctrl+Shift+Q')
                 self.menu_insert_quadrupol.setStatusTip('Open Dialog : Insert a quadrupol')
-                self.connect(self.menu_insert_quadrupol,QtCore.SIGNAL('triggered()'),self.InsertQuadrupol)
+                self.connect(self.menu_insert_quadrupol, QtCore.SIGNAL('triggered()'), self.InsertQuadrupol)
                 # ThinLens
-                self.menu_insert_ThinLens=QtGui.QAction('Einzel lens',self)
+                self.menu_insert_ThinLens = QtGui.QAction('Einzel lens', self)
                 self.menu_insert_ThinLens.setShortcut('Ctrl+Shift+L')
                 self.menu_insert_ThinLens.setStatusTip('Open Dialog : Insert a thin lense')
-                self.connect(self.menu_insert_ThinLens,QtCore.SIGNAL('triggered()'),self.InsertThinLens)
-                
+                self.connect(self.menu_insert_ThinLens, QtCore.SIGNAL('triggered()'), self.InsertThinLens)
+
                 # SO110-EL
-                self.menu_insert_so110el=QtGui.QAction('AMS SO110-EL',self)
+                self.menu_insert_so110el = QtGui.QAction('AMS SO110-EL', self)
                 self.menu_insert_so110el.setStatusTip('Cologne AMS SO110 einzel lens')
-                self.connect(self.menu_insert_so110el,QtCore.SIGNAL('triggered()'),self.InsertSO110EL)
+                self.connect(self.menu_insert_so110el, QtCore.SIGNAL('triggered()'), self.InsertSO110EL)
                 # FN-EL
-                self.menu_insert_fnel=QtGui.QAction('FN EL',self)
+                self.menu_insert_fnel = QtGui.QAction('FN EL', self)
                 self.menu_insert_fnel.setStatusTip('HVEC-FN 7 einzel lens')
-                self.connect(self.menu_insert_fnel,QtCore.SIGNAL('triggered()'),self.InsertFNEL)
+                self.connect(self.menu_insert_fnel, QtCore.SIGNAL('triggered()'), self.InsertFNEL)
                 # BI-EL
-                self.menu_insert_biel=QtGui.QAction('AMS BI-EL',self)
+                self.menu_insert_biel = QtGui.QAction('AMS BI-EL', self)
                 self.menu_insert_biel.setStatusTip('Cologne AMS BI einzel lens')
-                self.connect(self.menu_insert_biel,QtCore.SIGNAL('triggered()'),self.InsertBIEL)
+                self.connect(self.menu_insert_biel, QtCore.SIGNAL('triggered()'), self.InsertBIEL)
                 # AMSQPT
-                self.menu_insert_amsqpt=QtGui.QAction('AMS QPT',self)
+                self.menu_insert_amsqpt = QtGui.QAction('AMS QPT', self)
                 self.menu_insert_amsqpt.setStatusTip('Cologne AMS Quadrupole Triplet')
-                self.connect(self.menu_insert_amsqpt,QtCore.SIGNAL('triggered()'),self.InsertAMSQPT)
+                self.connect(self.menu_insert_amsqpt, QtCore.SIGNAL('triggered()'), self.InsertAMSQPT)
                 # VBFN
-                self.menu_insert_vbfn=QtGui.QAction('FN VB',self)
+                self.menu_insert_vbfn = QtGui.QAction('FN VB', self)
                 self.menu_insert_vbfn.setShortcut('Ctrl+Shift+V')
                 self.menu_insert_vbfn.setStatusTip('Insert Cologne FN preacceleration segment')
-                self.connect(self.menu_insert_vbfn,QtCore.SIGNAL('triggered()'),self.InsertVBFN)
+                self.connect(self.menu_insert_vbfn, QtCore.SIGNAL('triggered()'), self.InsertVBFN)
                 # FNACC
-                self.menu_insert_fnacc=QtGui.QAction('FN acceleration tube',self)
+                self.menu_insert_fnacc = QtGui.QAction('FN acceleration tube', self)
                 #self.menu_insert_fnacc.setShortcut('Ctrl+Shift+F')
                 self.menu_insert_fnacc.setStatusTip('Insert HVEC-FN 7 acceleration tube')
-                self.connect(self.menu_insert_fnacc,QtCore.SIGNAL('triggered()'),self.InsertFNAcc)
+                self.connect(self.menu_insert_fnacc, QtCore.SIGNAL('triggered()'), self.InsertFNAcc)
                 # FNACCNeu
-                self.menu_insert_fnaccneu=QtGui.QAction('FN acceleration tube',self)
+                self.menu_insert_fnaccneu = QtGui.QAction('FN acceleration tube', self)
                 self.menu_insert_fnaccneu.setShortcut('Ctrl+Shift+F')
                 self.menu_insert_fnaccneu.setStatusTip('Insert HVEC-FN 7 acceleration tube')
-                self.connect(self.menu_insert_fnaccneu,QtCore.SIGNAL('triggered()'),self.InsertFNAccNeu)
+                self.connect(self.menu_insert_fnaccneu, QtCore.SIGNAL('triggered()'), self.InsertFNAccNeu)
                 # AMS-Acc
-                self.menu_insert_amsacc=QtGui.QAction('AMS acceleration tube',self)
+                self.menu_insert_amsacc = QtGui.QAction('AMS acceleration tube', self)
                 self.menu_insert_amsacc.setStatusTip('Insert Cologne AMS acceleration tube')
                 self.menu_insert_amsacc.setShortcut('Ctrl+Shift+A')
-                self.connect(self.menu_insert_amsacc,QtCore.SIGNAL('triggered()'),self.InsertAMSAcc)
+                self.connect(self.menu_insert_amsacc, QtCore.SIGNAL('triggered()'), self.InsertAMSAcc)
 
-                
                 ## OUTPUT
                 # dat
-                self.menu_output_file   =       QtGui.QAction('-> output_*.dat',self)
+                self.menu_output_file = QtGui.QAction('-> output_*.dat', self)
                 self.menu_output_file.setStatusTip('send output -> *.dat files for publication.')
                 self.menu_output_file.setCheckable(True)
                 self.menu_output_file.setChecked(False)
-                self.connect(self.menu_output_file,QtCore.SIGNAL("triggered()"),self.todat)
+                self.connect(self.menu_output_file, QtCore.SIGNAL("triggered()"), self.todat)
                 # smoothing
-                self.menu_output_smoothing =    QtGui.QAction("line smoothing",self)
+                self.menu_output_smoothing = QtGui.QAction("line smoothing", self)
                 self.menu_output_smoothing.setStatusTip('draw smoother lines (apply before rendering)')
                 self.menu_output_smoothing.setCheckable(True)
                 self.menu_output_smoothing.setChecked(True)
                 # AMS-Spicker
-                self.menu_output_spicker =      QtGui.QAction("AMS Spicker",self)
+                self.menu_output_spicker = QtGui.QAction("AMS Spicker", self)
                 self.menu_output_spicker.setStatusTip('Cologne AMS Spicker')
                 self.menu_output_spicker.setCheckable(False)
-                self.connect(self.menu_output_spicker,QtCore.SIGNAL('triggered()'),self.spicker)
-                
+                self.connect(self.menu_output_spicker, QtCore.SIGNAL('triggered()'), self.spicker)
+
                 ## Interface
-                self.menu_setcom1=QtGui.QAction('COM1', self)
+                self.menu_setcom1 = QtGui.QAction('COM1', self)
                 self.menu_setcom1.setStatusTip('search interface on com1')
-                self.connect(self.menu_setcom1,QtCore.SIGNAL('triggered()'),self.setcom1)
-                self.menu_setcom2=QtGui.QAction('COM2', self)
+                self.connect(self.menu_setcom1, QtCore.SIGNAL('triggered()'), self.setcom1)
+                self.menu_setcom2 = QtGui.QAction('COM2', self)
                 self.menu_setcom2.setStatusTip('search interface on com2')
-                self.connect(self.menu_setcom2,QtCore.SIGNAL('triggered()'),self.setcom2)
-                self.menu_setcom3=QtGui.QAction('COM3', self)
+                self.connect(self.menu_setcom2, QtCore.SIGNAL('triggered()'), self.setcom2)
+                self.menu_setcom3 = QtGui.QAction('COM3', self)
                 self.menu_setcom3.setStatusTip('search interface on com3')
-                self.connect(self.menu_setcom3,QtCore.SIGNAL('triggered()'),self.setcom3)
-                self.menu_setcom4=QtGui.QAction('COM4', self)
+                self.connect(self.menu_setcom3, QtCore.SIGNAL('triggered()'), self.setcom3)
+                self.menu_setcom4 = QtGui.QAction('COM4', self)
                 self.menu_setcom4.setStatusTip('search interface on com4')
-                self.connect(self.menu_setcom4,QtCore.SIGNAL('triggered()'),self.setcom4)
-                self.menu_setcom5=QtGui.QAction('COM5', self)
+                self.connect(self.menu_setcom4, QtCore.SIGNAL('triggered()'), self.setcom4)
+                self.menu_setcom5 = QtGui.QAction('COM5', self)
                 self.menu_setcom5.setStatusTip('search interface on com5')
-                self.connect(self.menu_setcom5,QtCore.SIGNAL('triggered()'),self.setcom5)
+                self.connect(self.menu_setcom5, QtCore.SIGNAL('triggered()'), self.setcom5)
 
                 ## About
                 self.menu_about = QtGui.QAction("About", self)
-                self.connect(self.menu_about,QtCore.SIGNAL('triggered()'),self.About)
+                self.connect(self.menu_about, QtCore.SIGNAL('triggered()'), self.About)
                 self.menu_licence = QtGui.QAction("Licence", self)
                 self.connect(self.menu_licence, QtCore.SIGNAL("triggered()"), self.Licence)
 
                 ## Menubar
-                menubar=self.menuBar()
-                
+                menubar = self.menuBar()
+
                 ##FILE
-                menu_file=menubar.addMenu('File')
+                menu_file = menubar.addMenu('File')
                 menu_file.addAction(menu_file_load)
-                #menu_file.addAction(menu_file_loadauto)
+
                 menu_file.addAction(menu_file_saveas)
                 menu_file.addAction(menu_file_save)
                 menu_file.addAction(menu_file_exit)
-                
+
                 ## TRANSLATE
-                menu_translate=menubar.addMenu('Plot')
+                menu_translate = menubar.addMenu('Plot')
                 menu_translate.addAction(menu_translate_2d)
                 menu_translate.addAction(menu_translate_qt)
                 menu_translate.addAction(menu_translate_3d)
-                
+
                 ## PLOT
-                menu_plot=menubar.addMenu('Options')
+                menu_plot = menubar.addMenu('Options')
                 menu_plot.addAction(self.menu_plot_marker)
                 menu_plot.addAction(self.menu_plot_geo)
                 menu_plot.addAction(self.menu_plot_x)
                 menu_plot.addAction(self.menu_plot_y)
                 menu_plot.addAction(self.menu_output_smoothing)
                 menu_plot.addAction(self.menu_plot_bg)
-                
+
                 ## INSERT
-                menu_insert=menubar.addMenu('Insert')
+                menu_insert = menubar.addMenu('Insert')
                 menu_insert.addAction(self.menu_insert_source)
                 menu_insert.addAction(self.menu_insert_particle)
                 menu_insert.addAction(self.menu_insert_beam)
@@ -981,39 +980,38 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_fnel)
                 menu_insert.addAction(self.menu_insert_vbfn)
                 menu_insert.addAction(self.menu_insert_fnaccneu)
-                
+
                 ## OUTPUT
-                menu_output=menubar.addMenu('Tools')
+                menu_output = menubar.addMenu('Tools')
                 menu_output.addAction(self.menu_output_file)
                 menu_output.addAction(self.menu_output_spicker)
-                
+
                 ## INTERFACE
                 """
-                menu_interface=menubar.addMenu('# interface')
+                menu_interface = menubar.addMenu('# interface')
                 menu_interface.addAction(self.menu_setcom1)
                 menu_interface.addAction(self.menu_setcom2)
                 menu_interface.addAction(self.menu_setcom3)
                 menu_interface.addAction(self.menu_setcom4)
                 menu_interface.addAction(self.menu_setcom5)
                 """
-                
+
                 ## ABOUT
                 menu_aboutbar = menubar.addMenu('About')
                 menu_aboutbar.addAction(self.menu_about)
                 menu_aboutbar.addAction(self.menu_licence)
 
-          
                 ### GUI definieren
-                self.main_frame=QtGui.QWidget()
-                self.textedit=QtGui.QTextEdit()
+                self.main_frame = QtGui.QWidget()
+                self.textedit = QtGui.QTextEdit()
                 self.textedit.setLineWrapMode(QtGui.QTextEdit.NoWrap)
                 self.highlighter = syntax.PythonHighlighter(self.textedit.document())
-                hbox1=QtGui.QHBoxLayout()
+                hbox1 = QtGui.QHBoxLayout()
                 hbox1.addWidget(self.textedit)
                 self.main_frame.setLayout(hbox1)
                 self.setCentralWidget(self.main_frame)
-                
-                self.connect(self.textedit, QtCore.SIGNAL("textChanged()"),self.setunsaved)
+
+                self.connect(self.textedit, QtCore.SIGNAL("textChanged()"), self.setunsaved)
                 # print "started"
 
                 try:
@@ -1021,11 +1019,11 @@ class CQtLimioptic(QtGui.QMainWindow):
                         print "last autosave was restored"
                 except:
                         print "last savefile was not found"
-                
+
                 ## UPDATE
                 updatethread = threading.Thread(target=self.update, args=())
                 updatethread.start()
-                
+
         def update(self):
                 """ Check uebers Internet ob Updates verfuegbar sind """
                 print "checking for updates..",
@@ -1040,31 +1038,35 @@ class CQtLimioptic(QtGui.QMainWindow):
                                 print "Your version:", VERSION, "Latest Version:", ver, "\n"
                 except:
                         print "update check failed\n"
-            
+
 #############################
         def setunsaved(self):
                 try:
                         self.setWindowTitle("Limioptic 2 -     changed     - {}".format(self.FileName))
                 except:
                         self.setWindowTitle("Limioptic 2 - unsaved")
-        
+
 #############################
         def setcom1(self):
                 global PORT
-                PORT="COM1"
+                PORT = "COM1"
+
         def setcom2(self):
                 global PORT
-                PORT="COM2"
+                PORT = "COM2"
+
         def setcom3(self):
                 global PORT
-                PORT="COM3"
+                PORT = "COM3"
+
         def setcom4(self):
                 global PORT
-                PORT="COM4"
+                PORT = "COM4"
+
         def setcom5(self):
                 global PORT
-                PORT="COM5"
-                
+                PORT = "COM5"
+
 ##############################
         def setxy(self):
                 """ Nur x, nur y, oder beides zeichnen. """
@@ -1072,10 +1074,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 xy = 0
                 plotx = False
                 ploty = False
-                if (self.menu_plot_x.isChecked()):      
+                if (self.menu_plot_x.isChecked()):
                         xy += 1
                         plotx = True
-                if (self.menu_plot_y.isChecked()):      
+                if (self.menu_plot_y.isChecked()):
                         xy += 1
                         ploty = True
 
@@ -1100,9 +1102,9 @@ class CQtLimioptic(QtGui.QMainWindow):
 
 #############################
         def LoadFile(self):
-                self.FileName=QtGui.QFileDialog.getOpenFileName(self,"Open file",".","*.lim;;*.*")
-                if (self.FileName!=''):
-                        myfile=open(self.FileName,'r')
+                self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim;;*.*")
+                if (self.FileName != ''):
+                        myfile = open(self.FileName, 'r')
                         self.textedit.setText(myfile.read())
                         myfile.close()
                         self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
@@ -1118,10 +1120,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                             print "the last values were restored"
                         except:
                             print "could not load variables"
-                        
+
         def LoadAutosave(self):
                 try:
-                        myfile=open("_save.lim", "r")
+                        myfile = open("_save.lim", "r")
                         self.textedit.setText(myfile.read())
                         myfile.close()
                         self.setWindowTitle("Limioptic 2  -  _save.lim")
@@ -1139,26 +1141,25 @@ class CQtLimioptic(QtGui.QMainWindow):
                 except:
                     print "_save.var not found"
 
-
         def SaveFileAs(self):
-                self.FileName=QtGui.QFileDialog.getSaveFileName(self,"Save file",".","*.lim;;*.*")
-                if (self.FileName!=""):
-                        myfile=open(self.FileName,"w")
+                self.FileName = QtGui.QFileDialog.getSaveFileName(self, "Save file", ".", "*.lim;;*.*")
+                if (self.FileName != ""):
+                        myfile = open(self.FileName, "w")
                         myfile.write(str(self.textedit.toPlainText()))
                         myfile.close()
                         self.setWindowTitle("Limioptic 2")
                         print "saved to", self.FileName
                         self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
 
-                        myfile=open(self.FileName.split(".", 1)[0] + ".var", "w")
-                        for i in xrange(0, NumberOfInputs):
+                        myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
+                        for i in xrange(NumberOfInputs):
                                 print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                         myfile.close()
-                                 
+
         def SaveFile(self):
                 try:
-                        if (self.FileName!=""):
-                                myfile=open(self.FileName,"w")
+                        if (self.FileName != ""):
+                                myfile = open(self.FileName, "w")
                                 myfile.write(str(self.textedit.toPlainText()))
                                 myfile.close()
                                 self.setWindowTitle('Limioptic 2')
@@ -1170,24 +1171,24 @@ class CQtLimioptic(QtGui.QMainWindow):
                         self.SaveFileAs()
 
                 if saved:
-                        myfile=open(self.FileName.split(".", 1)[0] + ".var", "w")
-                        for i in xrange(0, NumberOfInputs):
+                        myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
+                        for i in xrange(NumberOfInputs):
                                 print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                         myfile.close()
 
 #############################
         def plot2d(self):
                 global RUNNING2D, RUNNING
-                myfile=open("_save.lim","w")
+                myfile = open("_save.lim", "w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
 
-                myfile=open("_save.var", "w")
+                myfile = open("_save.var", "w")
                 for i in xrange(0, NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
-                                
-                if (RUNNING == False):
+
+                if not RUNNING:
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindow2d = inputcontrol("2d")
                         RUNNING2D = RUNNING = True
@@ -1198,16 +1199,16 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def plotqt(self):
                 global RUNNINGQT, RUNNING
-                myfile=open("_save.lim","w")
+                myfile = open("_save.lim", "w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
 
-                myfile=open("_save.var", "w")
+                myfile = open("_save.var", "w")
                 for i in xrange(0, NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
-                                
-                if (RUNNING == False):
+
+                if not RUNNING:
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindowqt = inputcontrol("qt")
                         RUNNINGQT = RUNNING = True
@@ -1215,19 +1216,19 @@ class CQtLimioptic(QtGui.QMainWindow):
                         RUNNINGQT = RUNNING = False
                 elif RUNNINGQT:
                         self.inputwindowqt.plotwindow.update()
-                        
+
         def plot3d(self):
                 global RUNNING3D, RUNNING
-                myfile=open("_save.lim","w")
+                myfile = open("_save.lim", "w")
                 myfile.write(str(self.textedit.toPlainText()))
                 myfile.close()
 
-                myfile=open("_save.var", "w")
-                for i in xrange(0, NumberOfInputs):
+                myfile = open("_save.var", "w")
+                for i in xrange(NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
 
-                if (RUNNING == False):
+                if not RUNNING:
                         print "Sicherungsdatei: _save.lim"
                         self.inputwindow3d = inputcontrol("3d")
                         RUNNING3D = RUNNING = True
@@ -1236,7 +1237,6 @@ class CQtLimioptic(QtGui.QMainWindow):
                 elif RUNNING3D:
                         self.inputwindow3d.plotwindow.neu()
 
-
 ##### INSERT Funktionen #####
 #############################
         def InsertParticle(self):
@@ -1244,108 +1244,110 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertSource(self):
                 global SourceObj
-                SourceObj.LoadSource(QtGui.QFileDialog.getOpenFileName(self,"Open file","."))
+                SourceObj.LoadSource(QtGui.QFileDialog.getOpenFileName(self, "Open file", "."))
                 SourceObj.NormalizeEnergy()
                 SourceObj.ShowFits()
                 SourceObj.UserInteraction.ChooseFilter()
                 #SourceObj.Source = SourceObj.Selection
                 #SourceObj.ShowFits()
-                print "Source",SourceObj.SourceFile,"loaded"
+                print "Source", SourceObj.SourceFile, "loaded"
                 self.textedit.textCursor().insertText("AddSource()")
- 
+
         def InsertBeam(self):
-          self.textedit.textCursor().insertText('############################################\nAddBeam(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
-          
+            self.textedit.textCursor().insertText('############################################\nAddBeam(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+
         def InsertBeamX(self):
-          self.textedit.textCursor().insertText('############################################\nAddBeamX(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nAddBeamX(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
 
         def InsertBeam3d(self):
-          self.textedit.textCursor().insertText('############################################\nAddBeam3d(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta_phi: 1...360)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nAddBeam3d(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta_phi: 1...360)\n############################################\n\n')
 
         def InsertRGauss(self):
-          self.textedit.textCursor().insertText('############################################\nAddBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nAddBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
 
         def InsertAMSAcc(self):
-          self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
+            self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
 
         def InsertFNAcc(self):
-          #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
-          self.InsertFNAccNeu()
+            #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
+            self.InsertFNAccNeu()
 
         def InsertFNAccNeu(self):
-          self.textedit.textCursor().insertText('AddFNAccNeu(vt, T0, q, b = 0.57, b1 = -1., b2 = -1., D1 = .088, factor1 = 1., factor2 = 1., beamprofile = False)\n\n')
+            self.textedit.textCursor().insertText('AddFNAccNeu(vt, T0, q, b = 0.57, b1 = -1., b2 = -1., D1 = .088, factor1 = 1., factor2 = 1., beamprofile = False)\n\n')
 
         def InsertVBFN(self):
-          self.textedit.textCursor().insertText('AddVBFN(extraktion, deltaV, laenge)\t# (v_ext, deltaV, length, [b, b1, b2])\n\n')
-          
+            self.textedit.textCursor().insertText('AddVBFN(extraktion, deltaV, laenge)\t# (v_ext, deltaV, length, [b, b1, b2])\n\n')
+
         def InsertMatrix(self):
-                self.dialog=CInsertMatrixDialog(self.textedit) # uebergebe Zeiger auf das TextEdit an den Dialog
-                self.dialog.exec_()
+            # uebergebe Zeiger auf das TextEdit an den Dialog
+            self.dialog = CInsertMatrixDialog(self.textedit)
+            self.dialog.exec_()
 
         def InsertDrift(self):
-                self.textedit.textCursor().insertText('AddDrift(1, 1, 5)\t# (n, gamma^2, length)\n') 
-                
+            self.textedit.textCursor().insertText('AddDrift(1, 1, 5)\t# (n, gamma^2, length)\n')
+
         def InsertSlit(self):
-                self.textedit.textCursor().insertText('AddSlit(0,10,0,10)\t# (x, dx, y, dy)\n') 
+            self.textedit.textCursor().insertText('AddSlit(0,10,0,10)\t# (x, dx, y, dy)\n')
 
         def InsertBPM(self):
-                self.textedit.textCursor().insertText('AddBeamProfile()\n') 
+            self.textedit.textCursor().insertText('AddBeamProfile()\n')
 
         def InsertModifyEmittance(self):
-                self.textedit.textCursor().insertText('AddModifyEmittance(1., 1.)\t# (factor x, factor dx)\n') 
+            self.textedit.textCursor().insertText('AddModifyEmittance(1., 1.)\t# (factor x, factor dx)\n')
 
         def InsertESD(self):
-                self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
+            self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
 
         def InsertHomDeflectingMagnet(self):
-                self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n') # Kantenfokussierung
-                self.textedit.textCursor().insertText('AddMSA(n,gamma^2,r,alpha,R)\n') # Magnet
-                self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n\n') # Kantenfokussierung
+            self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n')    # Kantenfokussierung
+            self.textedit.textCursor().insertText('AddMSA(n,gamma^2,r,alpha,R)\n')    # Magnet
+            self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n\n')  # Kantenfokussierung
 
         def InsertQuadrupol(self):
-                self.textedit.textCursor().insertText('AddQuadrupolRadFoc(n,gamma^2,k,l,R)\n') # radial fokussierend
-                self.textedit.textCursor().insertText('AddQuadrupolAxFoc(n,gamma^2,k,l,R)\n\n') # axial fokusierend
+            self.textedit.textCursor().insertText('AddQuadrupolRadFoc(n,gamma^2,k,l,R)\n')   # radial fokussierend
+            self.textedit.textCursor().insertText('AddQuadrupolAxFoc(n,gamma^2,k,l,R)\n\n')  # axial fokusierend
 
         def InsertThinLens(self):
-                self.textedit.textCursor().insertText('AddThinLens(.5,.5,25)\t# (fx, fy, R)\n\n')
-                
+            self.textedit.textCursor().insertText('AddThinLens(.5,.5,25)\t# (fx, fy, R)\n\n')
+
         def InsertSO110EL(self):
-                self.textedit.textCursor().insertText('AddAMSSO110EL(vext,vlens)\n\n')
+            self.textedit.textCursor().insertText('AddAMSSO110EL(vext,vlens)\n\n')
 
         def InsertBIEL(self):
-                self.textedit.textCursor().insertText('AddAMSBIEL(vext,vlens)\n\n')
+            self.textedit.textCursor().insertText('AddAMSBIEL(vext,vlens)\n\n')
 
         def InsertFNEL(self):
-                self.textedit.textCursor().insertText('AddFNEL(v_ext,17.e3)\t# (v_ext, v_lens)\n\n')
+            self.textedit.textCursor().insertText('AddFNEL(v_ext,17.e3)\t# (v_ext, v_lens)\n\n')
 
         def InsertAMSQPT(self):
-                self.textedit.textCursor().insertText('AddAMSQPT(gamma2,prozent,astigm,v_terminal,v_ext,q,geo)\n\n')
-                
+            self.textedit.textCursor().insertText('AddAMSQPT(gamma2,prozent,astigm,v_terminal,v_ext,q,geo)\n\n')
+
         def About(self):
-                title = "About Limioptic 2"
-                text  = "Limioptic 2 by Alexander Stolz\nVersion {}\n\nFeel free to send me any feedback or suggestions to amstolz@gmail.com.\n\nVisit ams.amstolz.de for more information.\n\nThanks for using Limioptic!\n\nWhy the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\nThanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
-                self.dialog = DialogWindow(title, text)
+            title = "About Limioptic 2"
+            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\nFeel free to send me any feedback or suggestions to amstolz@gmail.com.\n\nVisit ams.amstolz.de for more information.\n\nThanks for using Limioptic!\n\nWhy the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\nThanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
+            self.dialog = DialogWindow(title, text)
 
         def Licence(self):
-                title = "Limioptic 2 Licence"
-                text  = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly."
-                self.dialog = DialogWindow(title, text)
+            title = "Limioptic 2 Licence"
+            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly."
+            self.dialog = DialogWindow(title, text)
+
 
 ##### Dialoge #####
 ###################
 class CInsertParticleDialog(QtGui.QDialog):
         """ Wird nicht mehr benoetigt """
-        def __init__(self,myarg1):
+        def __init__(self, myarg1):
                 QtGui.QDialog.__init__(self)
                 self.setFixedSize(400, 200)
                 self.setWindowTitle('Insert Particle Dialog')
 
                 # Zeiger auf das QTextEdit speichern
-                self.parent_textedit = myarg1 
+                self.parent_textedit = myarg1
 
-                self.insert_syntax_button = QtGui.QPushButton('just insert syntax',self)
+                self.insert_syntax_button = QtGui.QPushButton('just insert syntax', self)
                 self.insert_syntax_button.setGeometry(50, 50, 160, 25)
-                self.connect(self.insert_syntax_button,QtCore.SIGNAL('clicked()'),self.InsertSyntax)
+                self.connect(self.insert_syntax_button, QtCore.SIGNAL('clicked()'), self.InsertSyntax)
 
 
 class DialogWindow(QtGui.QDialog):
@@ -1353,26 +1355,26 @@ class DialogWindow(QtGui.QDialog):
                 QtGui.QDialog.__init__(self)
                 self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
                 self.setWindowTitle(title)
-                self.abouttext=QtGui.QTextEdit()
-                hbox=QtGui.QHBoxLayout()
+                self.abouttext = QtGui.QTextEdit()
+                hbox = QtGui.QHBoxLayout()
                 hbox.addWidget(self.abouttext)
                 self.setLayout(hbox)
                 self.abouttext.setText(text)
                 self.show()
-                
+
 
 class CInsertMatrixDialog(QtGui.QDialog):
-        def __init__(self,myarg1):
+        def __init__(self, myarg1):
                 QtGui.QDialog.__init__(self)
-                self.setFixedSize(200,100)
+                self.setFixedSize(200, 100)
                 self.setWindowTitle('Insert general 6x6 Matrix Dialog')
 
                 # Zeiger auf das QTextEdit speichern
                 self.parent_textedit = myarg1
 
-                self.insert_ThinLens_example_button = QtGui.QPushButton('insert unity matrix',self)
-                self.insert_ThinLens_example_button.setGeometry(50,50,100,50)
-                self.connect(self.insert_ThinLens_example_button,QtCore.SIGNAL('clicked()'),self.InsertThinLensExample)
+                self.insert_ThinLens_example_button = QtGui.QPushButton('insert unity matrix', self)
+                self.insert_ThinLens_example_button.setGeometry(50, 50, 100, 50)
+                self.connect(self.insert_ThinLens_example_button, QtCore.SIGNAL('clicked()'), self.InsertThinLensExample)
 
         def InsertThinLensExample(self):
                 # nur die Syntax fuer 'AddMatrix' einfuegen
@@ -1385,10 +1387,8 @@ class CInsertMatrixDialog(QtGui.QDialog):
                 self.parent_textedit.textCursor().insertText('           0.,0.,0.,0.,0.,1.],\n')
                 self.parent_textedit.textCursor().insertText('           length)\n')
 
-
 ################################
 
-                
 VERSION = "2013-05-07"
 PORT = "NONE"
 INPUT = []
@@ -1405,20 +1405,20 @@ plotx = True
 ploty = True
 xy = 2
 
-RUNNING   = False
+RUNNING = False
 RUNNINGQT = False
 RUNNING2D = False
 RUNNING3D = False
 
 
-app=QtGui.QApplication(sys.argv)
+app = QtGui.QApplication(sys.argv)
 
 #screen = QtGui.QDesktopWidget().screenGeometry()
 screen = QtGui.QDesktopWidget().availableGeometry()
 #screen = QtGui.QDesktopWidget().desktop()
 
 SourceObj = ImportSource()
-myapp=CQtLimioptic()
+myapp = CQtLimioptic()
 
 myapp.show()
 
