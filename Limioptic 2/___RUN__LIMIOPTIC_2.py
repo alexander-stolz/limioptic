@@ -9,25 +9,28 @@ Die eigentliche Berechnung findet in limioptic.cpp statt.
 
 print "loading:",
 
+print "imp",
+import imp
 print "sys",
 import sys
 print "Qt",
 from PyQt4 import QtCore, QtGui
 print "limioptic",
-import limioptic        #ionenoptische berechnungen
+import limioptic        # ionenoptische berechnungen
 print "threading",
-import threading        #multithreading
+import threading        # multithreading
 print "time",
-import time             #debuggen+sleep
-#import serial          #auslesen des potis
+import time             # debuggen + sleep
+#import serial          # auslesen des potis
 print "vtk",
 try:
-    import vtk          #grafische ausgabe ueber OpenGL
+    imp.find_module("vtk")  # grafische ausgabe ueber VTK
+    import vtk
 except:
     print "NOT FOUND",
     vtk = False
 print "urllib",
-import urllib           #zum ueberpruefen auf updates
+import urllib           # zum ueberpruefen auf updates
 print "ams_spicker",
 import ams_spicker
 print "importsrc",
@@ -36,6 +39,7 @@ print "syntax:highlighting",
 import syntax
 print "PyQtGraph",
 try:
+    imp.find_module("pyqtgraph")
     import pyqtgraph as pg
 except:
     print "NOT FOUND"
