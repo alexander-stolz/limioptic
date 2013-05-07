@@ -285,9 +285,9 @@ class doitqt2(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
         self.parent = parent
-        self.win = pg.GraphicsWindow(title="PyQtGraph Output Test")
+        self.win = pg.GraphicsWindow(title="Limioptic 2 - Output (2D)")
         self.win.resize(800, 600)
-        self.plot1 = self.win.addPlot(title="myplot")
+        self.plot1 = self.win.addPlot()
         self.lineX = self.plot1.plot()
         self.lineY = self.plot1.plot()
 
