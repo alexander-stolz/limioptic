@@ -20,16 +20,27 @@ import threading        #multithreading
 print "time",
 import time             #debuggen+sleep
 #import serial          #auslesen des potis
-print "vtk",
-import vtk              #grafische ausgabe ueber OpenGL
+print "vtk",            
+try:
+    import vtk          #grafische ausgabe ueber OpenGL
+except:
+    print "NOT FOUND",
+    vtk = False
 print "urllib",
 import urllib           #zum ueberpruefen auf updates
 print "ams_spicker",
 import ams_spicker
-print "importsrc"
+print "importsrc",
 from importsrc import ImportSource
-print "syntax:highlighting"
+print "syntax:highlighting",
 import syntax
+print "PyQtGraph",
+try:
+    import pyqtgraph as pg
+except:
+    print "NOT FOUND"
+    pg = False
+    
 
 
 #################################################
@@ -80,21 +91,21 @@ class inputcontrol(QtGui.QDialog):
                         self.slider.append(QtGui.QSlider(QtCore.Qt.Horizontal, self))
                         self.input.append(QtGui.QDoubleSpinBox())
                         self.infobox.append(QtGui.QLineEdit())
-                        self.min[i].setRange(-100.,100.)
+                        self.min[i].setRange(-100., 100.)
                         self.infobox[i].setPlaceholderText("Beschreibung")
                         self.infobox[i].setText(BEZEICHNUNGEN[i])
                         self.input[i].setDecimals(4)
                         self.slider[i].setOrientation(QtCore.Qt.Horizontal)
-                        self.slider[i].setRange(0,500000)
+                        self.slider[i].setRange(0, 500000)
                         self.slider[i].setSingleStep(500)
                         self.input[i].setSingleStep(0.0001)
-                        self.input[i].setRange(-100.,100.)
+                        self.input[i].setRange(-100., 100.)
                         self.input[i].setPrefix("= ")
                         self.min[i].setSingleStep(.01)
                         self.input[i].setValue(INPUT[i])
 
-                        if (INPUT[i]>5.):       self.min[i].setValue(INPUT[i]-5.)
-                        self.slider[i].setValue(int(INPUT[i]*100000.))
+                        if (INPUT[i]>5.):       self.min[i].setValue(INPUT[i] - 5.)
+                        self.slider[i].setValue(int(INPUT[i] * 100000.))
 
                         layout.addWidget(self.info[i], i, 0)
                         layout.addWidget(self.min[i], i, 1)
@@ -108,7 +119,7 @@ class inputcontrol(QtGui.QDialog):
                         opacitybox    =   QtGui.QHBoxLayout()
                         self.olabel   =   QtGui.QLabel("Opacity")
                         self.oslider  =   QtGui.QSlider(QtCore.Qt.Horizontal, self)
-                        self.oslider.setRange(0,100)
+                        self.oslider.setRange(0, 100)
                         self.oslider.setValue(OPACITY)
                         opacitybox.addWidget(self.olabel)
                         opacitybox.addWidget(self.oslider)
@@ -143,27 +154,24 @@ class inputcontrol(QtGui.QDialog):
                         t_readserial.start()
 
         def setopacity(self):
-                """
-                Nur fuer die 3D-Ausgabe.
-                """
+                """ Nur fuer die 3D-Ausgabe """
                 OPACITY = self.oslider.value()
                 self.plotwindow.actor.GetProperty().SetOpacity(OPACITY/1000.)
                 self.plotwindow.render = True
        
         def readserial(self):
-                """
-                Serielle Kommunikation mit dem Interface
-                """
+                """ Serielle Kommunikation mit dem Interface """
                 ser = serial.Serial(PORT, 9600)
                 time.sleep(2)
                 print "serial start"
                 while (self.update_on):
                         ser.write(1)
-                        time.sleep(0.1) # Interface braucht kurz Zeit zum Antworten
+                        # Interface braucht kurz Zeit zum Antworten
+                        time.sleep(0.1)
                         a = ser.readline().split()
-                        self.slider[0].setValue(int(a[0])*488)
-                        self.slider[1].setValue(int(a[1])*488)
-                        self.slider[2].setValue(int(a[2])*488)
+                        self.slider[0].setValue(int(a[0]) * 488)
+                        self.slider[1].setValue(int(a[1]) * 488)
+                        self.slider[2].setValue(int(a[2]) * 488)
                 print "serial end"
                         
         def inputtoslider(self):
@@ -275,11 +283,10 @@ class inputcontrol(QtGui.QDialog):
  
 
 class doitqt2(threading.Thread):
+    """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
         threading.Thread.__init__(self)
         self.parent = parent
-        import pyqtgraph as pg
-
         self.win = pg.GraphicsWindow(title = "PyQtGraph Output Test")
         self.win.resize(800, 600)
         self.plot1 = self.win.addPlot(title = "myplot")
@@ -748,16 +755,19 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_translate_2d=QtGui.QAction('2D (VTK)',self)
                 menu_translate_2d.setShortcut('Ctrl+G')
                 menu_translate_2d.setStatusTip('Translate Text to GUI 2D')
+                if not vtk: menu_translate_2d.setEnabled(False)
                 self.connect(menu_translate_2d,QtCore.SIGNAL('triggered()'),self.plot2d)
                 # translate 3d
                 menu_translate_3d=QtGui.QAction('3D (VTK)',self)
                 menu_translate_3d.setShortcut('Ctrl+H')
                 menu_translate_3d.setStatusTip('Translate Text to GUI 3D')
+                if not vtk: menu_translate_3d.setEnabled(False)
                 self.connect(menu_translate_3d,QtCore.SIGNAL('triggered()'),self.plot3d)
                 # translate qt 2d
                 menu_translate_qt=QtGui.QAction('2D (PyQtGraph)',self)
                 menu_translate_qt.setShortcut('Ctrl+F')
                 menu_translate_qt.setStatusTip('Translate Text to GUI 2D')
+                if not pg: menu_translate_qt.setEnabled(False)
                 self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'),self.plotqt)
 
                 # Plot markers
