@@ -476,31 +476,8 @@ class doitXY(threading.Thread):
                     limioptic.s = -1.
 
                 ### Berechnungen durchfuehren
-<<<<<<< HEAD
                 (xi, yi, zi, segs, parts) = self.parent.calculate()
                 iele = limioptic.GetTrajectory(0, 7)
-=======
-                limioptic.optic.Clear()
-                
-                try:
-                        limioptic.ExecText(str(myapp.textedit.toPlainText()), INPUT, SourceObj.Source)
-                except:
-                        self.parent.closeit()
-                        print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction)
-                
-                limioptic.optic.CalculateTrajectories()
-
-                parts   =   limioptic.optic.GetParticleNum()              # Anzahl Partikel
-                segs    =   limioptic.optic.GetTrajectoriesSize()/parts/8 # Anzahl Segmente im Strahlengang
-
-                if (parts == 0):    raise StandardError("No particles were defined!")
-
-                xi=[0] * parts
-                yi=[0] * parts
-
-                zi   = limioptic.GetTrajectory(0,6)
-                iele = limioptic.GetTrajectory(0,7)
->>>>>>> 1e6015e24ee1379be8b435d1298f26b70763f488
 
                 if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_markers.dat", "w")
 
@@ -1425,7 +1402,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 ################################
 
                 
-VERSION = "2013-05-07"
+VERSION = "2013-04-01"
 PORT = "NONE"
 INPUT = []
 BEZEICHNUNGEN = []
