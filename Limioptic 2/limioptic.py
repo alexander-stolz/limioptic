@@ -1833,10 +1833,10 @@ textArray = []
 lastFunction = ""
 
 try:  
-    optic=ctypes.CDLL("./liblimioptic.so")
+    optic=ctypes.CDLL("./liblimioptic-win.so")
 except:
     try: 
-        optic=ctypes.CDLL("./liblimioptic-win.so")
+        optic=ctypes.CDLL("./liblimioptic.so")
     except:    
         print "\n\nFirst start?\nTrying to compile C++ code. ", 
         from os import system
@@ -1844,17 +1844,17 @@ except:
         system("PAUSE")
         print "compiling climioptic.cpp"
         print "------------------------"
-        system("g++ -Wall -fPIC -c climioptic.cpp")
+        system("g++ -Wall -fPIC -O -c climioptic.cpp")
         print "\n"
         
         print "compiling limioptic.cpp"
         print "------------------------"
-        system("g++ -Wall -fPIC -c limioptic.cpp")
+        system("g++ -Wall -fPIC -O -c limioptic.cpp")
         print "\n"
         
         print "building library"
         print "------------------------"
-        system("g++ -fPIC -shared -Wl,-soname,liblimioptic.so -o liblimioptic.so limioptic.o climioptic.o")
+        system("g++ -fPIC -shared -Wl,-soname,liblimioptic.so -O -o liblimioptic.so limioptic.o climioptic.o")
         print "completed."
         
         optic=ctypes.CDLL("./liblimioptic.so")
