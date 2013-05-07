@@ -22,12 +22,12 @@ import threading        # multithreading
 print "time",
 import time             # debuggen + sleep
 #import serial          # auslesen des potis
-print "vtk",
 try:
     imp.find_module("vtk")
     import vtk          # grafische ausgabe ueber VTK
+    print "vtk",
 except:
-    print "NOT FOUND",
+    print "<vtk NOT FOUND>",
     vtk = False
 print "urllib",
 import urllib           # zum ueberpruefen auf updates
@@ -37,12 +37,12 @@ print "importsrc",
 from importsrc import ImportSource
 print "syntax:highlighting",
 import syntax
-print "PyQtGraph",
 try:
     imp.find_module("pyqtgraph")
     import pyqtgraph as pg
+    print "PyQtGraph"
 except:
-    print "NOT FOUND"
+    print "<PyQtGraph NOT FOUND>"
     pg = False
 
 
