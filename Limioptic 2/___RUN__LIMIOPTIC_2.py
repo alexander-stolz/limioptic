@@ -1403,7 +1403,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION = "2013-05-07"
+VERSION = "2013-05-08"
 PORT = "NONE"
 INPUT = []
 BEZEICHNUNGEN = []
