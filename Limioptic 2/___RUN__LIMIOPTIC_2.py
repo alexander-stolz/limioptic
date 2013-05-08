@@ -250,6 +250,9 @@ class inputcontrol(QtGui.QDialog):
         def calculate(self):
             """ Neuberechnung """
             limioptic.optic.Clear()
+            limioptic.geo_s.Reset()
+            limioptic.geo_y.Reset()
+            limioptic.s = 0.
             try:
                     limioptic.ExecText(str(myapp.textedit.toPlainText()), INPUT, SourceObj.Source)
                     limioptic.optic.CalculateTrajectories()
@@ -310,10 +313,10 @@ class doitqt2(threading.Thread):
         self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
         self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
 
-        #iele  = limioptic.GetTrajectory(0, 7)
-        #geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(len(iele) * 2)]
-        #geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(len(iele) * 2)]
-        #self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
+        iele  = limioptic.geo_s.GetNumberOfTuples()
+        geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(iele)]
+        geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(iele)]
+        self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
 
 
 class doit3d(threading.Thread):
