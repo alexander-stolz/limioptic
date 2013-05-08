@@ -286,10 +286,12 @@ class doitqt2(threading.Thread):
         threading.Thread.__init__(self)
         self.parent = parent
         self.win = pg.GraphicsWindow(title="Limioptic 2 - Output (2D)")
-        self.win.resize(800, 600)
+        self.win.resize(800, 350)
         self.plot1 = self.win.addPlot()
+        self.plot1.showGrid(x=True, y=True)
         self.lineX = self.plot1.plot()
         self.lineY = self.plot1.plot()
+        self.linegeo = self.plot1.plot()
 
     def run(self):
         self.update(self.parent.calculate())
@@ -307,6 +309,11 @@ class doitqt2(threading.Thread):
             z_all += zi + [zi[-1], zi[0]]
         self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
         self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
+
+        #iele  = limioptic.GetTrajectory(0, 7)
+        #geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(len(iele) * 2)]
+        #geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(len(iele) * 2)]
+        #self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
 
 
 class doit3d(threading.Thread):
