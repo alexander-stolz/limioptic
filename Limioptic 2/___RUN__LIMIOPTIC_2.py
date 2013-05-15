@@ -258,16 +258,15 @@ class inputcontrol(QtGui.QDialog):
                     limioptic.optic.CalculateTrajectories()
             except:
                     print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction)
-                    self.threadlock.release()
                     return -1
 
             parts = limioptic.optic.GetParticleNum()                    # Anz. Partikel
-            segs = limioptic.optic.GetTrajectoriesSize() / parts / 8    # Anz. Segmente
+            segs  = limioptic.optic.GetTrajectoriesSize() / parts / 8   # Anz. Segmente
 
             # Die Trajektorien liegen als array.array("d", ..) vor
             _xi = [limioptic.GetTrajectory(i, 0) for i in xrange(parts)]
             _yi = [limioptic.GetTrajectory(i, 2) for i in xrange(parts)]
-            _z = limioptic.GetTrajectory(0, 6)
+            _z  = limioptic.GetTrajectory(0, 6)
 
             # Umwandlung in float arrays
             xi = [None] * parts
