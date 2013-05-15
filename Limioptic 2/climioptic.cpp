@@ -50,7 +50,7 @@ void CLimioptic::ClearParticles()
 void CLimioptic::PrintParticles()
 {
    unsigned int i;
-   for (i=0;i<particles.size();i=i+7) 
+   for (i=0; i < particles.size(); i=i+7) 
    {
 	  printf("%f %f %f %f %f %f %f\n",particles[i],particles[i+1],particles[i+2],
 		 particles[i+3],particles[i+4],particles[i+5],particles[i+6]);
@@ -104,7 +104,7 @@ void CLimioptic::PrintBeamline()
    }
 }
 
-void CLimioptic::AddMatrix(int number,double *mat,double length)
+void CLimioptic::AddMatrix(int number, double *mat, double length)
 {
    // Eine allgemeine 6x6-Matrix zu Beamline hinzufuegen
    // 'mat' enthaelt die 36 Parameter
@@ -537,7 +537,7 @@ void CLimioptic::ApplyDrift(double *p,int nmat,double gamma2,double length)
 		 p1=p[i+1-elesize];
 		 p2=p[i+2-elesize]+length*p[i+3-elesize];
 		 p3=p[i+3-elesize];
-		 p4=p[i+4-elesize]; // Alex: '+length/gamma2*p[i+5-elesize];' entfernt
+		 p4=p[i+4-elesize]; // '+length/gamma2*p[i+5-elesize];' entfernt
 		 p5=p[i+5-elesize];
 
 		 p[i+0]=p0;
@@ -771,7 +771,7 @@ void CLimioptic::ApplyQuadrupolRadFoc(double *p,int nmat,double gamma2,double k,
 		 p1=p[i+0-elesize]*(-sqrt(k)*sin(sqrt(k)*l))+p[i+1-elesize]*cos(sqrt(k)*l);
 		 p2=p[i+2-elesize]*cosh(sqrt(k)*l)+p[i+3-elesize]*sinh(sqrt(k)*l)/sqrt(k);
 		 p3=p[i+2-elesize]*sqrt(k)*sinh(sqrt(k)*l)+p[i+3-elesize]*cosh(sqrt(k)*l);
-		 p4=p[i+4-elesize]; // Alex: entfernt: '+l/gamma2*p[i+5-elesize];'
+		 p4=p[i+4-elesize]; // entfernt: '+l/gamma2*p[i+5-elesize];'
 		 p5=p[i+5-elesize];
 
 		 p[i+0]=p0;
@@ -813,7 +813,7 @@ void CLimioptic::ApplyAMSQuadrupolRadFoc(double *p,int nmat,double gamma2,double
 		 p1=p[i+0-elesize]*(-sqrt(kx)*sin(sqrt(kx)*l))+p[i+1-elesize]*cos(sqrt(kx)*l);
 		 p2=p[i+2-elesize]*cosh(sqrt(ky)*l)+p[i+3-elesize]*sinh(sqrt(ky)*l)/sqrt(ky);
 		 p3=p[i+2-elesize]*sqrt(ky)*sinh(sqrt(ky)*l)+p[i+3-elesize]*cosh(sqrt(ky)*l);
-		 p4=p[i+4-elesize]; // Alex: entfernt: '+l/gamma2*p[i+5-elesize];'
+		 p4=p[i+4-elesize]; // entfernt: '+l/gamma2*p[i+5-elesize];'
 		 p5=p[i+5-elesize];
 
 		 p[i+0]=p0;
@@ -855,7 +855,7 @@ void CLimioptic::ApplyQuadrupolAxFoc(double *p,int nmat,double gamma2,double k,d
 		 p1=p[i+0-elesize]*sqrt(k)*sinh(sqrt(k)*l)+p[i+1-elesize]*cosh(sqrt(k)*l);
 		 p2=p[i+2-elesize]*cos(sqrt(k)*l)+p[i+3-elesize]*sin(sqrt(k)*l)/sqrt(k);
 		 p3=p[i+2-elesize]*(-sqrt(k)*sin(sqrt(k)*l))+p[i+3-elesize]*cos(sqrt(k)*l);
-		 p4=p[i+4-elesize]; // Alex: entfernt: '+l/gamma2*p[i+5-elesize];'
+		 p4=p[i+4-elesize]; // entfernt: '+l/gamma2*p[i+5-elesize];'
 		 p5=p[i+5-elesize];
 
 		 p[i+0]=p0;
@@ -941,7 +941,7 @@ void CLimioptic::ApplyESD(double *p,int nmat,double gamma2,double alpha,double r
 	  {
 		 p0 = p[i+0-elesize] * cos(sqrt(kx) * l) + 
 			  p[i+1-elesize] * sin(sqrt(kx) * l) / sqrt(kx) + 
-			 (p[i+4-elesize] + korrektur) * (1 - cos(sqrt(kx) * l)) / (rho0 * kx);  // Alex: entfernt: '*(2.0-beta0*beta0)/(rho0*kx)*(1.0-cos(sqrt(kx)*l));'
+			 (p[i+4-elesize] + korrektur) * (1 - cos(sqrt(kx) * l)) / (rho0 * kx);  // entfernt: '*(2.0-beta0*beta0)/(rho0*kx)*(1.0-cos(sqrt(kx)*l));'
 		 p1 = p[i+0-elesize] * (-sqrt(kx) * sin(sqrt(kx) * l)) + 
 			  p[i+1-elesize] * cos(sqrt(kx) * l) + 
 			 (p[i+4-elesize] + korrektur) * sin(sqrt(kx) * l) / sqrt(kx) / rho0;  //(2.0-beta0*beta0)/(rho0*sqrt(kx))*sin(sqrt(kx)*l);
@@ -949,7 +949,7 @@ void CLimioptic::ApplyESD(double *p,int nmat,double gamma2,double alpha,double r
 			  p[i+3-elesize] * sin(sqrt(ky) * l) / sqrt(ky);
 		 p3 = p[i+2-elesize] * (-sqrt(ky) * sin(sqrt(ky) * l)) + 
 			  p[i+3-elesize] * cos(sqrt(ky) * l);
-		 p4 = p[i+4-elesize]; //Alex: weg: 'p[i+0-elesize]*(-sin(sqrt(kx)*l)/(rho0*sqrt(kx)))+p[i+1-elesize]*(-(1.0-cos(sqrt(kx)*l))/(rho0*kx))+p[i+4-elesize]+p[i+5-elesize]*(l/gamma2-(2.0-beta0*beta0)/(rho0*rho0*kx)*(l-sin(sqrt(kx)*l)/sqrt(kx)));'
+		 p4 = p[i+4-elesize]; //weg: 'p[i+0-elesize]*(-sin(sqrt(kx)*l)/(rho0*sqrt(kx)))+p[i+1-elesize]*(-(1.0-cos(sqrt(kx)*l))/(rho0*kx))+p[i+4-elesize]+p[i+5-elesize]*(l/gamma2-(2.0-beta0*beta0)/(rho0*rho0*kx)*(l-sin(sqrt(kx)*l)/sqrt(kx)));'
 		 p5 = p[i+5-elesize];
 
 		 p[i+0] = p0;
@@ -1036,7 +1036,7 @@ void CLimioptic::ApplyHomDeflectingMagnet(double *p,int nmat,double gamma2,doubl
 		 p2 = p[i+2-elesize] + 
 			  p[i+3-elesize] * r * alpha;
 		 p3 = p[i+3-elesize];
-		 p4 = p[i+4-elesize];  //Alex: weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
+		 p4 = p[i+4-elesize];  //weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
 		 p5 = p[i+5-elesize];
 
 		 p[i+0]=p0;
@@ -1089,7 +1089,7 @@ void CLimioptic::ApplyInhomDeflectingMagnet(double *p,int nmat,double rho,double
 		 p1=p[i+0-elesize]*(-sx)*kx*kx+p[i+1-elesize]*cx+p[i+4-elesize]*(sx/rho)*Nk+p[i+5-elesize]*(sx/rho)*Nm;
 		 p2=p[i+2-elesize]*cy+p[i+3-elesize]*sy;
 		 p3=p[i+2-elesize]*(-sy*ky*ky)+p[i+3-elesize]*cy;
-		 p4=p[i+4-elesize];  //Alex: weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
+		 p4=p[i+4-elesize];  // weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
 		 p5=p[i+5-elesize];
 
 		 p[i+0]=p0;

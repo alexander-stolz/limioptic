@@ -19,10 +19,10 @@ void PrintParticles()
    optic.PrintParticles();
 }
 
-void AddParticle(double xdiff,double xangle,double ydiff,double yangle,
-   double deltak,double deltam)
+void AddParticle(double xdiff, double xangle, double ydiff, double yangle,
+   double deltak, double deltam)
 {
-   optic.AddParticle(xdiff,xangle,ydiff,yangle,deltak,deltam);
+   optic.AddParticle(xdiff, xangle, ydiff, yangle, deltak, deltam);
 }
 
 int GetParticleNum()

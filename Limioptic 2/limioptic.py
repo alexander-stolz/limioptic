@@ -113,32 +113,6 @@ def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta):
             ctypes.c_double(float(dm)))
 
 
-def AddGaussBeam(xmax, dx, dy, dk, dm, delta):
-    """ Wird nicht mehr verwendet """
-    global lastFunction
-    lastFunction = "AddGaussBeam"
-
-    q = 0.0
-    for i in xrange(0,rng,1):
-        q = q+math.exp(-0.5*i*i/(rng*20.))
-        if (q >= 1.0):
-            optic.AddParticle(
-                ctypes.c_double(float(i)/rng*xmax+dx),
-                ctypes.c_double(0.0),
-                ctypes.c_double(float(i)/rng*xmax+dy),
-                ctypes.c_double(0.0),
-                ctypes.c_double(float(dk)),
-                ctypes.c_double(float(dm)))
-            optic.AddParticle(
-                ctypes.c_double(-float(i)/rng*xmax+dx),
-                ctypes.c_double(0.0),
-                ctypes.c_double(-float(i)/rng*xmax+dy),
-                ctypes.c_double(0.0),
-                ctypes.c_double(float(dk)),
-                ctypes.c_double(float(dm)))
-            q = 0.0
-
-
 def AddSource():
     """ Externe Quelle einfuegen """
     global lastFunction
@@ -1138,7 +1112,6 @@ def AddSegment2VBFN(T0, T1, D, L, E1, E2, E3, q):
         s = s + L
 
     N = float(math.sqrt(T1/T0))
-    deltaT = float(T1-T0)
     D = float(D) * 100.
 
     f1 = -q * (E1-E2) / (2. * T0 * (1. + math.sqrt(1. - q * (E1-E2) * 1.13 * D / T0)))  # 1/f1
