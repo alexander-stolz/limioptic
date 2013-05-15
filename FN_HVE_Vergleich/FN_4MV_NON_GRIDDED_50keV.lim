@@ -1,0 +1,74 @@
+
+INPUT[0]	=	0.2003	# INPUT[5]
+INPUT[1]	=	0.5492	# INPUT[4]
+INPUT[2]	=	0.4777	# INPUT[3]
+INPUT[3]	=	5.	# INPUT[2]
+#INPUT[4]	=	0.6025	# INPUT[1]
+#INPUT[5]	=	0.2381	# INPUT[0]
+
+
+########## GEPLANTE GEOMETRIE #########
+
+# Variablen
+linse1 = INPUT[0]
+linse2 = INPUT[1]
+linse3 = INPUT[2]
+linse4 = INPUT[3]
+linse5 = INPUT[4]
+linse6 = INPUT[5]
+
+drift1 = .406
+drift2 = .305
+drift3 = .305
+drift4 = .95
+drift5 = 1.318
+drift6 = .811
+drift7 = .51
+drift8 = .619
+
+v_ext = 20.e3
+v_vb  = 60.e3
+v_inj  = 50.e3 #v_ext + v_vb
+
+v_tandem = 4.e6
+q = 1.
+
+#########################
+AddBeam(1.5, 36., 1.5, 36., 0, 0, 10)
+#AddParticle(0,0,0,0, 0, 0)
+#AddParticle(0,0,0,0, 0, 0)
+#########################
+
+AddDrift(1,1,drift1)
+
+# Linse 1
+AddThinLens(linse1, linse1, 50)
+
+AddDrift(1,1, drift2)
+
+# 20 Grad Magnet
+#AddEdgeFocusing(.9906, .174533,0, 15)
+AddMSA(10, 1, 0.711, math.radians(20)/10., 15)
+#AddEdgeFocusing(.9906, 0., 0., 15)
+
+AddDrift(1, 1, drift3)
+AddDrift(1,1, drift4)
+
+# Linse 2
+AddThinLens(linse2, linse2, 80)	# (fx, fy, R)
+
+AddDrift(1, 1, drift5)
+AddDrift(1, 1, drift6)
+
+# Linse 3
+AddThinLens(linse3, linse3, 75)	# (fx, fy, R)
+
+AddDrift(1, 1, drift7)
+AddDrift(1, 1, drift8)
+
+# Tandem
+AddFNAccNeu(v_tandem, v_inj, q, b1 = 0.57, b2 = 0.57,  D1 = .05)
+#AddFNAcc(v_tandem, v_inj, q)
+
+
+
