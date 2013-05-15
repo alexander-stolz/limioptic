@@ -6,70 +6,69 @@ Hier werden die Funktionen definiert und an den C++ - Teil uebergeben.
 
 import sys
 import ctypes
-import re
 import array
 import math
 import random
 import vtk
-#import serial
-#import time
-#import thread
 
-###########################################################
 
-def AddParticle(p1,p2,p3,p4,p5,p6):
+def AddParticle(p1, p2, p3, p4, p5, p6):
     """ Normales Partikel einfuegen """
     global lastFunction
     lastFunction = "AddParticle"
-    optic.AddParticle(ctypes.c_double(float(p1)),
-        ctypes.c_double(float(p2)),ctypes.c_double(float(p3)),
-        ctypes.c_double(float(p4)),ctypes.c_double(float(p5)),
+    optic.AddParticle(
+        ctypes.c_double(float(p1)),
+        ctypes.c_double(float(p2)), ctypes.c_double(float(p3)),
+        ctypes.c_double(float(p4)), ctypes.c_double(float(p5)),
         ctypes.c_double(float(p6)))
-        
 
-def AddBeamX(xmax,amax,ymax,bmax,dk,dm,delta):
+
+def AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta):
     """ Einfachen 3d-Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeamX"
-    for i in range(0,360,int(delta)):
-        degtorad=i*math.pi/180
-        
-        optic.AddParticle(ctypes.c_double(float(xmax*math.cos(degtorad))),
-            ctypes.c_double(float(amax*math.sin(degtorad))),
+    for degree in xrange(0, 360, int(delta)):
+        degtorad = math.radians(degree)
+
+        optic.AddParticle(
+            ctypes.c_double(float(xmax * math.cos(degtorad))),
+            ctypes.c_double(float(amax * math.sin(degtorad))),
             ctypes.c_double(0.),
             ctypes.c_double(0.),
-            ctypes.c_double(float(dk)),
-            ctypes.c_double(float(dm)))         
-        optic.AddParticle(ctypes.c_double(0.),
-            ctypes.c_double(0.),
-            ctypes.c_double(float(ymax*math.cos(degtorad))),
-            ctypes.c_double(float(bmax*math.sin(degtorad))),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
-            
+        optic.AddParticle(
+            ctypes.c_double(0.),
+            ctypes.c_double(0.),
+            ctypes.c_double(float(ymax * math.cos(degtorad))),
+            ctypes.c_double(float(bmax * math.sin(degtorad))),
+            ctypes.c_double(float(dk)),
+            ctypes.c_double(float(dm)))
 
-def AddBeam3d(xmax,amax,ymax,bmax,dk,dm,delta):
+
+def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
     """ Komplexen 3d-Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeam3d"
-    for i in range(0,360,int(delta)):
-        nu=i*math.pi/180
-        for j in range(0,360,10):
-            phi = j*math.pi/180
-            optic.AddParticle(ctypes.c_double(xmax*math.cos(nu)*math.cos(phi)),
-                ctypes.c_double(amax*math.cos(nu)*math.sin(phi)),
-                ctypes.c_double(ymax*math.sin(nu)*math.cos(phi)),
-                ctypes.c_double(bmax*math.sin(nu)*math.sin(phi)),
+    for i in xrange(0, 360, int(delta)):
+        nu = math.radians(i)
+        for j in xrange(0, 360, 10):
+            phi = math.radians(j)
+            optic.AddParticle(
+                ctypes.c_double(xmax * math.cos(nu) * math.cos(phi)),
+                ctypes.c_double(amax * math.cos(nu) * math.sin(phi)),
+                ctypes.c_double(ymax * math.sin(nu) * math.cos(phi)),
+                ctypes.c_double(bmax * math.sin(nu) * math.sin(phi)),
                 ctypes.c_double(float(dk)),
-                ctypes.c_double(float(dm)))                                 
+                ctypes.c_double(float(dm)))
 
-            
+
 def AddBeamRandomGauss(xmax,amax,ymax,bmax,dk,dm,number):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeamRandomGauss"
     random.seed()
-    for i in range(0,number,1):
+    for i in xrange(0,number,1):
         try:    
             #phix = random.gauss(math.pi/4.,math.pi/2.)
             #phiy = random.gauss(math.pi/4.,math.pi/2.)
@@ -97,7 +96,7 @@ def AddBeam(xmax,amax,ymax,bmax,dk,dm,delta):
     """ Einfachen 2d-Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeam"
-    for i in range(0,360,int(delta)):
+    for i in xrange(0,360,int(delta)):
         degtorad=i*math.pi/180
         
         optic.AddParticle(ctypes.c_double(float(xmax*math.cos(degtorad))),
@@ -113,7 +112,7 @@ def AddGaussBeam(xmax,dx,dy,dk,dm,delta):
     global lastFunction
     lastFunction = "AddGaussBeam"
     q=0.0
-    for i in range(0,rng,1):
+    for i in xrange(0,rng,1):
         q=q+math.exp(-0.5*i*i/(rng*20.))
         if (q>=1.0):        
             optic.AddParticle(ctypes.c_double(float(i)/rng*xmax+dx),
@@ -134,7 +133,7 @@ def AddSource():
     """ Externe Quelle einfuegen """
     global lastFunction
     lastFunction = "AddSource"
-    for i in range(0,len(SOURCE)):
+    for i in xrange(0,len(SOURCE)):
         optic.AddParticle(ctypes.c_double(SOURCE[i][0]),
             ctypes.c_double(SOURCE[i][1]),
             ctypes.c_double(SOURCE[i][2]),
@@ -151,7 +150,7 @@ def AddMatrix(num,mat,length):
     lastFunction = "AddMatrix"
     matrixarray=ctypes.c_double*36
     matrix=matrixarray()
-    for i in range(0,36):
+    for i in xrange(0,36):
         matrix[i]=ctypes.c_double(float(mat[i]))
     optic.AddMatrix(ctypes.c_int(int(num)),matrix,ctypes.c_double(float(length)))
 
@@ -204,7 +203,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
 #   print "Spannung05 = %1.0f" % (T1)
     
     deltaV = 40.0e6*I_gesamt #5..23
-    for i in range(0,18):
+    for i in xrange(0,18):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -212,7 +211,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
         #print "Spannung0%1.0f = %1.0f" % (i+6, T1)
     
     deltaV = 200.0e6*I_gesamt #23..85
-    for i in range(0,62):
+    for i in xrange(0,62):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -228,7 +227,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
     
 # Space..Terminal
     deltaV = 200.0e6*I_gesamt #85..166
-    for i in range(0,81):
+    for i in xrange(0,81):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -248,14 +247,14 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Terminal..Space
     deltaV = 120.0e6*I_gesamt #1..9
-    for i in range(0,9):
+    for i in xrange(0,9):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
         AddSegment(N,L)
 
     deltaV = 300.0e6*I_gesamt #9..81
-    for i in range(0,72):
+    for i in xrange(0,72):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
@@ -269,7 +268,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Space..letzte Elekrode
     deltaV = 300.0e6*I_gesamt #81..165
-    for i in range(0,84):
+    for i in xrange(0,84):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
@@ -393,7 +392,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
     
 # LE1 : 5..97
 
-    for i in range(5,9):
+    for i in xrange(5,9):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -404,7 +403,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         AddSegment2(T0,T1,7.2/100.0,L,E1,E2,E3,-1.0)#
 
 
-    for i in range(9,12):
+    for i in xrange(9,12):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -414,7 +413,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,6.4/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(12,15):
+    for i in xrange(12,15):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -424,7 +423,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,6.0/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(15,18):
+    for i in xrange(15,18):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -434,7 +433,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,5.2/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(18,21):
+    for i in xrange(18,21):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -444,7 +443,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,4.8/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(21,31):
+    for i in xrange(21,31):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -454,7 +453,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,4.0/100.0,L,E1,E2,E3,-1.0)#       
 
-    for i in range(31,76):
+    for i in xrange(31,76):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -464,7 +463,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,3.6/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(76,97):
+    for i in xrange(76,97):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -493,7 +492,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
     
 # LE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment2[i]*1.0e6*I_gesamt/L
@@ -527,7 +526,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
 
 # HE1 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment3[i]*1.0e6*I_gesamt/L
@@ -556,7 +555,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
     
 # HE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment4[i]*1.0e6*I_gesamt/L
@@ -617,7 +616,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
     
 # LE1 : 5..97
 
-    for i in range(5,9):
+    for i in xrange(5,9):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -628,7 +627,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         AddSegment2(T0,T1,7.2/100.0,L,E1,E2,E3,-1.0)#
 
 
-    for i in range(9,12):
+    for i in xrange(9,12):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -638,7 +637,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,6.4/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(12,15):
+    for i in xrange(12,15):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -648,7 +647,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,6.0/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(15,18):
+    for i in xrange(15,18):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -658,7 +657,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,5.2/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(18,21):
+    for i in xrange(18,21):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -668,7 +667,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,4.8/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(21,31):
+    for i in xrange(21,31):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -678,7 +677,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,4.0/100.0,L,E1,E2,E3,-1.0)#       
 
-    for i in range(31,76):
+    for i in xrange(31,76):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -688,7 +687,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
         #AddSegment(N,L)#
         AddSegment2(T0,T1,3.6/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(76,97):
+    for i in xrange(76,97):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -717,7 +716,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
     
 # LE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment2[i]*1.0e6*I_gesamt/L
@@ -751,7 +750,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
 
 # HE1 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment3[i]*1.0e6*I_gesamt/L
@@ -780,7 +779,7 @@ def AddFNAcc1(v_gesamt, v_vorbeschl, q):
     
 # HE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment4[i]*1.0e6*I_gesamt/L
@@ -842,7 +841,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     
 # LE1 : 5..97
 
-    for i in range(5,9):
+    for i in xrange(5,9):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -853,7 +852,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         #AddSegment2(T0,T1,7.2/100.0,L,E1,E2,E3,-1.0)#
 
 
-    for i in range(9,12):
+    for i in xrange(9,12):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -863,7 +862,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,6.4/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(12,15):
+    for i in xrange(12,15):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -873,7 +872,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,6.0/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(15,18):
+    for i in xrange(15,18):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -883,7 +882,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,5.2/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(18,21):
+    for i in xrange(18,21):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -893,7 +892,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,4.8/100.0,L,E1,E2,E3,-1.0)#
 
-    for i in range(21,31):
+    for i in xrange(21,31):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -903,7 +902,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,4.0/100.0,L,E1,E2,E3,-1.0)#      
 
-    for i in range(31,76):
+    for i in xrange(31,76):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -913,7 +912,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
         AddSegment(N,L)#
         #AddSegment2(T0,T1,3.6/100.0,L,E1,E2,E3,-1.0)#
         
-    for i in range(76,97):
+    for i in xrange(76,97):
         E1=E2
         E2=E3
         E3=R_Segment1[i]*1.0e6*I_gesamt/L
@@ -942,7 +941,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     
 # LE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment2[i]*1.0e6*I_gesamt/L
@@ -976,7 +975,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
 
 # HE1 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment3[i]*1.0e6*I_gesamt/L
@@ -1005,7 +1004,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     
 # HE2 : 1..97
 
-    for i in range(1,97):
+    for i in xrange(1,97):
         E1=E2
         E2=E3
         E3=R_Segment4[i]*1.0e6*I_gesamt/L
@@ -1509,9 +1508,9 @@ def GetTrajectory(iparticle,iproperty):
 ###########################################################
 def PrintTrajectories(traj):
     (trajectories,particlenum,particlesize)=GetTrajectories()
-    for i in range(0,particlenum*particlesize,particlesize):
-        for j in range(0,len(trajectories),particlenum*particlesize):
-            for k in range(0,particlesize,1):
+    for i in xrange(0,particlenum*particlesize,particlesize):
+        for j in xrange(0,len(trajectories),particlenum*particlesize):
+            for k in xrange(0,particlesize,1):
                 print "%f" % (trajectories[j+i+k]),
             print "\n",
         print "\n",
@@ -1593,7 +1592,7 @@ def AddAMSAcc1(v_qsnout, v_gesamt, v_vorbeschl, q):
 #   print "Spannung05 = %1.0f" % (T1)
     
     deltaV = 40.0e6*I_gesamt #5..23
-    for i in range(0,18):
+    for i in xrange(0,18):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -1601,7 +1600,7 @@ def AddAMSAcc1(v_qsnout, v_gesamt, v_vorbeschl, q):
         #print "Spannung0%1.0f = %1.0f" % (i+6, T1)
     
     deltaV = 200.0e6*I_gesamt #23..85
-    for i in range(0,62):
+    for i in xrange(0,62):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -1617,7 +1616,7 @@ def AddAMSAcc1(v_qsnout, v_gesamt, v_vorbeschl, q):
     
 # Space..Terminal
     deltaV = 200.0e6*I_gesamt #85..166
-    for i in range(0,81):
+    for i in xrange(0,81):
         T0 = T1
         T1 = float(T0+deltaV)
         N = math.sqrt(T1/T0)
@@ -1637,14 +1636,14 @@ def AddAMSAcc1(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Terminal..Space
     deltaV = 120.0e6*I_gesamt #1..9
-    for i in range(0,9):
+    for i in xrange(0,9):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
         AddSegment(N,L)
 
     deltaV = 300.0e6*I_gesamt #9..81
-    for i in range(0,72):
+    for i in xrange(0,72):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
@@ -1658,7 +1657,7 @@ def AddAMSAcc1(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Space..letzte Elekrode
     deltaV = 300.0e6*I_gesamt #81..165
-    for i in range(0,84):
+    for i in xrange(0,84):
         T0 = T1
         T1 = float(T0+q*deltaV)
         N = math.sqrt(T1/T0)
@@ -1711,7 +1710,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
     AddSegment2(T0,T1,475.e-3,L,E1,E2,E3,-1.)  #3..4
     
     deltaV = 40.0e6*I_gesamt #4..22
-    for i in range(0,18):
+    for i in xrange(0,18):
         T0 = T1
         T1 = float(T0-deltaV) # (-) da q=-1
         E1 = E2
@@ -1720,7 +1719,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
         AddSegment2(T0,T1,58.e-3,L,E1,E2,E3,-1.)
     
     deltaV = 200.0e6*I_gesamt #22..84
-    for i in range(0,62):
+    for i in xrange(0,62):
         T0 = T1
         T1 = float(T0-deltaV)
         E1 = E2
@@ -1738,7 +1737,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
     
 # Space..Terminal
     deltaV = 200.0e6*I_gesamt #84..165
-    for i in range(0,81):
+    for i in xrange(0,81):
         T0 = T1
         T1 = float(T0-deltaV)
         E1 = E2
@@ -1761,7 +1760,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Terminal..Space
     deltaV = 120.0e6*I_gesamt #1..9
-    for i in range(0,9):
+    for i in xrange(0,9):
         T0 = T1
         T1 = float(T0+q*deltaV)
         E1 = E2
@@ -1770,7 +1769,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
         AddSegment2(T0,T1,58.e-3,L,E1,E2,E3,q)
 
     deltaV = 300.0e6*I_gesamt #9..81
-    for i in range(0,72):
+    for i in xrange(0,72):
         T0 = T1
         T1 = float(T0+q*deltaV)
         E1 = E2
@@ -1788,7 +1787,7 @@ def AddAMSAcc2(v_qsnout, v_gesamt, v_vorbeschl, q):
 
 # Space..letzte Elekrode
     deltaV = 300.0e6*I_gesamt #81..165
-    for i in range(0,84):
+    for i in xrange(0,84):
         T0 = T1
         T1 = float(T0+q*deltaV)
         E1 = E2

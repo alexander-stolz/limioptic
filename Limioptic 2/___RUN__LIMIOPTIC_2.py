@@ -306,7 +306,7 @@ class doitqt2(threading.Thread):
         x_all = []
         y_all = []
         z_all = []
-        for part in range(parts):
+        for part in xrange(parts):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
