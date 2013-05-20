@@ -57,7 +57,6 @@ void CLimioptic::PrintParticles()
    }
 }
 
-
 void CLimioptic::AddParticle(double xdiff,double xangle,double ydiff,double yangle,
    double deltaz,double deltam)
 {
@@ -73,7 +72,6 @@ void CLimioptic::AddParticle(double xdiff,double xangle,double ydiff,double yang
 	particles.push_back(z);
 	particles.push_back(iele);
 }
-
 
 int CLimioptic::GetParticleNum()
 {
@@ -111,17 +109,17 @@ void CLimioptic::AddMatrix(int number, double *mat, double length)
    int i;
    vector<double> ele;
    ele.clear();
-   ele.push_back(1.0);  //Alex: Das ist der Typ 'Allgemeine Matrix'
+   ele.push_back(1.0);
    ele.push_back((double)(number));
    for (i = 0; i < 36; i++) 
    { 
       ele.push_back(mat[i]); 
    }
    ele.push_back(length);
-   beamline.push_back(ele);  //Alex: Matrix wird an den beamline-Vektor angehaengt
+   beamline.push_back(ele);
 }
 
-void CLimioptic::AddDrift(int number,double gamma2,double length)
+void CLimioptic::AddDrift(int number, double gamma2, double length)
 {
    // Siehe ApplyDrift fuer Dokumentation der Parameter
    
@@ -143,7 +141,7 @@ void CLimioptic::AddBeamProfile()
    beamline.push_back(bp);
 }
 
-void CLimioptic::AddSlit(double x,double dx, double y, double dy)
+void CLimioptic::AddSlit(double x, double dx, double y, double dy)
 {
    vector<double> slit;
    slit.clear();
@@ -156,7 +154,6 @@ void CLimioptic::AddSlit(double x,double dx, double y, double dy)
    beamline.push_back(slit);
 }
 
-
 void CLimioptic::AddModifyEmittance(double factor1, double factor2)
 {
    vector<double> mod;
@@ -168,8 +165,7 @@ void CLimioptic::AddModifyEmittance(double factor1, double factor2)
    beamline.push_back(mod);
 }
 
-
-void CLimioptic::AddThinLens(int number,double fx,double fy,double length)
+void CLimioptic::AddThinLens(int number, double fx, double fy, double length)
 {
    // Siehe ApplyThinLens fuer Dokumentation
 
@@ -183,7 +179,7 @@ void CLimioptic::AddThinLens(int number,double fx,double fy,double length)
    beamline.push_back(ThinLens);
 }
 
-void CLimioptic::AddQuadrupolRadFoc(int number,double gamma2,double k,double l)
+void CLimioptic::AddQuadrupolRadFoc(int number, double gamma2, double k, double l)
 {
    vector<double> qrf;
    qrf.clear();
@@ -195,7 +191,7 @@ void CLimioptic::AddQuadrupolRadFoc(int number,double gamma2,double k,double l)
    beamline.push_back(qrf);
 }
 
-void CLimioptic::AddQuadrupolAxFoc(int number,double gamma2,double k,double l)
+void CLimioptic::AddQuadrupolAxFoc(int number, double gamma2, double k, double l)
 {
    vector<double> qaf;
    qaf.clear();
@@ -207,7 +203,7 @@ void CLimioptic::AddQuadrupolAxFoc(int number,double gamma2,double k,double l)
    beamline.push_back(qaf);
 }
 
-void CLimioptic::AddAMSQuadrupolRadFoc(int num,double gamma2, double kx, double ky, double l)
+void CLimioptic::AddAMSQuadrupolRadFoc(int num, double gamma2, double kx, double ky, double l)
 {
    vector<double> qrf;
    qrf.clear();
@@ -220,8 +216,7 @@ void CLimioptic::AddAMSQuadrupolRadFoc(int num,double gamma2, double kx, double 
    beamline.push_back(qrf);
 }   
 
-
-void CLimioptic::AddAMSQuadrupolAxFoc(int num,double gamma2, double kx, double ky, double l)
+void CLimioptic::AddAMSQuadrupolAxFoc(int num, double gamma2, double kx, double ky, double l)
 {
    vector<double> qaf;
    qaf.clear();
@@ -234,7 +229,7 @@ void CLimioptic::AddAMSQuadrupolAxFoc(int num,double gamma2, double kx, double k
    beamline.push_back(qaf);
 }   
 
-void CLimioptic::AddESD(int number,double gamma2,double alpha,double rho0,double r0,
+void CLimioptic::AddESD(int number, double gamma2, double alpha, double rho0, double r0,
    double beta0, double korrektur)
 {
    vector<double> esd;
@@ -250,7 +245,7 @@ void CLimioptic::AddESD(int number,double gamma2,double alpha,double rho0,double
    beamline.push_back(esd);
 }
 
-void CLimioptic::AddEdgeFocusing(int number,double r,double beta,double betaeff)
+void CLimioptic::AddEdgeFocusing(int number, double r, double beta, double betaeff)
 {
    vector<double> ef;
    ef.clear();
@@ -262,7 +257,7 @@ void CLimioptic::AddEdgeFocusing(int number,double r,double beta,double betaeff)
    beamline.push_back(ef);
 }
 
-void CLimioptic::AddHomDeflectingMagnet(int number,double gamma2,double r,double alpha,double korrektur)
+void CLimioptic::AddHomDeflectingMagnet(int number, double gamma2, double r, double alpha, double korrektur)
 {
    vector<double> hdm;
    hdm.clear();
@@ -275,7 +270,7 @@ void CLimioptic::AddHomDeflectingMagnet(int number,double gamma2,double r,double
    beamline.push_back(hdm);
 }
 
-void CLimioptic::AddInhomDeflectingMagnet(int number,double rho,double phi,double n1)
+void CLimioptic::AddInhomDeflectingMagnet(int number, double rho, double phi, double n1)
 {
    vector<double> idm;
    idm.clear();
@@ -294,16 +289,16 @@ void CLimioptic::ClearTrajectories()
 
 void CLimioptic::PrintTrajectories()
 {
-   unsigned int i,j;
+   unsigned int i, j;
    int k;
 
-   for (i=0;i<particles.size();i=i+particlesize) 
+   for (i=0; i<particles.size(); i=i+particlesize) 
    {
-	  for (j=0;j<trajectories.size();j=j+particles.size()) 
+	  for (j=0; j<trajectories.size(); j=j+particles.size()) 
      {
-		 for (k=0;k<particlesize;k++) 
+		 for (k=0; k<particlesize; k++) 
        {
-			printf("%f ",trajectories[j+i+k]);
+			printf("%f ", trajectories[j+i+k]);
 		 }
 		 printf("\n");
 	  }
@@ -314,18 +309,20 @@ void CLimioptic::PrintTrajectories()
 
 void CLimioptic::CalculateTrajectories()
 {
-   unsigned int i,j;
-   int n,nelements,ibeamline,itraj,type;
+   unsigned int i, j;
+   int n, nelements, ibeamline, itraj, type;
 
    int tsize;
 
    ClearTrajectories();
    nelements = 0;
-   for (i = 0; i < beamline.size(); i++) 
+   for (i=0; i<beamline.size(); i++) 
    { 
       nelements = nelements + beamline[i][1]; 
    }
-   nelements = nelements + 1; // Am Anfang stehen immer die unveraenderten Teilchen, also +1
+
+   // Am Anfang stehen immer die unveraenderten Teilchen, also +1
+   nelements = nelements + 1;
    tsize     = nelements * particles.size();
    trajectories.assign(tsize, 0.);
 
@@ -410,9 +407,10 @@ void CLimioptic::CalculateTrajectories()
 			exit(0);
          break;
 	   }
-      n=n+beamline[ibeamline][1];
-      itraj=itraj+beamline[ibeamline][1]*particles.size();
-      ibeamline=ibeamline+1;
+
+      n     += beamline[ibeamline][1];
+      itraj += beamline[ibeamline][1] * particles.size();
+      ibeamline++;
    }
 }
 
@@ -423,12 +421,12 @@ int CLimioptic::GetTrajectoriesSize()
 
 void CLimioptic::GetTrajectories(double *dst)
 {
-   int i,d;
+   int i, d;
    double *src;
 
-   d=(int)(trajectories.size());
-   src=&trajectories.front();
-   for (i = 0; i < d; i++) 
+   d   = (int)(trajectories.size());
+   src = &trajectories.front();
+   for (i=0; i<d; i++) 
    { 
       dst[i] = src[i]; 
    }
@@ -436,76 +434,77 @@ void CLimioptic::GetTrajectories(double *dst)
 
 int CLimioptic::GetTrajectorySize()
 {
-   return (int)(trajectories.size()/particles.size());
+   return (int)(trajectories.size() / particles.size());
 }
 
-void CLimioptic::GetTrajectory(int iparticle,int iproperty,double *dst)
+void CLimioptic::GetTrajectory(int iparticle, int iproperty, double *dst)
 {
    // iproperty = 0,..,particlesize-1
    // iparticle = 0,..,NumberOfParticles-1
    unsigned int i, count;
 
    count = 0;
-   for (i = 0; i < trajectories.size(); i = i + particles.size()) 
+   for (i=0; i<trajectories.size(); i=i+particles.size()) 
    {
 	  dst[count] = trajectories[i+particlesize*iparticle+iproperty];
 	  count++;
    }
 }
 
-void CLimioptic::ApplyMatrix(double *p,int nmat,double *mat)
+void CLimioptic::ApplyMatrix(double *p, int nmat, double *mat)
 {
-   int pnum,imat,i,j,elesize,ip;
-   double p0,p1,p2,p3,p4,p5;
+   int pnum, imat, i, j, elesize, ip;
+   double p0, p1, p2, p3, p4, p5;
 
-   elesize=particles.size();
-   pnum=elesize/particlesize;  // Anzahl der Teilchen
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
 
-//   printf("%f %f %f\n",mat[6],mat[7],mat[8]);
+   // printf("%f %f %f\n",mat[6],mat[7],mat[8]);
 
    i = 0;
-   for (imat = 0; imat < nmat; imat++) 
+   for (imat=0; imat<nmat; imat++) 
    {
-      for (ip=0;ip<pnum;ip++) 
+      for (ip=0; ip<pnum; ip++) 
       {
-         p0=mat[0]*p[i+0-elesize]+mat[1]*p[i+1-elesize]+mat[2]*p[i+2-elesize]+
-            mat[3]*p[i+3-elesize]+mat[4]*p[i+4-elesize]+mat[5]*p[i+5-elesize];
-         p1=mat[6]*p[i+0-elesize]+mat[7]*p[i+1-elesize]+mat[8]*p[i+2-elesize]+
-            mat[9]*p[i+3-elesize]+mat[10]*p[i+4-elesize]+mat[11]*p[i+5-elesize];
-         p2=mat[12]*p[i+0-elesize]+mat[13]*p[i+1-elesize]+mat[14]*p[i+2-elesize]+
-            mat[15]*p[i+3-elesize]+mat[16]*p[i+4-elesize]+mat[17]*p[i+5-elesize];
-         p3=mat[18]*p[i+0-elesize]+mat[19]*p[i+1-elesize]+mat[20]*p[i+2-elesize]+
-            mat[21]*p[i+3-elesize]+mat[22]*p[i+4-elesize]+mat[23]*p[i+5-elesize];
-         p4=mat[24]*p[i+0-elesize]+mat[25]*p[i+1-elesize]+mat[26]*p[i+2-elesize]+
-            mat[27]*p[i+3-elesize]+mat[28]*p[i+4-elesize]+mat[29]*p[i+5-elesize];
-         p5=mat[30]*p[i+0-elesize]+mat[31]*p[i+1-elesize]+mat[32]*p[i+2-elesize]+
-            mat[33]*p[i+3-elesize]+mat[34]*p[i+4-elesize]+mat[35]*p[i+5-elesize];
+         p0=mat[0]  * p[i+0-elesize] + mat[1]  * p[i+1-elesize] + mat[2]  * p[i+2-elesize] +
+            mat[3]  * p[i+3-elesize] + mat[4]  * p[i+4-elesize] + mat[5]  * p[i+5-elesize];
+         p1=mat[6]  * p[i+0-elesize] + mat[7]  * p[i+1-elesize] + mat[8]  * p[i+2-elesize] +
+            mat[9]  * p[i+3-elesize] + mat[10] * p[i+4-elesize] + mat[11] * p[i+5-elesize];
+         p2=mat[12] * p[i+0-elesize] + mat[13] * p[i+1-elesize] + mat[14] * p[i+2-elesize] +
+            mat[15] * p[i+3-elesize] + mat[16] * p[i+4-elesize] + mat[17] * p[i+5-elesize];
+         p3=mat[18] * p[i+0-elesize] + mat[19] * p[i+1-elesize] + mat[20] * p[i+2-elesize] +
+            mat[21] * p[i+3-elesize] + mat[22] * p[i+4-elesize] + mat[23] * p[i+5-elesize];
+         p4=mat[24] * p[i+0-elesize] + mat[25] * p[i+1-elesize] + mat[26] * p[i+2-elesize] +
+            mat[27] * p[i+3-elesize] + mat[28] * p[i+4-elesize] + mat[29] * p[i+5-elesize];
+         p5=mat[30] * p[i+0-elesize] + mat[31] * p[i+1-elesize] + mat[32] * p[i+2-elesize] +
+            mat[33] * p[i+3-elesize] + mat[34] * p[i+4-elesize] + mat[35] * p[i+5-elesize];
 
-         p[i+0]=p0;
-         p[i+1]=p1;
-         p[i+2]=p2;
-         p[i+3]=p3;
-         p[i+4]=p4;
-         p[i+5]=p5;
+         p[i+0] = p0;
+         p[i+1] = p1;
+         p[i+2] = p2;
+         p[i+3] = p3;
+         p[i+4] = p4;
+         p[i+5] = p5;
 
-         p[i+6]=p[i+6-elesize]+mat[36];
+         p[i+6] = p[i+6-elesize] + mat[36];
 
          // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
-         for (j=7;j<particlesize;j++) 
+         for (j=7; j<particlesize; j++) 
          {
-            p[i+j]=p[i+j-elesize];
+            p[i+j] = p[i+j-elesize];
          }
-         if (imat==0) 
+         if (imat == 0) 
          { 
-            p[i+7]=p[i+7]+1.0;    // Index des ionenoptischen Elements raufzaehlen
+            // Index des ionenoptischen Elements raufzaehlen
+            p[i+7] = p[i+7] + 1.0;
          } 
 
-         i=i+particlesize;
+         i += particlesize;
 	   }
    }
 }
 
-void CLimioptic::ApplyDrift(double *p,int nmat,double gamma2,double length)
+void CLimioptic::ApplyDrift(double *p, int nmat, double gamma2, double length)
 {
    // Die Transfermarix lautet:
    //  |  1 length 0    0   0       0        |
@@ -523,36 +522,44 @@ void CLimioptic::ApplyDrift(double *p,int nmat,double gamma2,double length)
    // Die Teilchenparameter des Schrittes vorher liegen im gleichen Array VOR dem
    // zu fuellenden Bereich (die muessen also mit negativem Index angesprochen werden).
 
-   int pnum,imat,i,j,elesize,ip;
-   double p0,p1,p2,p3,p4,p5;
+   int pnum, imat, i, j, elesize, ip;
+   double p0, p1, p2, p3, p4, p5;
   
-   elesize=particles.size();
-   pnum=elesize/particlesize;  // Anzahl der Teilchen
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
 
 
-   i=0;
-   for (imat=0;imat<nmat;imat++) {
-	  for (ip=0;ip<pnum;ip++) {
-		 p0=p[i+0-elesize]+length*p[i+1-elesize];
-		 p1=p[i+1-elesize];
-		 p2=p[i+2-elesize]+length*p[i+3-elesize];
-		 p3=p[i+3-elesize];
-		 p4=p[i+4-elesize]; // '+length/gamma2*p[i+5-elesize];' entfernt
-		 p5=p[i+5-elesize];
+   i = 0;
+   for (imat=0; imat<nmat; imat++)
+   {
+	  for (ip=0; ip<pnum; ip++)
+     {
+		 p0 = p[i+0-elesize] + length * p[i+1-elesize];
+		 p1 = p[i+1-elesize];
+		 p2 = p[i+2-elesize] + length * p[i+3-elesize];
+		 p3 = p[i+3-elesize];
+		 p4 = p[i+4-elesize]; // '+length/gamma2*p[i+5-elesize];' entfernt
+		 p5 = p[i+5-elesize];
 
-		 p[i+0]=p0;
-		 p[i+1]=p1;
-		 p[i+2]=p2;
-		 p[i+3]=p3;
-		 p[i+4]=p4;
-		 p[i+5]=p5;
-		 p[i+6]=p[i+6-elesize]+length;
+		 p[i+0] = p0;
+		 p[i+1] = p1;
+		 p[i+2] = p2;
+		 p[i+3] = p3;
+		 p[i+4] = p4;
+		 p[i+5] = p5;
+		 p[i+6] = p[i+6-elesize] + length;
 
 		 // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
-		 for (j=7;j<particlesize;j++) {
-			p[i+j]=p[i+j-elesize];
+		 for (j=7; j<particlesize; j++)
+       {
+			p[i+j] = p[i+j-elesize];
 		 }
-		 if (imat==0) { p[i+7]=p[i+7]+1.0;} // Index des ionenoptischen Elements raufzaehlen
+       
+		 if (imat == 0)
+       {
+         // Index des ionenoptischen Elements raufzaehlen
+         p[i+7]=p[i+7]+1.0;
+       }
 
 		 i=i+particlesize;
 	  }
