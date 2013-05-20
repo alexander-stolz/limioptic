@@ -5,6 +5,14 @@ Hier wird hauptsaechlich die GUI definiert.
 Der Text wird mit limioptic.ExecText() an limioptic.py uebergeben.
 Dort sind die verschiedenen Funktionen definiert.
 Die eigentliche Berechnung findet in limioptic.cpp statt.
+
+
+Licence
+=============
+The program Limioptic 2 maintained by Alexander Stolz is
+freely available and distributable. However, if you use
+it for some work whose results are made public, then you
+have to reference it properly.
 """
 
 print "loading:",
