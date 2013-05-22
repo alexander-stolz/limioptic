@@ -81,9 +81,9 @@ class inputcontrol(QtGui.QDialog):
                 myapp.textedit.moveCursor(QtGui.QTextCursor.Start)
                 NumberOfInputs = -1
                 while (CheckInputNumber):
-                                NumberOfInputs += 1
-                                texttofind = QtCore.QString("INPUT[{}]".format(NumberOfInputs))
-                                if not (myapp.textedit.find(texttofind)): CheckInputNumber = False
+                        NumberOfInputs += 1
+                        texttofind = QtCore.QString("INPUT[{}]".format(NumberOfInputs))
+                        if not (myapp.textedit.find(texttofind)): CheckInputNumber = False
                 NumberOfInputs += 1
                 if (NumberOfInputs < 8): NumberOfInputs = 8
 
@@ -133,6 +133,15 @@ class inputcontrol(QtGui.QDialog):
                         opacitybox.addWidget(self.oslider)
                         self.vbox.addLayout(opacitybox)
 
+                        scalebox     = QtGui.QHBoxLayout()
+                        self.slabel  = QtGui.QLabel("Scale(z)")
+                        self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
+                        self.sslider.setRange(1, 200)
+                        self.sslider.setValue(SCALE3D)
+                        scalebox.addWidget(self.slabel)
+                        scalebox.addWidget(self.sslider)
+                        self.vbox.addLayout(scalebox)
+
                 self.setLayout(self.vbox)
 
                 # Die Elementgroessen werden neu angepasst (Buttons, Slider, ...)
@@ -149,7 +158,9 @@ class inputcontrol(QtGui.QDialog):
                         self.connect(self.input[i], QtCore.SIGNAL("valueChanged(double)"), self.inputtoslider)
                         self.connect(self.min[i], QtCore.SIGNAL("valueChanged(double)"), self.slidertoinput)
                         self.connect(self.infobox[i], QtCore.SIGNAL("textChanged(const QString)"), self.infochange)
-                if (self.mode == "3d"): self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
+                if (self.mode == "3d"):
+                        self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
+                        self.connect(self.sslider, QtCore.SIGNAL("valueChanged(int)"), self.setscale)
 
                 self.show()
 
@@ -166,6 +177,12 @@ class inputcontrol(QtGui.QDialog):
                 OPACITY = self.oslider.value()
                 self.plotwindow.actor.GetProperty().SetOpacity(OPACITY/1000.)
                 self.plotwindow.render = True
+
+        def setscale(self):
+                """ Nur fuer die 3D-Ausgabe """
+                global SCALE3D
+                SCALE3D = self.sslider.value()
+                self.plotwindow.neu()
 
         def readserial(self):
                 """ Serielle Kommunikation mit dem Interface (obsolet) """
@@ -199,20 +216,21 @@ class inputcontrol(QtGui.QDialog):
         def slidertoinput(self):
                 """ Aenderung des Sliders wird auf self.INPUT uebertragen. """
                 if not self.changing:
-                    global INPUT
-                    self.changing = True
-                    for i in xrange(NumberOfInputs):
-                            self.input[i].setValue(self.slider[i].value() / 100000. + self.min[i].value())
-                    for i in xrange(NumberOfInputs):
-                            INPUT[i] = self.input[i].value()
-                    if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                    if (RUNNING2D): self.plotwindow.update = True
-                    if (RUNNING3D): self.plotwindow.neu()
-                    self.changing = False
+                        global INPUT
+                        self.changing = True
+                        for i in xrange(NumberOfInputs):
+                                self.input[i].setValue(self.slider[i].value() / 100000. + self.min[i].value())
+                        for i in xrange(NumberOfInputs):
+                                INPUT[i] = self.input[i].value()
+                        if (RUNNINGQT): self.plotwindow.update(self.calculate())
+                        if (RUNNING2D): self.plotwindow.update = True
+                        if (RUNNING3D): self.plotwindow.neu()
+                        self.changing = False
 
         def closeit(self):
                 """ Wird aufgerufen, wenn das Outputfenster geschlossen wird. """
                 global BEZEICHNUNGEN, RUNNING2D, RUNNING3D
+
                 for i in xrange(NumberOfInputs):
                         BEZEICHNUNGEN[i] = self.infobox[i].text()
 
