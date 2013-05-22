@@ -1363,12 +1363,17 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def About(self):
             title = "About Limioptic 2"
-            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\nFeel free to send me any feedback or suggestions to amstolz@gmail.com.\n\nVisit ams.amstolz.de for more information.\n\nThanks for using Limioptic!\n\nWhy the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\nThanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
+            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\n"
+            "Feel free to send me any feedback or suggestions to amstolz@gmail.com.\n\n"
+            "Visit www.limioptic.de for more information.\n\nThanks for using Limioptic!\n\n"
+            "Why the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\n"
+            "Thanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
             self.dialog = DialogWindow(title, text)
 
         def Licence(self):
             title = "Limioptic 2 Licence"
-            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly."
+            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. "
+            "However, if you use it for some work whose results are made public, then you have to reference it properly."
             self.dialog = DialogWindow(title, text)
 
 
