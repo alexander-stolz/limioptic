@@ -1586,14 +1586,17 @@ def Name(text):
 
 
 try:
-    optic = ctypes.CDLL("./liblimioptic-win.so")
+    winver = sys.winver
 except:
+    winver = None
+    
+if winver:
     try:
-        optic = ctypes.CDLL("./liblimioptic.so")
+        optic = ctypes.CDLL("./liblimioptic-win.so")
     except:
         print "\n\nFirst start?\nTrying to compile C++ code. ",
         from os import system
-        print "\nIf this is a windows OS: This will only work if MinGW is installed!\n"
+        print "\nThis is a windows OS (right?). So this will only work if MinGW is installed!\n(Make sure that X:\\..\\MinGW\\bin is in your PATH)\n"
         system("PAUSE")
         print "compiling climioptic.cpp"
         print "------------------------"
@@ -1607,10 +1610,34 @@ except:
 
         print "building library"
         print "------------------------"
-        system("g++ -fPIC -shared -Wl,-soname,liblimioptic.so -O -o liblimioptic.so limioptic.o climioptic.o")
+        system("g++ -fPIC -shared -Wl,-soname,liblimioptic-win.so -O -o liblimioptic-win.so limioptic.o climioptic.o")
         print "completed."
 
-        optic = ctypes.CDLL("./liblimioptic.so")
+        optic = ctypes.CDLL("./liblimioptic-win.so")
+
+else:
+    try:
+        optic = ctypes.CDLL("./liblimioptic-linux.so")
+    except:
+        print "\n\nFirst start?\nTrying to compile C++ code. ",
+        from os import system
+
+        print "compiling climioptic.cpp"
+        print "------------------------"
+        system("g++ -Wall -fPIC -O -c climioptic.cpp")
+        print "\n"
+
+        print "compiling limioptic.cpp"
+        print "------------------------"
+        system("g++ -Wall -fPIC -O -c limioptic.cpp")
+        print "\n"
+
+        print "building library"
+        print "------------------------"
+        system("g++ -fPIC -shared -Wl,-soname,liblimioptic-linux.so -O -o liblimioptic-linux.so limioptic.o climioptic.o")
+        print "completed."
+
+        optic = ctypes.CDLL("./liblimioptic-linux.so")
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
