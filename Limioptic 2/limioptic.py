@@ -1589,7 +1589,7 @@ try:
     winver = sys.winver
 except:
     winver = None
-    
+
 if winver:
     try:
         optic = ctypes.CDLL("./liblimioptic-win.so")
