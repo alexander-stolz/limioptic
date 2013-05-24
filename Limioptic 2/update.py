@@ -10,8 +10,8 @@ a.close()
 q = raw_input("press ENTER to start update process. press \"q\" to cancel..  ")
 
 if (q != "q"):
-    for i in range(1,len(b)):
-        ul.urlretrieve(b[i].split()[0],b[i].split()[1])
+    for i in range(1, len(b)):
+        ul.urlretrieve(b[i].split()[0], b[i].split()[1])
         print "{} updated".format(b[i].split()[1])
     print "\n",b[0]
 
