@@ -401,7 +401,10 @@ class doit3d(threading.Thread):
                 self.actor.GetProperty().SetOpacity(OPACITY / 1000.)
 
                 self.ren = vtk.vtkRenderer()
-                self.ren.SetBackground(.1, .2, .4)
+                #self.ren.SetBackground(.1, .2, .4)
+                self.ren.GradientBackgroundOn()
+                self.ren.SetBackground(.01, .01, .01)
+                self.ren.SetBackground2(.2, .2, .2)
                 self.ren.AddActor(self.actor)
 
                 ### Axen
