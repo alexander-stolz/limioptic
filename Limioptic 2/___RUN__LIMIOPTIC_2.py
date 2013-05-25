@@ -363,22 +363,24 @@ class doit3d(threading.Thread):
                 # Wir erzeugen nur eine Cell, dh. eine lange Polyline (Geschwindigkeit)
                 self.mycells = vtk.vtkCellArray()
 
-                # Alle Punkte in mypoints laden
+                # Eine neue Polygonlinie definieren.
+                self.polylines = [vtk.vtkPolyLine() for line in xrange(parts + 1)]
+
+                # Alle Punkte in mypoints laden und mit polylines verknuepfen. Jede Polyline kommt in eine Cell.
                 for part in xrange(parts):
+                        self.polylines[part].GetPointIds().SetNumberOfIds(segs)
                         for seg in xrange(segs):
                                 self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
-                        self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, .0, .0)
-                        self.mypoints.InsertNextPoint(.0, .0, .0)
+                                self.polylines[part].GetPointIds().SetId(seg, part * segs + seg)
+                        self.mycells.InsertNextCell(self.polylines[part])
 
-                # Eine neue Polygonlinie definieren.
-                self.polylines = vtk.vtkPolyLine()
-                self.polylines.GetPointIds().SetNumberOfIds(parts * segs + parts * 2)
-
-                # Der i-te Punkt der Polyline entspricht dem i-ten Punkt des PointArrays (noch nicht verknuepft)
-                for i in xrange(parts * segs + parts * 2):   self.polylines.GetPointIds().SetId(i, i)
-
-                # Polylinie an Cell uebergeben
-                self.mycells.InsertNextCell(self.polylines)
+                # Sollbahn
+                self.polylines[parts].GetPointIds().SetNumberOfIds(2)
+                self.mypoints.InsertNextPoint(0., 0., 0.)
+                self.mypoints.InsertNextPoint(zi[-1] * SCALE3D, 0., 0.)
+                self.polylines[parts].GetPointIds().SetId(0, parts * segs)
+                self.polylines[parts].GetPointIds().SetId(1, parts * segs + 1)
+                self.mycells.InsertNextCell(self.polylines[parts])
 
                 # Datenobjekt erzeugen
                 self.mydata = vtk.vtkPolyData()
@@ -472,25 +474,11 @@ class doit3d(threading.Thread):
 
                 if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
 
-                self.mypoints = vtk.vtkPoints()
                 for part in xrange(parts):
                         for seg in xrange(segs):
-                                self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
-                        self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, .0, .0)
-                        self.mypoints.InsertNextPoint(.0, .0, .0)
+                                self.mypoints.InsertPoint(part * segs + seg, zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
 
-                for i in xrange(parts * segs + parts * 2):
-                        self.polylines.GetPointIds().SetId(i, i)
-
-                self.mycells.Reset()
-                self.mycells.InsertNextCell(self.polylines)
-
-                self.mydata.SetPoints(self.mypoints)
-                self.mydata.SetLines(self.mycells)
-
-                self.mapper.SetInput(self.mydata)
-                self.actor.SetMapper(self.mapper)
-
+                self.mypoints.Modified()
                 self.render = True
 
         def animate(self, obj=None, event=None):
@@ -1491,7 +1479,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-05-25"
+VERSION          = "2013-05-26"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
