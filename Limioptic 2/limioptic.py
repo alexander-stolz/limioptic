@@ -1475,6 +1475,70 @@ def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_double(float(.025)))
 
 
+def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
+    global lastFunction
+    lastFunction = "AddAMSQPT_YXY"
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s+.25)
+        geo_y.InsertNextValue(geo)
+        s = s+.25
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(55)
+        geo_s.InsertNextValue(s+.076)
+        geo_y.InsertNextValue(55)
+        s = s+.076
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s+.5)
+        geo_y.InsertNextValue(geo)
+        s = s+.5
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(55)
+        geo_s.InsertNextValue(s+.076)
+        geo_y.InsertNextValue(55)
+        s = s+.076
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s+.25)
+        geo_y.InsertNextValue(geo)
+        s = s+.25
+
+    vx  = 30.e3 * (prozent + astigm) / 100.
+    vy  = 30.e3 * (prozent - astigm) / 100.
+    T   = v_ext + (q + 1) * float(v_terminal)
+
+    kx  = abs(vx)/float(geo*1.e-3)**2*q/T
+    k   = (vx+vy)/2./float(geo*1.e-3)**2*q/T
+
+    optic.AddQuadrupolAxFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(k)),
+        ctypes.c_double(float(.025)))
+    optic.AddDrift(
+        ctypes.c_int(1),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(.076))
+    optic.AddQuadrupolRadFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(kx)),
+        ctypes.c_double(float(.05)))
+    optic.AddDrift(
+        ctypes.c_int(1),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(.076))
+    optic.AddQuadrupolAxFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(k)),
+        ctypes.c_double(float(.025)))
+
+
 def AddAMSQPT(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
     global lastFunction
     lastFunction = "AddAMSQPT"
