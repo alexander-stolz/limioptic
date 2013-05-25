@@ -256,6 +256,8 @@ class inputcontrol(QtGui.QDialog):
                         del self.plotwindow.mydata
                         del self.plotwindow.polylines
                         del self.plotwindow.mycells
+                        del self.plotwindow.writer
+                        del self.plotwindow.w2iFilter
                 except: pass
                 del self.plotwindow
 
@@ -428,6 +430,21 @@ class doit3d(threading.Thread):
                 self.iren.SetRenderWindow(self.renwin)
                 self.iren.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
 
+                ### Exporter
+                self.writer = vtk.vtk.vtkPNGWriter()
+                self.w2iFilter = vtk.vtkWindowToImageFilter()
+                self.w2iFilter.SetInput(self.renwin)
+                self.w2iFilter.SetMagnification(10)
+                self.writer.SetInput(self.w2iFilter.GetOutput())
+
+                #self.exporter = vtk.vtkGL2PSExporter()
+                #self.exporter.SetRenderWindow(self.renwin)
+                #self.exporter.SetFileFormatToPS()
+                #self.exporter.CompressOff()
+                #self.exporter.SetSortToBsp()
+                #self.exporter.DrawBackgroundOn()
+                #self.exporter.Write3DPropsAsRasterImageOn()
+
                 # Damit der Speicher wieder freigegeben wird, wenn das Fenster geschlossen wird.
                 self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow3d: a.closeit())
 
@@ -440,10 +457,11 @@ class doit3d(threading.Thread):
                 self.iren.Initialize()
                 self.renwin.Render()
 
-                self.renwin.SetWindowName("Limioptic 2 - Output (3D)")
+                self.renwin.SetWindowName("Limioptic 2 - Output (3D)  |  r: reset view - space: take screenshot")
 
                 # self.animate wird aufgerufen wenn der Timer zuschlaegt (alle 50 ms)
                 self.iren.AddObserver("TimerEvent", self.animate)
+                self.iren.AddObserver("KeyPressEvent", self.keypress)
                 self.timer = self.iren.CreateRepeatingTimer(50)
 
                 # Ab hier laeuft die Schleife bis das Fenster geschlossen wird
@@ -483,6 +501,23 @@ class doit3d(threading.Thread):
                         self.renwin.Render()
                         self.threadlock.release()
 
+        def keypress(self, obj=None, event=None):
+            key = obj.GetKeySym()
+            if key == "space":
+                global SCREENSHOTNUMBER
+                now = time.localtime()
+                self.w2iFilter.Modified()
+                self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
+                    SCREENSHOTNUMBER,
+                    now[0],
+                    now[1],
+                    now[2],
+                    now[3],
+                    now[4]))
+                self.writer.Write()
+                SCREENSHOTNUMBER += 1
+                self.renwin.Render()
+
 
 class doitXY(threading.Thread):
         """ Die Ausgabe in 2D """
@@ -516,6 +551,13 @@ class doitXY(threading.Thread):
                     limioptic.s = 0.
                 else:
                     limioptic.s = -1.
+
+                ### Exporter
+                #self.writer = vtk.vtk.vtkPNGWriter()
+                #self.w2iFilter = vtk.vtkWindowToImageFilter()
+                #self.w2iFilter.SetInput(self.view.GetRenderWindow())
+                #self.w2iFilter.SetMagnification(10)
+                #self.writer.SetInput(self.w2iFilter.GetOutput())
 
                 ### Berechnungen durchfuehren
                 (xi, yi, zi, segs, parts) = self.parent.calculate()
@@ -627,13 +669,13 @@ class doitXY(threading.Thread):
                 self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit())
                 self.timer = self.iren.CreateRepeatingTimer(50)
 
-                self.view.GetRenderWindow().SetWindowName("Limioptic 2 - Output (2D)")
+                self.view.GetRenderWindow().SetWindowName("Limioptic 2 - Output (2D)  ||  TAB: toggle axis labels | [0..7]: select input | up/down/left/right: change input")
 
                 self.iren.Start()
 
         def keypress(self, obj=None, event=None):
             key = obj.GetKeySym()
-            if key == "space":
+            if key == "Tab":
                 if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
                     self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.AUTO)
                 else:
@@ -656,6 +698,19 @@ class doitXY(threading.Thread):
                 if key == "Right":  self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
                 if key == "Left":   self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
                 self.threadlock.release()
+            #elif key == "space":
+            #    global SCREENSHOTNUMBER
+            #    now = time.localtime()
+            #    self.w2iFilter.Modified()
+            #    self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
+            #        SCREENSHOTNUMBER,
+            #        now[0],
+            #        now[1],
+            #        now[2],
+            #        now[3],
+            #        now[4]))
+            #    self.writer.Write()
+            #    SCREENSHOTNUMBER += 1
 
         def animate(self, obj=None, event=None):
                 if self.render:
@@ -1436,13 +1491,14 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION = "2013-05-08"
-PORT = "NONE"
-INPUT = []
-BEZEICHNUNGEN = []
-OPACITY = 50
-NumberOfInputs = 8
-SCALE3D = 10.
+VERSION          = "2013-05-25"
+PORT             = "NONE"
+INPUT            = []
+BEZEICHNUNGEN    = []
+OPACITY          = 50
+NumberOfInputs   = 8
+SCALE3D          = 10.
+SCREENSHOTNUMBER = 0
 
 for i in xrange(32):
         INPUT.append(1.)
@@ -1450,9 +1506,9 @@ for i in xrange(32):
 
 plotx = True
 ploty = True
-xy = 2
+xy    = 2
 
-RUNNING = False
+RUNNING   = False
 RUNNINGQT = False
 RUNNING2D = False
 RUNNING3D = False
