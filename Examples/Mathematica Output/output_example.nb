@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[    760919,      12887]
-NotebookOptionsPosition[    760180,      12859]
-NotebookOutlinePosition[    760524,      12874]
-CellTagsIndexPosition[    760481,      12871]
+NotebookDataLength[    760992,      12888]
+NotebookOptionsPosition[    760253,      12860]
+NotebookOutlinePosition[    760597,      12875]
+CellTagsIndexPosition[    760554,      12872]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -7486,13 +7486,13 @@ Cell[BoxData[
           RowBox[{"0", ",", "\"\<\[Delta] = 0 permille\>\""}], "}"}], ",", 
          RowBox[{"{", 
           RowBox[{
-          "15", ",", 
-           "\"\<\!\(\*SubscriptBox[\(\[Delta]\), \(E\)]\)= 5 permille\>\""}], 
+          "8", ",", 
+           "\"\<\!\(\*SubscriptBox[\(\[Delta]\), \(E\)]\)= 3 permille\>\""}], 
           "}"}], ",", 
          RowBox[{"{", 
           RowBox[{
-          "45", ",", 
-           "\"\<\!\(\*SubscriptBox[\(\[Delta]\), \(m\)]\)= 5 permille\>\""}], 
+          "27", ",", 
+           "\"\<\!\(\*SubscriptBox[\(\[Delta]\), \(m\)]\)= 3 permille\>\""}], 
           "}"}]}], "}"}]}], "}"}]}], ",", " ", 
     RowBox[{"GridLines", "\[Rule]", "Automatic"}], ",", " ", 
     RowBox[{"GridLinesStyle", "\[Rule]", 
@@ -7503,7 +7503,7 @@ Cell[BoxData[
   3.5786371897778378`*^9, 3.5786372778990784`*^9}, {3.578637389171273*^9, 
   3.578637429498417*^9}, {3.5786748806438007`*^9, 3.5786749011144123`*^9}, {
   3.578675309466502*^9, 3.578675338337185*^9}, {3.578675934044176*^9, 
-  3.578675936083436*^9}}],
+  3.578675936083436*^9}, {3.5786806575507216`*^9, 3.578680682294877*^9}}],
 
 Cell[BoxData[
  GraphicsBox[{{{}, {}, 
@@ -12820,12 +12820,12 @@ iuOQ+1trULQpfpw+pCtvW7Bamn+WlG4N/wbeo1Ej
       Dashing[{Small, Small}]}, {25.7, 
       FormBox["\"           DETECTOR\"", TraditionalForm], {0.4, 0}, 
       Dashing[{Small, Small}]}}, {{0, 
-      FormBox["\"\[Delta] = 0 permille\"", TraditionalForm]}, {15, 
+      FormBox["\"\[Delta] = 0 permille\"", TraditionalForm]}, {8, 
       FormBox[
-      "\"\\!\\(\\*SubscriptBox[\\(\[Delta]\\), \\(E\\)]\\)= 5 permille\"", 
-       TraditionalForm]}, {45, 
+      "\"\\!\\(\\*SubscriptBox[\\(\[Delta]\\), \\(E\\)]\\)= 3 permille\"", 
+       TraditionalForm]}, {27, 
       FormBox[
-      "\"\\!\\(\\*SubscriptBox[\\(\[Delta]\\), \\(m\\)]\\)= 5 permille\"", 
+      "\"\\!\\(\\*SubscriptBox[\\(\[Delta]\\), \\(m\\)]\\)= 3 permille\"", 
        TraditionalForm]}}},
   GridLines->Automatic,
   GridLinesStyle->Opacity[0.3],
@@ -12833,7 +12833,8 @@ iuOQ+1trULQpfpw+pCtvW7Bamn+WlG4N/wbeo1Ej
   PlotRange->{All, {-35, 35}},
   PlotRangeClipping->True,
   PlotRangePadding->{Automatic, Automatic}]], "Output",
- CellChangeTimes->{3.5786762562512774`*^9, 3.5786764959748573`*^9}]
+ CellChangeTimes->{3.5786762562512774`*^9, 3.5786764959748573`*^9, 
+  3.5786806831319847`*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -12882,12 +12883,12 @@ Cell[225463, 3864, 213004, 3570, 243, "Output"]
 }, Open  ]],
 Cell[438482, 7437, 92, 1, 31, "Input"],
 Cell[CellGroupData[{
-Cell[438599, 7442, 2700, 63, 172, "Input"],
-Cell[441302, 7507, 318003, 5328, 244, "Output"]
+Cell[438599, 7442, 2747, 63, 172, "Input"],
+Cell[441349, 7507, 318029, 5329, 244, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[759342, 12840, 569, 11, 31, "Input"],
-Cell[759914, 12853, 250, 3, 30, "Output"]
+Cell[759415, 12841, 569, 11, 31, "Input"],
+Cell[759987, 12854, 250, 3, 30, "Output"]
 }, Open  ]]
 }
 ]
