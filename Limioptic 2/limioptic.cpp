@@ -70,9 +70,14 @@ void AddModifyEmittance(double factor1,double factor2)
    optic.AddModifyEmittance(factor1, factor2);
 }
 
-void ChangeBeamParameters(double dk, double dm)
+void ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m)
 {
-   optic.ChangeBeamParameters(dk, dm);
+   optic.ChangeBeamParameters(dk, dm, strag_k, strag_m);
+}
+
+void ChangeBeamParameters2(double dk, double dm, double strag_k, double strag_m)
+{
+   optic.ChangeBeamParameters2(dk, dm, strag_k, strag_m);
 }
 
 void AddThinLens(int num,double fx,double fy,double length)
@@ -175,9 +180,14 @@ void ApplyModifyEmittance(double *p,int n, double factor1, double factor2)
    optic.ApplyModifyEmittance(p,n,factor1,factor2);
 }
 
-void ApplyChangeBeamParameters(double *p, int n, double dk, double dm)
+void ApplyChangeBeamParameters(double *p, int n, double dk, double dm, double strag_k, double strag_m)
 {
-   optic.ApplyModifyEmittance(p, n, dk, dm);
+   optic.ApplyChangeBeamParameters(p, n, dk, dm, strag_k, strag_m);
+}
+
+void ApplyChangeBeamParameters2(double *p, int n, double dk, double dm, double strag_k, double strag_m)
+{
+   optic.ApplyChangeBeamParameters2(p, n, dk, dm, strag_k, strag_m);
 }
 
 void ApplyESD(double *p,int n,double gamma2,double alpha,double rho0,

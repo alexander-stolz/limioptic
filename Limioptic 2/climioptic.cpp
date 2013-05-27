@@ -3,6 +3,7 @@
 #include "climioptic.h"
 #include <iostream>
 #include <fstream>
+#include <random>
 
 CLimioptic::CLimioptic()
 {
@@ -165,7 +166,7 @@ void CLimioptic::AddModifyEmittance(double factor1, double factor2)
    beamline.push_back(mod);
 }
 
-void CLimioptic::ChangeBeamParameters(double dk, double dm)
+void CLimioptic::ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m)
 {
    vector<double> param;
    param.clear();
@@ -173,6 +174,21 @@ void CLimioptic::ChangeBeamParameters(double dk, double dm)
    param.push_back(1.);
    param.push_back(dk);
    param.push_back(dm);
+   param.push_back(strag_k);
+   param.push_back(strag_m);
+   beamline.push_back(param);
+}
+
+void CLimioptic::ChangeBeamParameters2(double dk, double dm, double strag_k, double strag_m)
+{
+   vector<double> param;
+   param.clear();
+   param.push_back(12);
+   param.push_back(1.);
+   param.push_back(dk);
+   param.push_back(dm);
+   param.push_back(strag_k);
+   param.push_back(strag_m);
    beamline.push_back(param);
 }
 
@@ -355,7 +371,7 @@ void CLimioptic::CalculateTrajectories()
    while (n < nelements)    // Solange noch ionenoptische Elemente uebrig sind ..
    { 
 	  type=beamline[ibeamline][0];
-	  switch((int)type) 
+	  switch(type) 
      {
       case 1:
 			ApplyMatrix(&trajectories.front()+itraj,(int)beamline[ibeamline][1],
@@ -407,7 +423,11 @@ void CLimioptic::CalculateTrajectories()
 			break;
       case 12:
          ApplyChangeBeamParameters(&trajectories.front()+itraj, (int)beamline[ibeamline][1],
-            beamline[ibeamline][2], beamline[ibeamline][3]);
+            beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
+         break;
+      case 13:
+         ApplyChangeBeamParameters2(&trajectories.front()+itraj, (int)beamline[ibeamline][1],
+            beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
          break;
 		case 15:
 			ApplyAMSQuadrupolAxFoc(&trajectories.front()+itraj,(int)beamline[ibeamline][1],
@@ -773,13 +793,17 @@ void CLimioptic::ApplyModifyEmittance(double *p, int nmat, double factor1, doubl
 }
 
 
-void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm)
+void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm, double strag_k, double strag_m)
 {
    /*
-   dk, dm aendern. Zb bei Folie.
+   dk, dm aendern. Zb bei Folie. strag = stragling
    */
    int pnum, imat, i, j, elesize, ip;
    double p0, p1, p2, p3, p4, p5;
+
+   std::default_random_engine generator;
+   std::normal_distribution<double> k_distribution(dk, strag_k);
+   std::normal_distribution<double> m_distribution(dm, strag_m);
 
    elesize = particles.size();
    pnum    = elesize / particlesize;  // Anzahl der Teilchen
@@ -793,8 +817,61 @@ void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, doubl
        p1 = p[i+1-elesize];
        p2 = p[i+2-elesize];
        p3 = p[i+3-elesize];
-       p4 = dk;
-       p5 = dm;
+       p4 = k_distribution(generator);
+       p5 = m_distribution(generator);
+
+       p[i+0] = p0;
+       p[i+1] = p1;
+       p[i+2] = p2;
+       p[i+3] = p3;
+       p[i+4] = p4;
+       p[i+5] = p5;
+       p[i+6] = p[i+6-elesize];
+
+       // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
+       for (j=7;j<particlesize;j++)
+       {
+         p[i+j]=p[i+j-elesize];
+       }
+
+       // Index des ionenoptischen Elements raufzaehlen
+       if (imat==0)
+       {
+         p[i+7]=p[i+7]+1.0;
+       }
+
+       i=i+particlesize;
+     }
+   }
+}
+
+
+void CLimioptic::ApplyChangeBeamParameters2(double *p, int nmat, double dk, double dm, double strag_k, double strag_m)
+{
+   /*
+   dk, dm aendern. Zb bei Folie. strag = stragling
+   */
+   int pnum, imat, i, j, elesize, ip;
+   double p0, p1, p2, p3, p4, p5;
+
+   std::default_random_engine generator;
+   std::normal_distribution<double> k_distribution(dk * 1000., strag_k * sqrt(dk*dk - 2.*dk + 2) * 1000.);
+   //std::normal_distribution<double> m_distribution(dm, strag_m);
+
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
+
+   i = 0;
+   for (imat=0; imat<nmat; imat++)
+   {
+     for (ip=0; ip<pnum; ip++) 
+     {
+       p0 = p[i+0-elesize];
+       p1 = p[i+1-elesize];
+       p2 = p[i+2-elesize];
+       p3 = p[i+3-elesize];
+       p4 = k_distribution(generator);
+       p5 = dm; //m_distribution(generator);
 
        p[i+0] = p0;
        p[i+1] = p1;

@@ -1164,11 +1164,22 @@ def AddModifyEmittance(factor1, factor2):
         ctypes.c_double(float(factor2)))
 
 
-def ChangeBeamParameters(dk, dm):
+def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.):
     """ Z. B. fuer Folie in der Beamline """
     optic.ChangeBeamParameters(
         ctypes.c_double(float(dk)),
-        ctypes.c_double(float(dm)))
+        ctypes.c_double(float(dm)),
+        ctypes.c_double(float(strag_k)),
+        ctypes.c_double(float(strag_m)))
+
+
+def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
+    """ Z. B. fuer Folie in der Beamline """
+    optic.ChangeBeamParameters2(
+        ctypes.c_double(float(dk/1000.)),
+        ctypes.c_double(float(dm/1000.)),
+        ctypes.c_double(float(strag_k_over_E)),
+        ctypes.c_double(float(strag_m)))
 
 
 def AddSlit(x, dx, y, dy):
@@ -1671,7 +1682,7 @@ if winver:
         system("PAUSE")
         print "compiling climioptic.cpp"
         print "------------------------"
-        system("g++ -Wall -fPIC -O -c climioptic.cpp")
+        system("g++ -std=c++0x -Wall -fPIC -O -c climioptic.cpp")
         print "\n"
 
         print "compiling limioptic.cpp"
@@ -1695,7 +1706,7 @@ else:
 
         print "compiling climioptic.cpp"
         print "------------------------"
-        system("g++ -Wall -fPIC -O -c climioptic.cpp")
+        system("g++ -std=c++0x -Wall -fPIC -O -c climioptic.cpp")
         print "\n"
 
         print "compiling limioptic.cpp"

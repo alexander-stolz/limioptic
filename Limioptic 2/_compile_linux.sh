@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "g++ -Wall -fPIC -O -c climioptic.cpp"
-g++ -Wall -fPIC -O -c climioptic.cpp
+g++ -std=c++0x -Wall -fPIC -O -c climioptic.cpp
 
 echo "g++ -Wall -fPIC -O -c limioptic.cpp"
 g++ -Wall -fPIC -O -c limioptic.cpp
