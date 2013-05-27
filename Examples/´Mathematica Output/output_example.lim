@@ -44,11 +44,9 @@ AddBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 5,-0,10)
 
 
 ### WAIST ###
-#AddSlit(0,s3,0,30)
 AddDrift(1,1.00362,1.3487)
 
 AddAMSQPT_YXY(1, q2a, q2b, VT*t, 35000, q, g)
-#####################
 
 ### FOIL ###
 #ChangeBeamParameters(4.28824538, 0.)
@@ -62,11 +60,6 @@ AddEdgeFocusing(2, .47, K2, 50.)
 
 AddDrift(1, 1.00362, 2.0003)
 ### WAIST ###
-
-### FOIL ###
-#ChangeBeamParameters(4.28824538, 0.)
-
-AddSlit(0,s4,0,30)
 AddDrift(1,1.00362,1.9888)
 
 # 35grad deflektor
@@ -75,7 +68,6 @@ AddDrift(1,1.00362,.3011)
 
 Name("ESA - QPT - ESA")  # QPT 3 - HEE
 AddAMSQPT_YXY(1,q3a,q3b,VT*t,35000,q,g)
-#####################
 
 # 35grad deflektor
 AddDrift(1,1.00362,.3078)
