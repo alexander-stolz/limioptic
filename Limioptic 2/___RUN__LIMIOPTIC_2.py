@@ -929,6 +929,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_insert_rgauss = QtGui.QAction('BeamRandomGauss (3d)', self)
                 self.menu_insert_rgauss.setStatusTip('Insert a gaussian beam')
                 self.connect(self.menu_insert_rgauss, QtCore.SIGNAL('triggered()'), self.InsertRGauss)
+                # Gauss Beam
+                self.menu_insert_gaussbeam = QtGui.QAction('GaussBeam (3d)', self)
+                self.menu_insert_gaussbeam.setStatusTip('Insert a gaussian beam (more options)')
+                self.connect(self.menu_insert_gaussbeam, QtCore.SIGNAL('triggered()'), self.InsertGaussBeam)
 
                 # Slit
                 self.menu_insert_slit = QtGui.QAction('Slit', self)
@@ -942,6 +946,9 @@ class CQtLimioptic(QtGui.QMainWindow):
                 # Modify Emittance
                 self.menu_insert_modifyemittance = QtGui.QAction('Modify Emittance', self)
                 self.connect(self.menu_insert_modifyemittance, QtCore.SIGNAL('triggered()'), self.InsertModifyEmittance)
+                # Change Parameters
+                self.menu_insert_chgparams = QtGui.QAction('ChangeBeamParameters', self)
+                self.connect(self.menu_insert_chgparams, QtCore.SIGNAL('triggered()'), self.InsertChgParams)
                 # general 6x6 Matrix
                 self.menu_insert_matrix = QtGui.QAction('General 6x6 matrix', self)
                 self.menu_insert_matrix.setStatusTip('Insert a general 6x6 transfer matrix')
@@ -1084,6 +1091,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_beamx)
                 menu_insert.addAction(self.menu_insert_beam3d)
                 menu_insert.addAction(self.menu_insert_rgauss)
+                menu_insert.addAction(self.menu_insert_gaussbeam)
                 menu_insert.addSeparator()
                 menu_insert.addAction(self.menu_insert_drift)
                 menu_insert.addAction(self.menu_insert_esd)
@@ -1093,6 +1101,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_slit)
                 menu_insert.addAction(self.menu_insert_bpm)
                 menu_insert.addAction(self.menu_insert_modifyemittance)
+                menu_insert.addAction(self.menu_insert_chgparams)
                 menu_insert.addAction(self.menu_insert_matrix)
                 menu_insert.addSeparator()
                 menu_insert.addAction(self.menu_insert_so110el)
@@ -1387,6 +1396,9 @@ class CQtLimioptic(QtGui.QMainWindow):
         def InsertRGauss(self):
             self.textedit.textCursor().insertText('############################################\nAddBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
 
+        def InsertGaussBeam(self):
+            self.textedit.textCursor().insertText('############################################\nAddGaussBeam(4,15,4,15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m\n############################################\n\n')
+
         def InsertAMSAcc(self):
             self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
 
@@ -1416,6 +1428,9 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertModifyEmittance(self):
             self.textedit.textCursor().insertText('AddModifyEmittance(1., 1.)\t# (factor x, factor dx)\n')
+
+        def InsertChgParams(self):
+            self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
 
         def InsertESD(self):
             self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
@@ -1516,7 +1531,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-05-26"
+VERSION          = "2013-05-28"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

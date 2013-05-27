@@ -75,6 +75,27 @@ def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
                 ctypes.c_double(float(dm)))
 
 
+def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., number=250.):
+    """ Gaussverteilten zufallsbasierten Strahl einfuegen """
+    global lastFunction
+    lastFunction = "AddGaussBeam"
+
+    optic.AddGaussBeam(
+        ctypes.c_double(float(x)),
+        ctypes.c_double(float(strag_x)),
+        ctypes.c_double(float(a)),
+        ctypes.c_double(float(strag_a)),
+        ctypes.c_double(float(y)),
+        ctypes.c_double(float(strag_y)),
+        ctypes.c_double(float(b)),
+        ctypes.c_double(float(strag_b)),
+        ctypes.c_double(float(dk)),
+        ctypes.c_double(float(strag_k)),
+        ctypes.c_double(float(dm)),
+        ctypes.c_double(float(strag_m)),
+        ctypes.c_double(float(number)))
+
+
 def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction

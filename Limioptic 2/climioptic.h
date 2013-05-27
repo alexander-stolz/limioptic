@@ -24,6 +24,7 @@ public:
    void PrintParticles(); // alle Startteilchen ausdrucken
    // Startteilchen hinzufuegen
    void AddParticle(double,double,double,double,double,double);
+   void AddGaussBeam(double,double,double,double,double,double,double,double,double,double,double,double,double);
    int GetParticleNum(); // Anzahl der Teilchen zurueckgeben
    int GetParticleSize(); // Anzahl der Werte, die ein Teilchen definieren, zurueckgeben
 

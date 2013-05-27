@@ -16,6 +16,7 @@ void Clear();
 void ClearParticles();
 void PrintParticles();
 void AddParticle(double,double,double,double,double,double);
+void AddGaussBeam(double,double,double,double,double,double,double,double,double,double,double,double,double);
 int GetParticleNum();
 int GetParticleSize();
 void ClearBeamline();

@@ -25,6 +25,13 @@ void AddParticle(double xdiff, double xangle, double ydiff, double yangle,
    optic.AddParticle(xdiff, xangle, ydiff, yangle, deltak, deltam);
 }
 
+void AddGaussBeam(double x, double sx, double a, double sa,
+   double y, double sy,double b,double sb,double k,double sk,double m,double sm,double number)
+{
+   optic.AddGaussBeam(x, sx, a, sa, y, sy, b, sb, k, sk, m, sm, number);
+}
+
+
 int GetParticleNum()
 {
    return optic.GetParticleNum();

@@ -40,7 +40,9 @@ class PythonHighlighter (QSyntaxHighlighter):
 
     functions = [
         "AddThinLens", "AddMSA", "AddSlit", "AddESD",
-        "AddVBFN", "AddAMSAcc", "AddBeam", "AddFNAccNeu"]
+        "AddVBFN", "AddAMSAcc", "AddBeam", "AddFNAccNeu",
+        "ChangeBeamParameters", "AddGaussBeam", "AddBeamRandomGauss", "AddBeam3d",
+        "AddBeamX", "AddQuadrupolRadFoc", "AddQuadrupolAxFoc", "AddAMSQPT"]
 
     braces = ['\{', '\}', '\(', '\)', '\[', '\]']
 

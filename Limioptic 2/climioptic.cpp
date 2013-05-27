@@ -74,6 +74,37 @@ void CLimioptic::AddParticle(double xdiff,double xangle,double ydiff,double yang
 	particles.push_back(iele);
 }
 
+void CLimioptic::AddGaussBeam(double x,double sx,double a, double sa,
+   double y, double sy, double b, double sb, double k, double sk, double m, double sm, double number)
+{
+   double z    =  0.0;
+   double iele = -1.0;
+
+   int num = (int)number;
+   std::cout << num << endl;
+
+   std::default_random_engine generator;
+   std::normal_distribution<double> x_distribution(x, sx);
+   std::normal_distribution<double> a_distribution(a, sa);
+   std::normal_distribution<double> y_distribution(y, sy);
+   std::normal_distribution<double> b_distribution(b, sb);
+   std::normal_distribution<double> k_distribution(k, sk);
+   std::normal_distribution<double> m_distribution(m, sm);
+
+   int i;
+   for(i=0; i<num; i++)
+   {
+      particles.push_back(x_distribution(generator));
+      particles.push_back(a_distribution(generator));
+      particles.push_back(y_distribution(generator));
+      particles.push_back(b_distribution(generator));
+      particles.push_back(k_distribution(generator));
+      particles.push_back(m_distribution(generator));
+      particles.push_back(z);
+      particles.push_back(iele);
+   }
+}
+
 int CLimioptic::GetParticleNum()
 {
    return (int)(particles.size()/particlesize);
