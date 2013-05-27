@@ -56,11 +56,11 @@ AddAMSQPT_YXY(1, q2a, q2b, VT*t, 35000, q, g)
 #####################
 
 ### FOIL ###
-#Name("FOiL")
+Name("FOiL")
 
 # 8+
 # Chrom
-#ChangeBeamParameters(dk=0, strag_k=.0338/48.8778 * 1000.)
+ChangeBeamParameters(dk=0, strag_k=.0338/48.8778 * 1000.)
 # Mangan
 #ChangeBeamParameters(dk=4.28824538, strag_k=.0345/48.6682 * 1000.)
 
@@ -78,11 +78,9 @@ AddDrift(1, 1.00362, 2.0003)
 ### WAIST ###
 
 ### FOIL ###
-# 8+
-# Chrom
-#ChangeBeamParameters(dk=0, strag_k=.0338/48.8778 * 1000.)
-# Mangan
-ChangeBeamParameters(dk=4.28824538, strag_k=.0345/48.6682 * 1000.)
+#Name("FOiL")
+#ChangeBeamParameters(dk=4.28824538, strag_k_over_E=0.0345/48.8778) #8+
+#ChangeBeamParameters(dk=5.83868315, strag_k_over_E=0.0266/25.2968) #4+
 
 #AddSlit(0,s4,0,30)
 AddDrift(1,1.00362,1.9888)
