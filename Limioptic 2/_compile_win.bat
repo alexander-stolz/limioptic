@@ -13,5 +13,5 @@
 @echo.
 @echo building library
 @echo ------------------------
-@g++ -fPIC -shared -Wl,-soname,liblimioptic.so -O -o liblimioptic.so limioptic.o climioptic.o
+@g++ -fPIC -shared -Wl,-soname,liblimioptic-win.so -O -o liblimioptic-win.so limioptic.o climioptic.o
 @echo completed.

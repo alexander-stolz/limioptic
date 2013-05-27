@@ -364,7 +364,7 @@ class doit3d(threading.Thread):
                 self.mycells = vtk.vtkCellArray()
 
                 # Eine neue Polygonlinie definieren.
-                self.polylines = [vtk.vtkPolyLine() for line in xrange(parts + 1)]
+                self.polylines = [vtk.vtkPolyLine() for line in xrange(parts + 1 + len(zi) + 1)]
 
                 # Alle Punkte in mypoints laden und mit polylines verknuepfen. Jede Polyline kommt in eine Cell.
                 for part in xrange(parts):
@@ -381,6 +381,26 @@ class doit3d(threading.Thread):
                 self.polylines[parts].GetPointIds().SetId(0, parts * segs)
                 self.polylines[parts].GetPointIds().SetId(1, parts * segs + 1)
                 self.mycells.InsertNextCell(self.polylines[parts])
+
+                # Marker
+                marker = 1
+                for seg in zi:
+                    self.mypoints.InsertNextPoint(seg * SCALE3D, -10., 0)
+                    self.mypoints.InsertNextPoint(seg * SCALE3D, +10., 0)
+                    self.polylines[parts+marker].GetPointIds().SetNumberOfIds(2)
+                    self.polylines[parts+marker].GetPointIds().SetId(0, parts * segs + 2 * marker)
+                    self.polylines[parts+marker].GetPointIds().SetId(1, parts * segs + 2 * marker + 1)
+                    self.mycells.InsertNextCell(self.polylines[parts+marker])
+                    marker += 1
+
+                # Geometrie
+                if (myapp.menu_plot_geo.isChecked()):
+                    iele  = limioptic.geo_s.GetNumberOfTuples()
+                    self.polylines[-1].GetPointIds().SetNumberOfIds(iele)
+                    for point in xrange(iele):
+                        self.mypoints.InsertNextPoint(limioptic.geo_s.GetValue(point) * SCALE3D, limioptic.geo_y.GetValue(point), 0.)
+                        self.polylines[-1].GetPointIds().SetId(point, parts * segs + 2 * marker + point)
+                    self.mycells.InsertNextCell(self.polylines[-1])
 
                 # Datenobjekt erzeugen
                 self.mydata = vtk.vtkPolyData()
@@ -403,6 +423,7 @@ class doit3d(threading.Thread):
                 # Hier bekommt er den Mapper
                 self.actor.SetMapper(self.mapper)
                 self.actor.GetProperty().SetOpacity(OPACITY / 1000.)
+                #self.actor.GetProperty().SetColor(0., 0., 0.)
 
                 self.ren = vtk.vtkRenderer()
                 #self.ren.SetBackground(.1, .2, .4)
@@ -414,11 +435,13 @@ class doit3d(threading.Thread):
                 ### Axen
                 self.axisactor = vtk.vtkCubeAxesActor()
                 self.axisactor.SetXAxisRange(0., zi[-1])
+                self.axisactor.SetYAxisRange(-30., 30)
                 self.axisactor.SetBounds(self.actor.GetBounds())
                 self.axisactor.SetXTitle("s in m")
                 self.axisactor.YAxisVisibilityOff()
                 self.axisactor.ZAxisVisibilityOff()
                 self.axisactor.SetCamera(self.ren.GetActiveCamera())
+                self.axisactor.GetProperty().SetColor(1, 1, 1)
                 self.ren.AddActor(self.axisactor)
                 self.ren.ResetCamera()
 
@@ -431,6 +454,20 @@ class doit3d(threading.Thread):
 
                 self.iren.SetRenderWindow(self.renwin)
                 self.iren.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
+
+                ### Text
+                #txtFilter = vtk.vtkLinearExtrusionFilter()
+                #txtFilter.SetScaleFactor(20.)
+                #txtMapper = vtk.vtkPolyDataMapper()
+                #txtMapper.SetInputConnection(txtFilter.GetOutputPort())
+
+                #for name in limioptic.textArray
+                #    text = vtk.vtkVectorText()
+                #    text.SetText(name[1])
+                #    txtFilter.SetInputConnection(text.GetOutputPort())
+                #    txtActor = vtk.vtkActor()
+                #    txtActor.SetMapper(txtMapper)
+                #    self.ren.AddActor(txtActor)
 
                 ### Exporter
                 self.writer = vtk.vtk.vtkPNGWriter()

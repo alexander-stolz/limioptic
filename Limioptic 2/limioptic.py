@@ -1164,6 +1164,13 @@ def AddModifyEmittance(factor1, factor2):
         ctypes.c_double(float(factor2)))
 
 
+def ChangeBeamParameters(dk, dm):
+    """ Z. B. fuer Folie in der Beamline """
+    optic.ChangeBeamParameters(
+        ctypes.c_double(float(dk)),
+        ctypes.c_double(float(dm)))
+
+
 def AddSlit(x, dx, y, dy):
     global lastFunction
     lastFunction = "AddSlit"

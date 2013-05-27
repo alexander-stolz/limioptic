@@ -70,6 +70,11 @@ void AddModifyEmittance(double factor1,double factor2)
    optic.AddModifyEmittance(factor1, factor2);
 }
 
+void ChangeBeamParameters(double dk, double dm)
+{
+   optic.ChangeBeamParameters(dk, dm);
+}
+
 void AddThinLens(int num,double fx,double fy,double length)
 {
    optic.AddThinLens(num,fx,fy,length);
@@ -168,6 +173,11 @@ void ApplySlit(double *p,double x,double dx,double y,double dy)
 void ApplyModifyEmittance(double *p,int n, double factor1, double factor2)
 {
    optic.ApplyModifyEmittance(p,n,factor1,factor2);
+}
+
+void ApplyChangeBeamParameters(double *p, int n, double dk, double dm)
+{
+   optic.ApplyModifyEmittance(p, n, dk, dm);
 }
 
 void ApplyESD(double *p,int n,double gamma2,double alpha,double rho0,

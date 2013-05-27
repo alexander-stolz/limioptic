@@ -34,7 +34,8 @@ public:
    void AddDrift(int,double,double); // Driftstrecke zur Beamline hinzufuegen
    void AddBeamProfile();
    void AddSlit(double,double,double,double);
-   void AddModifyEmittance(double,double);
+   void AddModifyEmittance(double, double);
+   void ChangeBeamParameters(double, double);
    void AddThinLens(int,double,double,double); // Duenne Linse zur Beamline hinzufuegen
    // radial fokussierenden Quadrupol hinzufuegen
    void AddQuadrupolRadFoc(int,double,double,double);
@@ -65,6 +66,7 @@ public:
    void ApplyBeamProfile(double*);
    void ApplySlit(double*,double,double,double,double);
    void ApplyModifyEmittance(double*, int, double, double);
+   void ApplyChangeBeamParameters(double*, int, double, double);
    void ApplyThinLens(double*,int,double,double,double);
    void ApplyQuadrupolRadFoc(double*,int,double,double,double);
    void ApplyAMSQuadrupolRadFoc(double*,int,double,double,double,double);
@@ -89,7 +91,7 @@ public:
    // x-Achse (auch sog. radiale Richtung) zeigt in Strahlrichtung gesehen nach links
    // y-Achse (auch sog. axiale Richtung) zeigt nach oben
    vector<double> particles;
-   static const int particlesize=8; // enthaelt die Anzahl der Parameter pro Teilchen
+   static const int particlesize = 8; // enthaelt die Anzahl der Parameter pro Teilchen
 
    // Die beamline besteht aus einer Anzahl von ionenoptischen Elementen.
    // Jedes ionenoptische Element wird durch einen vector<double> repraesentiert.

@@ -165,6 +165,17 @@ void CLimioptic::AddModifyEmittance(double factor1, double factor2)
    beamline.push_back(mod);
 }
 
+void CLimioptic::ChangeBeamParameters(double dk, double dm)
+{
+   vector<double> param;
+   param.clear();
+   param.push_back(12.0);
+   param.push_back(1.);
+   param.push_back(dk);
+   param.push_back(dm);
+   beamline.push_back(param);
+}
+
 void CLimioptic::AddThinLens(int number, double fx, double fy, double length)
 {
    // Siehe ApplyThinLens fuer Dokumentation
@@ -394,6 +405,10 @@ void CLimioptic::CalculateTrajectories()
 			ApplyModifyEmittance(&trajectories.front()+itraj,(int)beamline[ibeamline][1],
 			   beamline[ibeamline][2],beamline[ibeamline][3]);
 			break;
+      case 12:
+         ApplyChangeBeamParameters(&trajectories.front()+itraj, (int)beamline[ibeamline][1],
+            beamline[ibeamline][2], beamline[ibeamline][3]);
+         break;
 		case 15:
 			ApplyAMSQuadrupolAxFoc(&trajectories.front()+itraj,(int)beamline[ibeamline][1],
 			   beamline[ibeamline][2],beamline[ibeamline][3],beamline[ibeamline][4],beamline[ibeamline][5]);
@@ -754,6 +769,55 @@ void CLimioptic::ApplyModifyEmittance(double *p, int nmat, double factor1, doubl
 
 		 i=i+particlesize;
 	  }
+   }
+}
+
+
+void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm)
+{
+   /*
+   dk, dm aendern. Zb bei Folie.
+   */
+   int pnum, imat, i, j, elesize, ip;
+   double p0, p1, p2, p3, p4, p5;
+
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
+
+   i = 0;
+   for (imat=0; imat<nmat; imat++)
+   {
+     for (ip=0; ip<pnum; ip++) 
+     {
+       p0 = p[i+0-elesize];
+       p1 = p[i+1-elesize];
+       p2 = p[i+2-elesize];
+       p3 = p[i+3-elesize];
+       p4 = dk;
+       p5 = dm;
+
+       p[i+0] = p0;
+       p[i+1] = p1;
+       p[i+2] = p2;
+       p[i+3] = p3;
+       p[i+4] = p4;
+       p[i+5] = p5;
+       p[i+6] = p[i+6-elesize];
+
+       // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
+       for (j=7;j<particlesize;j++)
+       {
+         p[i+j]=p[i+j-elesize];
+       }
+
+       // Index des ionenoptischen Elements raufzaehlen
+       if (imat==0)
+       {
+         p[i+7]=p[i+7]+1.0;
+       }
+
+       i=i+particlesize;
+     }
    }
 }
 
