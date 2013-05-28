@@ -653,7 +653,8 @@ class doitXY(threading.Thread):
 
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, j + 1)
-                                self.line.SetColor(255, 0, 0, 255)
+                                #self.line.SetColor(255, 0, 0, 255)
+                                self.line.SetColor(XCOLOR[0], XCOLOR[1], XCOLOR[2], XCOLOR[3])
                                 self.line.SetWidth(.7)
                         if (myapp.menu_output_file.isChecked()):    ausgabe.close()
                 if (ploty):
@@ -669,7 +670,8 @@ class doitXY(threading.Thread):
 
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, l + j + xy)
-                                self.line.SetColor(0, 255, 0, 255)
+                                #self.line.SetColor(0, 255, 0, 255)
+                                self.line.SetColor(YCOLOR[0], YCOLOR[1], YCOLOR[2], YCOLOR[3])
                                 self.line.SetWidth(.7)
                         if (myapp.menu_output_file.isChecked()):    ausgabe.close()
 
@@ -1539,6 +1541,8 @@ OPACITY          = 50
 NumberOfInputs   = 8
 SCALE3D          = 10.
 SCREENSHOTNUMBER = 0
+XCOLOR           = 255, 0, 0, 255
+YCOLOR           = 0, 255, 0, 255
 
 for i in xrange(32):
         INPUT.append(1.)
