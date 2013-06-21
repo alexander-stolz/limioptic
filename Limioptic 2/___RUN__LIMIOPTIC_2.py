@@ -1136,8 +1136,9 @@ class CQtLimioptic(QtGui.QMainWindow):
 
                 ### GUI definieren
                 self.main_frame = QtGui.QWidget()
-                self.textedit = QtGui.QTextEdit()
+                self.textedit = myedit(self)
                 self.textedit.setLineWrapMode(QtGui.QTextEdit.NoWrap)
+                self.setAcceptDrops(True)
                 self.highlighter = syntax.PythonHighlighter(self.textedit.document())
                 hbox1 = QtGui.QHBoxLayout()
                 hbox1.addWidget(self.textedit)
@@ -1234,13 +1235,17 @@ class CQtLimioptic(QtGui.QMainWindow):
                                 msg.exec_()
 
 #############################
-        def LoadFile(self):
-                self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim;;*.*")
+        def LoadFile(self, filename=None):
+                if not filename:
+                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim;;*.*")
+                else:
+                    self.FileName = filename
                 if (self.FileName != ''):
                         myfile = open(self.FileName, 'r')
                         self.textedit.setText(myfile.read())
                         myfile.close()
                         self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+                        print "{} was loaded".format(self.FileName)
 
                         try:
                             global NumberOfInputs, BEZEICHNUNGEN, INPUT
@@ -1256,10 +1261,12 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def LoadAutosave(self):
                 try:
-                        myfile = open("_save.lim", "r")
-                        self.textedit.setText(myfile.read())
-                        myfile.close()
-                        self.setWindowTitle("Limioptic 2  -  _save.lim")
+                    myfile = open("_save.lim", "r")
+                    title  = "Limioptic 2  -  _save.lim"
+                    self.textedit.setText(myfile.read())
+                    myfile.close()
+                    self.setWindowTitle(title)
+
                 except:
                         print "_save.lim not found!"
 
@@ -1477,6 +1484,38 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.dialog = DialogWindow(title, text)
 
 
+class myedit(QtGui.QTextEdit):
+    def __init__(self, type, parent=None):
+        super(myedit, self).__init__(parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.accept()
+        else:
+            event.ignore()
+
+    def dragMoveEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event):
+        if event.mimeData().hasUrls:
+            event.setDropAction(QtCore.Qt.CopyAction)
+            event.accept()
+            links = []
+            for url in event.mimeData().urls():
+                links.append(str(url.toLocalFile()))
+            self.emit(QtCore.SIGNAL("dropped"), links)
+            if len(links) == 1 and links[0].endswith(".lim"):
+                myapp.LoadFile(links[0])
+        else:
+            event.ignore()
+
+
 ##### Dialoge #####
 ###################
 class CInsertParticleDialog(QtGui.QDialog):
@@ -1533,7 +1572,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-05-28"
+VERSION          = "2013-06-21"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
