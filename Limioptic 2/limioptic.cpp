@@ -77,9 +77,9 @@ void AddModifyEmittance(double factor1,double factor2)
    optic.AddModifyEmittance(factor1, factor2);
 }
 
-void ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m)
+void ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
 {
-   optic.ChangeBeamParameters(dk, dm, strag_k, strag_m);
+   optic.ChangeBeamParameters(dk, dm, strag_k, strag_m, strag_x, strag_y, strag_dx, strag_dy);
 }
 
 void ChangeBeamParameters2(double dk, double dm, double strag_k, double strag_m)
@@ -187,9 +187,9 @@ void ApplyModifyEmittance(double *p,int n, double factor1, double factor2)
    optic.ApplyModifyEmittance(p,n,factor1,factor2);
 }
 
-void ApplyChangeBeamParameters(double *p, int n, double dk, double dm, double strag_k, double strag_m)
+void ApplyChangeBeamParameters(double *p, int n, double dk, double dm, double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
 {
-   optic.ApplyChangeBeamParameters(p, n, dk, dm, strag_k, strag_m);
+   optic.ApplyChangeBeamParameters(p, n, dk, dm, strag_k, strag_m, strag_x, strag_y, strag_dx, strag_dy);
 }
 
 void ApplyChangeBeamParameters2(double *p, int n, double dk, double dm, double strag_k, double strag_m)

@@ -36,7 +36,7 @@ public:
    void AddBeamProfile();
    void AddSlit(double,double,double,double);
    void AddModifyEmittance(double, double);
-   void ChangeBeamParameters(double, double, double, double);
+   void ChangeBeamParameters(double, double, double, double, double, double, double, double);
    void ChangeBeamParameters2(double, double, double, double);
    void AddThinLens(int,double,double,double); // Duenne Linse zur Beamline hinzufuegen
    // radial fokussierenden Quadrupol hinzufuegen
@@ -68,7 +68,7 @@ public:
    void ApplyBeamProfile(double*);
    void ApplySlit(double*,double,double,double,double);
    void ApplyModifyEmittance(double*, int, double, double);
-   void ApplyChangeBeamParameters(double*, int, double, double, double, double);
+   void ApplyChangeBeamParameters(double*, int, double, double, double, double, double, double, double, double);
    void ApplyChangeBeamParameters2(double*, int, double, double, double, double);
    void ApplyThinLens(double*,int,double,double,double);
    void ApplyQuadrupolRadFoc(double*,int,double,double,double);

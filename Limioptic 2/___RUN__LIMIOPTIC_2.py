@@ -284,9 +284,8 @@ class inputcontrol(QtGui.QDialog):
             try:
                     limioptic.ExecText(str(myapp.textedit.toPlainText()), INPUT, SourceObj.Source)
                     limioptic.optic.CalculateTrajectories()
-            except:
-                    print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction)
-                    return -1
+            except Exception, e:
+                    print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction), "\n===============================\n", e, "\n===============================\n\n"
 
             parts = limioptic.optic.GetParticleNum()                    # Anz. Partikel
             segs  = limioptic.optic.GetTrajectoriesSize() / parts / 8   # Anz. Segmente
@@ -647,7 +646,7 @@ class doitXY(threading.Thread):
                                 self.arrX[j].SetName("X-Strahl %1.0f Start: %1.2f" % (j, xi[j][0]))
                                 for i in xrange(segs):
                                         self.arrX[j].InsertNextValue(xi[j][i])
-                                        if (myapp.menu_output_file.isChecked()):    print >> ausgabe, zi[i], xi[j][i]
+                                        if (myapp.menu_output_file.isChecked()) and not (xi[j][i] == yi[j][i] == 0.):    print >> ausgabe, zi[i], xi[j][i]
                                 self.table.AddColumn(self.arrX[j])
                                 if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
 
@@ -664,7 +663,7 @@ class doitXY(threading.Thread):
                                 self.arrY[l].SetName("Y-Strahl %1.0f Start: %1.2f" % (l, yi[l][0]))
                                 for i in xrange(segs):
                                         self.arrY[l].InsertNextValue(yi[l][i])
-                                        if (myapp.menu_output_file.isChecked()):    print >> ausgabe, zi[i], yi[l][i]
+                                        if (myapp.menu_output_file.isChecked()) and not (xi[l][i] == yi[l][i] == 0.):    print >> ausgabe, zi[i], yi[l][i]
                                 self.table.AddColumn(self.arrY[l])
                                 if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
 
@@ -1384,7 +1383,8 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertSource(self):
                 global SourceObj
-                SourceObj.LoadSource(QtGui.QFileDialog.getOpenFileName(self, "Open file", "."))
+                _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
+                SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endsWith("TRANSMIT.txt") else "limioptic"))
                 SourceObj.NormalizeEnergy()
                 SourceObj.ShowFits()
                 SourceObj.UserInteraction.ChooseFilter()
@@ -1406,7 +1406,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('############################################\nAddBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
 
         def InsertGaussBeam(self):
-            self.textedit.textCursor().insertText('############################################\nAddGaussBeam(4,15,4,15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nAddGaussBeam(4,15,4,15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m, strag_k, strag_m, number)\n############################################\n\n')
 
         def InsertAMSAcc(self):
             self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
@@ -1470,17 +1470,17 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def About(self):
             title = "About Limioptic 2"
-            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\n"
-            "Feel free to send me any feedback or suggestions to amstolz@gmail.com.\n\n"
-            "Visit www.limioptic.de for more information.\n\nThanks for using Limioptic!\n\n"
-            "Why the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\n"
-            "Thanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
+            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\n"\
+                "Feel free to send me any feedback or suggestions to amstolz@gmail.com.\n\n"\
+                "Visit www.limioptic.de for more information.\n\nThanks for using Limioptic!\n\n"\
+                "Why the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\n"\
+                "Thanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
             self.dialog = DialogWindow(title, text)
 
         def Licence(self):
             title = "Limioptic 2 Licence"
-            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. "
-            "However, if you use it for some work whose results are made public, then you have to reference it properly."
+            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. "\
+                "However, if you use it for some work whose results are made public, then you have to reference it properly."
             self.dialog = DialogWindow(title, text)
 
 

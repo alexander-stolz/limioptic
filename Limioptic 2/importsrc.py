@@ -1,110 +1,208 @@
+#!/usr/bin/env python
+
 from pylab import *
 import random
 from PyQt4 import QtGui as gui
 from PyQt4 import QtCore as core
 import sys
-import time
+#import pickle
+
+#### INFO Bereich ####
+"""
+self.Source = [[x, dx, y, dy, dk, dm], ...]
+Entspricht Limioptic Format
+
+SRIM:
+Zeilen. 0-9 Header, dann
+
+ Ion  Atom   Energy        Depth       Lateral-Position        Atom Direction
+ Numb Numb    (eV)          X(A)        Y(A)       Z(A)      Cos(X)  Cos(Y) Cos(Z)
+T    1 17 ,2071535E+08   1000177E-02 -,2065E+02 -,4704E+02   ,9999303 -,0104408 -,0055138
+T    2 17 ,2055665E+08   1000197E-02 -,4745E+02  ,1586E+02   ,9999768 -,0063336  ,0025058
+...
+"""
+
 
 class ImportSource():
     def __init__(self):
-        self.mittel = [0]*6
-        self.sigma = [0]*4
+        self.mittel = [0.]*6
+        self.sigma  = [0.]*6
         self.Source = []
         self.Selection = []
         self.UserInteraction = UserInteraction(self)
 
-    def LoadSource(self,File):
-        self.SourceFile = File
+    def LoadSource(self, filename, filetype="limioptic"):
+        self.SourceFile = filename
+        self.mittel = [0.]*6
+        self.sigma  = [0.]*6
         self.Source = []
-        i = 0
-        for line in open(self.SourceFile):        
-            try:
-                temp = [float(line.split()[0]),float(line.split()[1]),float(line.split()[2]),float(line.split()[3]),float(line.split()[4]),float(line.split()[5])]
-                self.Source.append(temp)
-                i += 1
-                for j in range(0,6):
-                    self.mittel[j]+=temp[j]
-            except:
+        self.Selection = []
+        processedParticleNr = 0
+        currentLineNr = 1
+
+        if filetype == "limioptic":
+            for line in open(self.SourceFile):
+                currentLineNr += 1
+                if currentLineNr % 100 == 0: print "\r{} particles processed.".format(currentLineNr),
                 try:
-                    temp = [float(line.split()[0]),float(line.split()[1]),float(line.split()[2]),float(line.split()[3]),0.,0.]
-                    self.Source.append(temp)
-                    i += 1
-                    for j in range(0,6):
-                        self.mittel[j]+=temp[j]
+                    temp = [float(elem) for elem in line.split()]
+                    if len(temp) == 6:
+                        self.Source.append(temp)
+                    elif len(temp) == 4:
+                        temp += [0., 0.]
+                        self.Source.append(temp)
+                    else:
+                        print "length of line is not 4 or 6 in line:", currentLineNr
+                        continue
+                    processedParticleNr += 1
+                    for j in xrange(6):
+                        self.mittel[j] += temp[j]
+                except Exception, e:
+                    print "something went really wrong in line", currentLineNr
+                    print "=========================\n", e, "\n=========================\n"
+
+        elif filetype == "SRIM":
+            content = open(self.SourceFile).readlines()[12:]
+            currentLineNr = 12
+            _laenge = len(content) + 12
+            for line in content:
+                currentLineNr += 1
+                if currentLineNr % 100 == 0: print "\r{} of {}".format(currentLineNr, _laenge),
+                try:
+                    (_energy, _s, _x, _y, _cosS, _cosX, _cosY) = [float(x.replace(",", ".")) for x in line[1:].split()[2:]]
+                    self.Source.append([_x*1e-7, _cosX*1e3, _y*1e-7, _cosY*1e3, _energy*1e-6, 0.])
+                    processedParticleNr += 1
+                    for j in xrange(6):
+                        self.mittel[j] += [_x, _cosX, _y, _cosY, _energy, 0.][j]
                 except:
-                    print "something went wrong in line", i+1
-                    #print line.split()
-                
-        for j in range(0,6):
-            self.mittel[j] = self.mittel[j]/len(self.Source)
-        print len(self.Source),"particles read."
-        print "average energy deviation is",self.mittel[4],"permille."
-        print "average mass deviation is",self.mittel[5],"permille."
+                    print "\rsomething weired happened in line", currentLineNr, "of", len(content)
+            currentLineNr -= 12
+            print
+
+        ## Mittelwert berechnen
+        self.mittel = [self.mittel[i] / processedParticleNr for i in xrange(6)]
+
+        ## Fehler berechnen
+        summeDeltaX = [0.]*6
+        for i in xrange(processedParticleNr):
+            summeDeltaX = [summeDeltaX[j] + (self.Source[i][j] - self.mittel[j])**2 for j in xrange(6)]
+            if i % 100 == 0: print "\r{} of {}".format(i, processedParticleNr),
+        self.sigma = [(summeDeltaX[j] / (processedParticleNr - 1))**.5 for j in xrange(6)]
+
+        print "\r{} of {} particles read.".format(len(self.Source), currentLineNr)
+
+        if filetype == "limioptic":
+            print "average energy loss is\t{} {}.\t(+/- {})".format(self.mittel[4], "permille", self.sigma[4])
+        elif filetype == "SRIM":
+            print "average remaining energy is\t{} {}.\t(+/- {})".format(self.mittel[4], "MeV", self.sigma[4])
+
+        #print "average mass loss is\t{} permille.\t(+/- {})".format(self.mittel[5], self.sigma[5])
+
+        ## Umrechnen absolute in relative Werte der Energie
+        if filetype == "SRIM":
+            if self.mittel[4] != 0.:
+                for i in xrange(len(self.Source)):
+                    self.Source[i][4] = (self.Source[i][4] / self.mittel[4]) - 1
+            else:
+                print "there was an error while calculating the relative energy deviations. Setting dK = 0."
+                for i in xrange(len(self.Source)):
+                    self.Source[i][4] = (self.Source[i][4] / self.mittel[4]) - 1
 
     def NormalizeEnergy(self):
-        for i in range(0,len(self.Source)):
+        for i in xrange(len(self.Source)):
             self.Source[i][4] -= self.mittel[4]
 
     def NormalizeMass(self):
-        for i in range(0,len(self.Source)):
+        for i in xrange(len(self.Source)):
             self.Source[i][5] -= self.mittel[5]
-        
+
     def ShowFits(self):
-        art = "x","x'","y","y'"
-        ax = [0]*4
-        fig, ((ax[0],ax[1]),(ax[2],ax[3])) = subplots(nrows=2,ncols=2)
-        for z in range(0,4):
-            sigma = 0.
-            for j in range(0,len(self.Source)):
-                sigma += (self.Source[j][z]-self.mittel[z])**2
-            self.sigma[z] = sqrt(sigma/len(self.Source))
+        art = "x", "x'", "y", "y'"
+        ax  = [0]*4
+        fig, ((ax[0], ax[1]), (ax[2], ax[3])) = subplots(nrows=2, ncols=2)
 
-            n, bins, patches = ax[z].hist([row[z] for row in self.Source],bins=arange(self.mittel[z]-3*self.sigma[z],self.mittel[z]+3*self.sigma[z],self.sigma[z]/10.),normed=True)
+        for z in xrange(4):
+            n, bins, patches = ax[z].hist(
+                [row[z] for row in self.Source],
+                bins=arange(
+                    self.mittel[z] - 3 * self.sigma[z],
+                    self.mittel[z] + 3 * self.sigma[z],
+                    self.sigma[z] / 10.),
+                normed=True)
 
-            y = normpdf(arange(self.mittel[z]-3*self.sigma[z],self.mittel[z]+3*self.sigma[z],self.sigma[z]/100.),self.mittel[z],self.sigma[z])
-            ax[z].plot(arange(self.mittel[z]-3*self.sigma[z],self.mittel[z]+3*self.sigma[z],self.sigma[z]/100.),y)
+            y = normpdf(
+                arange(
+                    self.mittel[z] - 3 * self.sigma[z],
+                    self.mittel[z] + 3 * self.sigma[z],
+                    self.sigma[z] / 100.),
+                self.mittel[z],
+                self.sigma[z])
+            ax[z].plot(
+                arange(
+                    self.mittel[z] - 3 * self.sigma[z],
+                    self.mittel[z] + 3 * self.sigma[z],
+                    self.sigma[z] / 100.),
+                y)
             ax[z].grid(True)
-            #ax[z].set_ylabel("Probability")
             ax[z].set_title(art[z])
-            print "mu {}\t=".format(art[z]),self.mittel[z],"\nsigma\t=",self.sigma[z]
+
+            print "mu {}\t=".format(art[z]), self.mittel[z], "\nsigma\t=", self.sigma[z]
 
         fig.canvas.set_window_title("Source Beam - {}".format(self.SourceFile))
         tight_layout()
         show()
 
-    def SelectRunaways(self,f):
+    def SelectRunaways(self, f):
         self.Selection = []
-        for i in range(0,len(self.Source)):
-            x = self.Source[i][0]
+        for i in xrange(len(self.Source)):
+            x  = self.Source[i][0]
             xx = self.Source[i][1]
-            y = self.Source[i][2]
+            y  = self.Source[i][2]
             yy = self.Source[i][3]
-            phi1 = arctan(xx/x)
-            phi2 = arctan(yy/y)
-            if(((f*self.sigma[0]*cos(phi1))**2+(f*self.sigma[1]*sin(phi1))**2 < x**2+xx**2) or ((f*self.sigma[2]*cos(phi2))**2+(f*self.sigma[3]*sin(phi2))**2 < y**2+yy**2)):
+            phi1 = arctan(xx / x)
+            phi2 = arctan(yy / y)
+            if (((f*self.sigma[0]*cos(phi1))**2+(f*self.sigma[1]*sin(phi1))**2 < x**2+xx**2) or ((f*self.sigma[2]*cos(phi2))**2+(f*self.sigma[3]*sin(phi2))**2 < y**2+yy**2)):
                 self.Selection.append(self.Source[i])
                 #print phi1, self.sigma[0],(self.sigma[0]*cos(phi1))**2+(self.sigma[1]*sin(phi1))**2 , x**2+xx**2
-        print "Filter applied. Before:",len(self.Source),"Particles, after:",len(self.Selection),"Particles."
-        
-    def SelectRandom(self,num):
+        self.SaveSource(data=self.Selection)
+        print "\nFilter applied. Before:", len(self.Source), "Particles, after:", len(self.Selection), "Particles.\n"
+
+    def SelectRandom(self, num):
         self.Selection = []
         random.seed()
-        for i in range(0,num):
-            self.Selection.append(self.Source[random.randint(0,len(self.Source)-1)])
-        print "Filter applied. Before:",len(self.Source),"Particles, after:",len(self.Selection),"Particles."
+        for i in xrange(num):
+            self.Selection.append(self.Source[random.randint(0, len(self.Source) - 1)])
+        self.SaveSource(data=self.Selection)
+        print "\nFilter applied. Before:", len(self.Source), "Particles, after:", len(self.Selection), "Particles.\n"
 
-    def SelectBorder(self,f,step):
+    def SelectBorder(self, f, step):
         self.Selection = []
-        for i in range(0,360,int(step)):
+        for i in xrange(0, 360, int(step)):
             radi = radians(i)
-            for j in range (0,360,int(step)):
+            for j in xrange(0, 360, int(step)):
                 radj = radians(j)
-                self.Selection.append([f*self.sigma[0]*cos(radi)*cos(radj),f*self.sigma[1]*cos(radi)*sin(radj),f*self.sigma[2]*sin(radi)*cos(radj),f*self.sigma[3]*sin(radi)*sin(radj),self.Source[random.choice(range(0,len(self.Source)))][4],0.])
-        print "Filter applied. Before:",len(self.Source),"Particles, after:",len(self.Selection),"Particles."
+                self.Selection.append(
+                    [
+                        f*self.sigma[0]*cos(radi)*cos(radj),
+                        f*self.sigma[1]*cos(radi)*sin(radj),
+                        f*self.sigma[2]*sin(radi)*cos(radj),
+                        f*self.sigma[3]*sin(radi)*sin(radj),
+                        self.Source[random.choice(range(len(self.Source)))][4],
+                        0.
+                    ])
+        self.SaveSource(data=self.Selection)
+        print "\nFilter applied. Before:", len(self.Source), "Particles, after:", len(self.Selection), "Particles.\n"
+
+    def SaveSource(self, data=None, filename="source.dat"):
+        if data is None: data = self.Source
+        f = open(filename, "w")
+        for line in data:
+            print >> f, line[0], line[1], line[2], line[3], line[4], line[5]
+        f.close()
 
 
 class UserInteraction(gui.QDialog):
-    def __init__(self,parent):
+    def __init__(self, parent):
         self.parent = parent
         gui.QDialog.__init__(self)
         self.setWindowTitle("Filter Particles")
@@ -116,12 +214,15 @@ class UserInteraction(gui.QDialog):
         self.button.append(gui.QPushButton("Select Random Particles"))
         self.button.append(gui.QPushButton("Select Border"))
         self.button.append(gui.QPushButton("Select All Particles"))
-        for i in range(0,len(self.button)):
+
+        for i in xrange(len(self.button)):
             vbox.addWidget(self.button[i])
-        self.connect(self.button[0],core.SIGNAL("clicked()"),self.filter1)
-        self.connect(self.button[1],core.SIGNAL("clicked()"),self.filter2)
-        self.connect(self.button[2],core.SIGNAL("clicked()"),self.filter3)
-        self.connect(self.button[3],core.SIGNAL("clicked()"),self.filter4)
+
+        self.connect(self.button[0], core.SIGNAL("clicked()"), self.filter1)
+        self.connect(self.button[1], core.SIGNAL("clicked()"), self.filter2)
+        self.connect(self.button[2], core.SIGNAL("clicked()"), self.filter3)
+        self.connect(self.button[3], core.SIGNAL("clicked()"), self.filter4)
+
         self.setLayout(vbox)
         self.adjustSize()
         self.show()
@@ -131,27 +232,30 @@ class UserInteraction(gui.QDialog):
         self.parent.Source = self.parent.Selection
         self.parent.ShowFits()
         self.close()
+
     def filter2(self):
         self.parent.SelectRandom(1000)
         self.parent.Source = self.parent.Selection
         self.parent.ShowFits()
         self.close()
+
     def filter3(self):
-        self.parent.SelectBorder(3.,10)
+        self.parent.SelectBorder(3., 10)
         self.parent.Source = self.parent.Selection
         self.parent.ShowFits()
         self.close()
+
     def filter4(self):
         self.parent.Selection = self.parent.Source
         self.close()
-    
+
 
 if __name__ == "__main__":
-    source = "C:\\Users\\Alexander\\Dropbox\\uni\\aaaa\\pavel_beam_x_v_x_y_v_y.dat"
+    source = "TRANSMIT.txt"
     #source = "C:\\Users\\astolz\\Dropbox\\uni\\aaaa\\pp_to_alex.out"
     app = gui.QApplication(sys.argv)
-    myapp = ImportSource(source)
-    myapp.LoadSource()
+    myapp = ImportSource()
+    myapp.LoadSource(source, filetype="SRIM")
     myapp.NormalizeEnergy()
     myapp.ShowFits()
     myapp.UserInteraction.ChooseFilter()
@@ -159,4 +263,3 @@ if __name__ == "__main__":
     #myapp.Source = myapp.Selection
     #myapp.ShowFits()
     sys.exit()
-

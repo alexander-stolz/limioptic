@@ -10,9 +10,11 @@ import array
 import math
 import random
 import vtk
+import pickle
 
 s        = 0.
 SOURCE   = []
+SOURCEFILES = []
 
 geolines = vtk.vtkTable()
 geo_s    = vtk.vtkFloatArray()
@@ -134,10 +136,26 @@ def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta):
             ctypes.c_double(float(dm)))
 
 
-def AddSource():
+def AddSource(file=None):
     """ Externe Quelle einfuegen """
-    global lastFunction
+    global lastFunction, SOURCE, SOURCEFILES
     lastFunction = "AddSource"
+
+    if (not file is None) and (not file in SOURCEFILES):
+        try:
+            SOURCEFILES.append(file)
+            for line in open(file, "r"):
+                SOURCE.append([float(elem) for elem in line.split()])
+        except:
+            print file, "was not found."
+
+    elif not len(SOURCE) > 0:
+        try:
+            SOURCE = []
+            for line in open("source.dat", "r"):
+                SOURCE.append([float(elem) for elem in line.split()])
+        except:
+            print "source.dat was not found."
 
     for i in xrange(len(SOURCE)):
         optic.AddParticle(
@@ -147,6 +165,13 @@ def AddSource():
             ctypes.c_double(SOURCE[i][3]),
             ctypes.c_double(SOURCE[i][4]),
             ctypes.c_double(SOURCE[i][5]))
+
+
+def ClearSource():
+    global SOURCE, SOURCEFILES
+
+    SOURCE      = []
+    SOURCEFILES = []
 
 
 def AddMatrix(num, mat, length):
@@ -1185,13 +1210,17 @@ def AddModifyEmittance(factor1, factor2):
         ctypes.c_double(float(factor2)))
 
 
-def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.):
+def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0., strag_x=0., strag_y=0., strag_dx=0., strag_dy=0.):
     """ Z. B. fuer Folie in der Beamline """
     optic.ChangeBeamParameters(
         ctypes.c_double(float(dk)),
         ctypes.c_double(float(dm)),
         ctypes.c_double(float(strag_k)),
-        ctypes.c_double(float(strag_m)))
+        ctypes.c_double(float(strag_m)),
+        ctypes.c_double(float(strag_x)),
+        ctypes.c_double(float(strag_y)),
+        ctypes.c_double(float(strag_dx)),
+        ctypes.c_double(float(strag_dy)))
 
 
 def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
@@ -1672,7 +1701,8 @@ def ExecText(text, INPUT, SOURCE1):
     lastFunction = "unknown"
 
     global SOURCE
-    SOURCE = SOURCE1
+    if len(SOURCE1) > 0:
+        SOURCE = SOURCE1
     exec(text)
 
 
