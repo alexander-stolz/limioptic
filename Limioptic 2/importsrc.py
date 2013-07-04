@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 from pylab import *
+from scipy import optimize
 import random
 from PyQt4 import QtGui as gui
 from PyQt4 import QtCore as core
 import sys
+from fitting import *
 #import pickle
 
 #### INFO Bereich ####
@@ -121,6 +123,7 @@ class ImportSource():
         ax  = [0]*4
         fig, ((ax[0], ax[1]), (ax[2], ax[3])) = subplots(nrows=2, ncols=2)
 
+        # show the histogram
         for z in xrange(4):
             n, bins, patches = ax[z].hist(
                 [row[z] for row in self.Source],
@@ -130,6 +133,14 @@ class ImportSource():
                     self.sigma[z] / 10.),
                 normed=True)
 
+            binsX = [(bins[i+1] + bins[i]) / 2. for i in xrange(len(bins) - 1)]
+            binsY = n
+
+            #print len(bins)
+            #print len(patches)
+            #print len(n)
+            # gauss-fit.
+            # normpdf = (norm)alverteilte (p)ropability (d)ensity (f)unction
             y = normpdf(
                 arange(
                     self.mittel[z] - 3 * self.sigma[z],
@@ -143,6 +154,31 @@ class ImportSource():
                     self.mittel[z] + 3 * self.sigma[z],
                     self.sigma[z] / 100.),
                 y)
+
+            # cauchy-fit
+            cauchy = lambda p, x: p[0] / (pi * (x - p[1])**2 + (p[0])**2)
+            errfkt = lambda p, x, y: cauchy(p, x) - y
+
+            p0 = [self.sigma[z], self.mittel[z]]
+            p1, success = optimize.leastsq(errfkt, p0[:], args=(binsX, binsY))
+
+            ax[z].plot(binsX, cauchy(p1, binsX), "r-")
+
+            """
+            # voigt-fit
+            voigt  = lambda p, x: p[0] * 1. / (1. + ((x - p[2]) / p[1])**2) + (1. - p[0]) * exp(-log(2) * ((x - p[2]) / p[1])**2)
+            #L      = lambda x, w: 1. / (1. + ((x - self.mittel[z]) / w)**2)
+            #G      = lambda x, w: exp(-log(2) * ((x - self.mittel[z]) / w)**2)
+            errfkt = lambda p, x, y: voigt(p, x) - y
+
+            p0 = [.5, self.sigma[z], self.mittel[z]]
+            p1, success = optimize.leastsq(errfkt, p0[:], args=(binsX, binsY))
+
+            largeX = arange(self.mittel[z] - 3 * self.sigma[z], self.mittel[z] + 3 * self.sigma[z], self.sigma[z] / 100.)
+
+            ax[z].plot(largeX, voigt(p1, largeX), "y-")
+            """
+
             ax[z].grid(True)
             ax[z].set_title(art[z])
 
@@ -248,6 +284,10 @@ class UserInteraction(gui.QDialog):
     def filter4(self):
         self.parent.Selection = self.parent.Source
         self.close()
+
+
+from scipy import optimize
+from numpy import *
 
 
 if __name__ == "__main__":
