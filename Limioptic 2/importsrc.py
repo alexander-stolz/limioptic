@@ -118,7 +118,7 @@ class ImportSource():
         for i in xrange(len(self.Source)):
             self.Source[i][5] -= self.mittel[5]
 
-    def ShowFits(self):
+    def ShowFits(self, firstfit=True):
         art = "x", "x'", "y", "y'"
         ax  = [0]*4
         fig, ((ax[0], ax[1]), (ax[2], ax[3])) = subplots(nrows=2, ncols=2)
@@ -162,6 +162,10 @@ class ImportSource():
             p1, success = optimize.leastsq(errfkt, p0[:], args=(binsX, binsY))
 
             ax[z].plot(binsX, gauss(p1, binsX), "r-")
+
+            if firstfit:
+                self.sigma[z]  = p1[0]
+                self.mittel[z] = p1[1]
 
             """
             # cauchy-fit
@@ -227,10 +231,10 @@ class ImportSource():
                 radj = radians(j)
                 self.Selection.append(
                     [
-                        f*self.sigma[0]*cos(radi)*cos(radj),
-                        f*self.sigma[1]*cos(radi)*sin(radj),
-                        f*self.sigma[2]*sin(radi)*cos(radj),
-                        f*self.sigma[3]*sin(radi)*sin(radj),
+                        f * self.sigma[0] * cos(radi) * cos(radj),
+                        f * self.sigma[1] * cos(radi) * sin(radj),
+                        f * self.sigma[2] * sin(radi) * cos(radj),
+                        f * self.sigma[3] * sin(radi) * sin(radj),
                         self.Source[random.choice(range(len(self.Source)))][4],
                         0.
                     ])
@@ -274,19 +278,19 @@ class UserInteraction(gui.QDialog):
     def filter1(self):
         self.parent.SelectRunaways(3.)
         self.parent.Source = self.parent.Selection
-        self.parent.ShowFits()
+        self.parent.ShowFits(firstfit=False)
         self.close()
 
     def filter2(self):
         self.parent.SelectRandom(1000)
         self.parent.Source = self.parent.Selection
-        self.parent.ShowFits()
+        self.parent.ShowFits(firstfit=False)
         self.close()
 
     def filter3(self):
         self.parent.SelectBorder(3., 10)
         self.parent.Source = self.parent.Selection
-        self.parent.ShowFits()
+        self.parent.ShowFits(firstfit=False)
         self.close()
 
     def filter4(self):
