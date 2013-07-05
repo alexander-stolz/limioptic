@@ -6,7 +6,7 @@ import random
 from PyQt4 import QtGui as gui
 from PyQt4 import QtCore as core
 import sys
-from fitting import *
+#from fitting import *
 #import pickle
 
 #### INFO Bereich ####
@@ -75,7 +75,7 @@ class ImportSource():
                     self.Source.append([_x*1e-7, _cosX*1e3, _y*1e-7, _cosY*1e3, _energy*1e-6, 0.])
                     processedParticleNr += 1
                     for j in xrange(6):
-                        self.mittel[j] += [_x, _cosX, _y, _cosY, _energy, 0.][j]
+                        self.mittel[j] += [_x*1e-7, _cosX*1e3, _y*1e-7, _cosY*1e3, _energy*1e-6, 0.][j]
                 except:
                     print "\rsomething weired happened in line", currentLineNr, "of", len(content)
             currentLineNr -= 12
@@ -128,8 +128,8 @@ class ImportSource():
             n, bins, patches = ax[z].hist(
                 [row[z] for row in self.Source],
                 bins=arange(
-                    self.mittel[z] - 3 * self.sigma[z],
-                    self.mittel[z] + 3 * self.sigma[z],
+                    self.mittel[z] - 3. * self.sigma[z],
+                    self.mittel[z] + 3. * self.sigma[z],
                     self.sigma[z] / 10.),
                 normed=True)
 
@@ -163,9 +163,9 @@ class ImportSource():
 
             ax[z].plot(binsX, gauss(p1, binsX), "r-")
 
-            if firstfit:
-                self.sigma[z]  = p1[0]
-                self.mittel[z] = p1[1]
+            #if firstfit:
+            #    self.sigma[z]  = p1[0]
+            #    self.mittel[z] = p1[1]
 
             """
             # cauchy-fit
@@ -298,16 +298,26 @@ class UserInteraction(gui.QDialog):
         self.close()
 
 
-from scipy import optimize
-from numpy import *
-
-
 if __name__ == "__main__":
-    source = "TRANSMIT.txt"
+    #source = "TRANSMIT.txt"
     #source = "C:\\Users\\astolz\\Dropbox\\uni\\aaaa\\pp_to_alex.out"
     app = gui.QApplication(sys.argv)
     myapp = ImportSource()
-    myapp.LoadSource(source, filetype="SRIM")
+
+    import Tkinter
+    import tkFileDialog
+
+    root = Tkinter.Tk()
+    root.withdraw()
+
+    options = {}
+    options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt")]
+    source = tkFileDialog.askopenfile(mode="r", **options).name
+
+    root.quit()
+    root.destroy()
+
+    myapp.LoadSource(source, filetype=("SRIM" if source.endswith("TRANSMIT.txt") else "limioptic"))
     myapp.NormalizeEnergy()
     myapp.ShowFits()
     myapp.UserInteraction.ChooseFilter()
