@@ -136,9 +136,7 @@ class ImportSource():
             binsX = [(bins[i+1] + bins[i]) / 2. for i in xrange(len(bins) - 1)]
             binsY = n
 
-            #print len(bins)
-            #print len(patches)
-            #print len(n)
+            """
             # gauss-fit.
             # normpdf = (norm)alverteilte (p)ropability (d)ensity (f)unction
             y = normpdf(
@@ -154,7 +152,18 @@ class ImportSource():
                     self.mittel[z] + 3 * self.sigma[z],
                     self.sigma[z] / 100.),
                 y)
+            """
 
+            # gauss-fit
+            gauss  = lambda p, x: (2. * pi * p[0] * p[0])**(-.5) * exp(-(x - p[1])**2 / (2 * p[0] * p[0]))
+            errfkt = lambda p, x, y: gauss(p, x) - y
+
+            p0 = [self.sigma[z], self.mittel[z]]
+            p1, success = optimize.leastsq(errfkt, p0[:], args=(binsX, binsY))
+
+            ax[z].plot(binsX, gauss(p1, binsX), "r-")
+
+            """
             # cauchy-fit
             cauchy = lambda p, x: p[0] / (pi * (x - p[1])**2 + (p[0])**2)
             errfkt = lambda p, x, y: cauchy(p, x) - y
@@ -162,13 +171,12 @@ class ImportSource():
             p0 = [self.sigma[z], self.mittel[z]]
             p1, success = optimize.leastsq(errfkt, p0[:], args=(binsX, binsY))
 
-            ax[z].plot(binsX, cauchy(p1, binsX), "r-")
+            ax[z].plot(binsX, cauchy(p1, binsX), "g-")
+            """
 
             """
             # voigt-fit
             voigt  = lambda p, x: p[0] * 1. / (1. + ((x - p[2]) / p[1])**2) + (1. - p[0]) * exp(-log(2) * ((x - p[2]) / p[1])**2)
-            #L      = lambda x, w: 1. / (1. + ((x - self.mittel[z]) / w)**2)
-            #G      = lambda x, w: exp(-log(2) * ((x - self.mittel[z]) / w)**2)
             errfkt = lambda p, x, y: voigt(p, x) - y
 
             p0 = [.5, self.sigma[z], self.mittel[z]]
@@ -182,7 +190,7 @@ class ImportSource():
             ax[z].grid(True)
             ax[z].set_title(art[z])
 
-            print "mu {}\t=".format(art[z]), self.mittel[z], "\nsigma\t=", self.sigma[z]
+            print "mu {}\t=".format(art[z]), p1[1], "\nsigma {}\t=".format(art[z]), p1[0]
 
         fig.canvas.set_window_title("Source Beam - {}".format(self.SourceFile))
         tight_layout()
