@@ -1233,10 +1233,8 @@ def ErrFkt(_param_, beamline, INPUT, source):
     optic.Clear()
     ExecText(beamline, INPUT=INPUT, SOURCE1=SOURCE, _param_=_param_)
     optic.CalculateTrajectories()
-    if optic.GetSpotSize > 0.:
-        return optic.GetSpotSize()
-    else:
-        return 1.e9
+
+    return float(optic.GetSpotSize())
 
 
 def AddModifyEmittance(factor1, factor2):

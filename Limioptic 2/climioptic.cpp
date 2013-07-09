@@ -508,7 +508,14 @@ int CLimioptic::GetTrajectoriesSize()
 
 double CLimioptic::GetSpotSize()
 {
-   return spotsize;
+   if (spotsize != spotsize)
+   {
+      return 9999999999999999.;
+   }
+   else
+   {
+      return spotsize;
+   }
 }
 
 void CLimioptic::GetTrajectories(double *dst)
