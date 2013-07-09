@@ -4,7 +4,7 @@
 Hier wird hauptsaechlich die GUI definiert.
 Der Text wird mit limioptic.ExecText() an limioptic.py uebergeben.
 Dort sind die verschiedenen Funktionen definiert.
-Die eigentliche Berechnung findet in limioptic.cpp statt.
+Die eigentliche Berechnung findet in climioptic.cpp statt.
 
 
 Licence
