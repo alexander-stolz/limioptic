@@ -16,14 +16,15 @@ def format(color, style=''):
 
 
 STYLES = {
-    'keyword':  format('darkBlue', 'bold'),
-    'function': format('black', 'bold'),
-    'brace':    format('black'),
-    'defclass': format('black', 'bold'),
-    'string2':  format('darkGray'),
-    'string':   format('darkMagenta'),
-    'comment':  format('gray'),
-    'numbers':  format('green'),
+    'keyword':      format('darkBlue', 'bold'),
+    'function':     format('black', 'bold'),
+    'brace':        format('black'),
+    'defclass':     format('black', 'bold'),
+    'string2':      format('darkGray'),
+    'string':       format('darkMagenta'),
+    'comment':      format('gray'),
+    'numbers':      format('green'),
+    'boldGreen':    format('green', 'bold')
 }
 
 
@@ -35,14 +36,15 @@ class PythonHighlighter (QSyntaxHighlighter):
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
         'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False', 'INPUT',
-    ]
+        'None', 'True', 'False', 'INPUT', "AddWaist()"]
 
     functions = [
         "AddThinLens", "AddMSA", "AddSlit", "AddESD",
         "AddVBFN", "AddAMSAcc", "AddBeam", "AddFNAccNeu",
         "ChangeBeamParameters", "AddGaussBeam", "AddBeamRandomGauss", "AddBeam3d",
         "AddBeamX", "AddQuadrupolRadFoc", "AddQuadrupolAxFoc", "AddAMSQPT"]
+
+    boldGreen = []
 
     braces = ['\{', '\}', '\(', '\)', '\[', '\]']
 
@@ -55,6 +57,7 @@ class PythonHighlighter (QSyntaxHighlighter):
         rules = []
         rules += [(r'\b%s\b' % w, 0, STYLES['keyword']) for w in PythonHighlighter.keywords]
         rules += [(r'\b%s' % o, 0, STYLES['function'])  for o in PythonHighlighter.functions]
+        rules += [(r'\b%s' % o, 0, STYLES['boldGreen']) for o in PythonHighlighter.boldGreen]
         rules += [(r'%s' % b, 0, STYLES['brace'])       for b in PythonHighlighter.braces]
 
         rules += [
