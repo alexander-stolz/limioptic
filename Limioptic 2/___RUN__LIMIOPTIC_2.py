@@ -996,6 +996,9 @@ class CQtLimioptic(QtGui.QMainWindow):
                 # Change Parameters
                 self.menu_insert_chgparams = QtGui.QAction('ChangeBeamParameters', self)
                 self.connect(self.menu_insert_chgparams, QtCore.SIGNAL('triggered()'), self.InsertChgParams)
+                # Waist
+                self.menu_insert_waist = QtGui.QAction('AddWaist', self)
+                self.connect(self.menu_insert_waist, QtCore.SIGNAL('triggered()'), self.InsertWaist)
                 # general 6x6 Matrix
                 self.menu_insert_matrix = QtGui.QAction('General 6x6 matrix', self)
                 self.menu_insert_matrix.setStatusTip('Insert a general 6x6 transfer matrix')
@@ -1150,6 +1153,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_modifyemittance)
                 menu_insert.addAction(self.menu_insert_chgparams)
                 menu_insert.addAction(self.menu_insert_matrix)
+                menu_insert.addAction(self.menu_insert_waist)
                 menu_insert.addSeparator()
                 menu_insert.addAction(self.menu_insert_so110el)
                 menu_insert.addAction(self.menu_insert_biel)
@@ -1486,6 +1490,9 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertChgParams(self):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
+
+        def InsertWaist(self):
+            self.textedit.textCursor().insertText('AddWaist\n')
 
         def InsertESD(self):
             self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
