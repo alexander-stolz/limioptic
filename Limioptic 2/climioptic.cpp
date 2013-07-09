@@ -10,6 +10,7 @@ CLimioptic::CLimioptic()
    ClearParticles();
    ClearBeamline();
    ClearTrajectories();
+   spotsize = 0.;
 }
 
 CLimioptic::CLimioptic(const CLimioptic& copyobj)
@@ -17,6 +18,7 @@ CLimioptic::CLimioptic(const CLimioptic& copyobj)
    particles    = copyobj.particles;
    beamline     = copyobj.beamline;
    trajectories = copyobj.trajectories;
+   spotsize     = copyobj.spotsize;
 }
 
 CLimioptic::~CLimioptic()
@@ -30,6 +32,7 @@ CLimioptic& CLimioptic::operator=(const CLimioptic& assignobj)
 	  particles    = assignobj.particles;
 	  beamline     = assignobj.beamline;
 	  trajectories = assignobj.trajectories;
+     spotsize     = assignobj.spotsize;
    }
 
    return *this;
@@ -40,6 +43,7 @@ void CLimioptic::Clear()
    ClearParticles();
    ClearBeamline();
    ClearTrajectories();
+   spotsize = 0.;
 }
 
 void CLimioptic::ClearParticles()
@@ -171,6 +175,15 @@ void CLimioptic::AddBeamProfile()
    bp.push_back(10.0);
    bp.push_back(1.);
    beamline.push_back(bp);
+}
+
+void CLimioptic::AddWaist()
+{
+   vector<double> w;
+   w.clear();
+   w.push_back(21.0);
+   w.push_back(1.);
+   beamline.push_back(w);
 }
 
 void CLimioptic::AddSlit(double x, double dx, double y, double dy)
@@ -448,6 +461,9 @@ void CLimioptic::CalculateTrajectories()
 		case 10:
 			ApplyBeamProfile(&trajectories.front()+itraj);
 			break;
+      case 21:
+         ApplyWaist(&trajectories.front()+itraj);
+         break;
 		case 14:
 			ApplyAMSQuadrupolRadFoc(&trajectories.front()+itraj,(int)beamline[ibeamline][1],
 			   beamline[ibeamline][2],beamline[ibeamline][3],beamline[ibeamline][4],beamline[ibeamline][5]);
@@ -488,6 +504,11 @@ void CLimioptic::CalculateTrajectories()
 int CLimioptic::GetTrajectoriesSize()
 {
    return (int)(trajectories.size());
+}
+
+double CLimioptic::GetSpotSize()
+{
+   return spotsize;
 }
 
 void CLimioptic::GetTrajectories(double *dst)
@@ -639,12 +660,12 @@ void CLimioptic::ApplyDrift(double *p, int nmat, double gamma2, double length)
 
 void CLimioptic::ApplyBeamProfile(double *p)
 {
-   int pnum,i,j,elesize,ip,nichtdurch;
+   int pnum, i, j, elesize, ip, nichtdurch;
    double xplus, yplus, aplus, bplus;
    
    
-   elesize=particles.size();
-   pnum=elesize/particlesize;  // Anzahl der Teilchen
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
 
    xplus = 0;
    yplus = 0;
@@ -653,25 +674,32 @@ void CLimioptic::ApplyBeamProfile(double *p)
    nichtdurch = 0;
    
    i = 0;
-   for (ip=0;ip<pnum;ip++) 
+   for (ip=0; ip<pnum; ip++) 
    {
-		xplus += p[i+0-elesize]*p[i+0-elesize];
-		aplus += p[i+1-elesize]*p[i+1-elesize];
-		yplus += p[i+2-elesize]*p[i+2-elesize];
-		bplus += p[i+3-elesize]*p[i+3-elesize];
-		if ((p[i+0-elesize]==0)&&(p[i+1-elesize]==0)&&(p[i+2-elesize]==0)&&(p[i+3-elesize]==0)) {nichtdurch++;}
+		xplus += p[i+0-elesize] * p[i+0-elesize];
+		aplus += p[i+1-elesize] * p[i+1-elesize];
+		yplus += p[i+2-elesize] * p[i+2-elesize];
+		bplus += p[i+3-elesize] * p[i+3-elesize];
+
+		if ((p[i+0-elesize] == 0.) && (p[i+1-elesize] == 0.) && (p[i+2-elesize] == 0.) && (p[i+3-elesize] == 0.))
+      {
+         nichtdurch++;
+      }
 		
-		for (j=0;j<8;j++) 
+		for (j=0; j<8; j++) 
 		{
-			p[i+j]=p[i+j-elesize];
+			p[i+j] = p[i+j-elesize];
 		}
-		p[i+7]=p[i+7]+1.0; // Index des ionenoptischen Elements raufzaehlen
-		i=i+particlesize;
+
+		p[i+7] = p[i+7] + 1.0; // Index des ionenoptischen Elements raufzaehlen
+		i = i + particlesize;
 	}
+
 	pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
-	std::cout<<"transmission (beamprofile) =\t"<<pnum*particlesize/elesize<< "\t@ " << p[i+6-particlesize] <<" m\n";
-	std::cout<<"SigmaX=\t"<<sqrt(xplus/pnum)<<"\tSigmaA=\t"<<sqrt(aplus/pnum)<<"\tEmittanzX=\t"<<sqrt(xplus/pnum)*sqrt(aplus/pnum)<<"\n";
-	std::cout<<"SigmaY=\t"<<sqrt(yplus/pnum)<<"\tSigmaB=\t"<<sqrt(bplus/pnum)<<"\tEmittanzY=\t"<<sqrt(yplus/pnum)*sqrt(bplus/pnum)<<"\n";
+	
+   std::cout << "transmission (beamprofile) =\t" << pnum * particlesize / elesize << "\t@ " << p[i+6-particlesize] << " m\n";
+	std::cout << "SigmaX=\t" << sqrt(xplus/pnum) << "\tSigmaA=\t" << sqrt(aplus/pnum) << "\tEmittanzX=\t" << sqrt(xplus/pnum) * sqrt(aplus/pnum) << "\n";
+	std::cout << "SigmaY=\t" << sqrt(yplus/pnum) << "\tSigmaB=\t" << sqrt(bplus/pnum) << "\tEmittanzY=\t" << sqrt(yplus/pnum) * sqrt(bplus/pnum) << "\n";
 	
 	fstream datei;
 	datei.open("beamprofile.dat", ios::out|ios::app);
@@ -690,6 +718,35 @@ void CLimioptic::ApplyBeamProfile(double *p)
 	datei <<" ";
 	datei <<sqrt(yplus/pnum)*sqrt(bplus/pnum)<<"\n";	//emittanz y
 	datei.close();
+}
+
+void CLimioptic::ApplyWaist(double *p)
+{
+   int pnum, i, j, elesize, ip;
+   double xplus, yplus;
+
+   xplus = 0.;
+   yplus = 0.;
+   
+   elesize = particles.size();
+   pnum    = elesize / particlesize;  // Anzahl der Teilchen
+
+   i = 0;
+   for (ip=0; ip<pnum; ip++) 
+   {
+      xplus += p[i+0-elesize] * p[i+0-elesize];
+      yplus += p[i+2-elesize] * p[i+2-elesize];
+      
+      for (j=0; j<8; j++) 
+      {
+         p[i+j] = p[i+j-elesize];
+      }
+
+      p[i+7] = p[i+7] + 1.0; // Index des ionenoptischen Elements raufzaehlen
+      i = i + particlesize;
+   }
+
+   spotsize += (xplus + yplus);
 }
 
 void CLimioptic::ApplySlit(double *p,double x,double dx,double y,double dy)
@@ -829,7 +886,8 @@ void CLimioptic::ApplyModifyEmittance(double *p, int nmat, double factor1, doubl
 }
 
 
-void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm, double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
+void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm, 
+   double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
 {
    /*
    dk, dm aendern. Zb bei Folie. strag = stragling

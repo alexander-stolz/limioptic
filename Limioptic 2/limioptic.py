@@ -10,7 +10,8 @@ import array
 import math
 import random
 import vtk
-import pickle
+#import pickle
+from scipy import optimize
 
 s        = 0.
 SOURCE   = []
@@ -1203,6 +1204,38 @@ def AddBeamProfile():
     optic.AddBeamProfile()
 
 
+def AddWaist():
+    optic.AddWaist()
+
+
+def TestOptFkt():
+    INPUT = [1., 1.]
+    print optimize.fmin(TestErrFkt, INPUT[:])
+
+
+def TestErrFkt(INPUT):
+    TestBeamLine = "AddBeam(1, 15, 1, 15, 0, 0, 1)\n"\
+        "AddDrift(1, 1, 1)\n"\
+        "AddThinLens(INPUT[0], INPUT[0], 25)\n"\
+        "AddDrift(1, 1, .5)\n"\
+        "AddDrift(1, 1, .5)\n"\
+        "AddThinLens(INPUT[1], INPUT[1], 25)\n"\
+        "AddDrift(1, 1, 2)\n"\
+        "AddWaist()"
+
+    optic.Clear()
+    ExecText(TestBeamLine, INPUT, SOURCE)
+    optic.CalculateTrajectories()
+    return optic.GetSpotSize()
+
+
+def ErrFkt(_param_, beamline, INPUT, source):
+    optic.Clear()
+    ExecText(beamline, INPUT=INPUT, SOURCE1=SOURCE, _param_=_param_)
+    optic.CalculateTrajectories()
+    return optic.GetSpotSize()
+
+
 def AddModifyEmittance(factor1, factor2):
     """ Aendern der Emittanz um einen Faktor (z.B. beim Strippingprozess) """
     optic.AddModifyEmittance(
@@ -1695,8 +1728,9 @@ def PrintTrajectories(traj):
         print "\n",
 
 
-def ExecText(text, INPUT, SOURCE1):
+def ExecText(text, INPUT=None, SOURCE1=None, _param_=None):
     global textArray, lastFunction
+
     textArray = []
     lastFunction = "unknown"
 
@@ -1772,8 +1806,13 @@ else:
 
         optic = ctypes.CDLL("./liblimioptic-linux.so")
 
+
+optic.GetSpotSize.restype = ctypes.c_double
+
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
         print("Usage : %s filename" % (sys.argv[0]))
     else:
         Limioptic(sys.argv[1])
+
+#TestOptFkt()

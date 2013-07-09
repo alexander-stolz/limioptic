@@ -48,10 +48,12 @@ import syntax
 try:
     imp.find_module("pyqtgraph")
     import pyqtgraph as pg
-    print "PyQtGraph"
+    print "PyQtGraph",
 except:
-    print "<PyQtGraph NOT FOUND>"
+    print "<PyQtGraph NOT FOUND>",
     pg = False
+print "optimize"
+from scipy import optimize
 
 
 #################################################
@@ -71,7 +73,7 @@ class inputcontrol(QtGui.QDialog):
 
                 ### Ab hier Definition des Layouts
                 self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-                self.setGeometry(100, screen.height() - 300, 500, 50)
+                self.setGeometry(100, screen.height() - 300, 500, 1)
 
                 self.setWindowTitle("input control")
                 self.vbox = QtGui.QVBoxLayout()
@@ -94,13 +96,14 @@ class inputcontrol(QtGui.QDialog):
                 self.infobox = []
 
                 for i in xrange(NumberOfInputs):
-                        self.info.append(QtGui.QLabel("#%1.0f" % (i)))
+                        self.info.append(QtGui.QCheckBox())
+                        #self.info.append(QtGui.QLabel("#%1.0f" % (i)))
                         self.min.append(QtGui.QDoubleSpinBox())
                         self.slider.append(QtGui.QSlider(QtCore.Qt.Horizontal, self))
                         self.input.append(QtGui.QDoubleSpinBox())
                         self.infobox.append(QtGui.QLineEdit())
                         self.min[i].setRange(-100., 100.)
-                        self.infobox[i].setPlaceholderText("Beschreibung")
+                        self.infobox[i].setPlaceholderText("INPUT[{}]".format(i))
                         self.infobox[i].setText(BEZEICHNUNGEN[i])
                         self.input[i].setDecimals(4)
                         self.slider[i].setOrientation(QtCore.Qt.Horizontal)
@@ -120,8 +123,12 @@ class inputcontrol(QtGui.QDialog):
                         layout.addWidget(self.slider[i], i, 2)
                         layout.addWidget(self.input[i], i, 3)
                         layout.addWidget(self.infobox[i], i, 4)
+
                 layout.setColumnStretch(2, 100)
                 self.vbox.addLayout(layout)
+
+                self.optimize_button = QtGui.QPushButton("optimize selected parameters")
+                self.vbox.addWidget(self.optimize_button)
 
                 if (self.mode == "3d"):
                         opacitybox   = QtGui.QHBoxLayout()
@@ -145,7 +152,7 @@ class inputcontrol(QtGui.QDialog):
                 self.setLayout(self.vbox)
 
                 # Die Elementgroessen werden neu angepasst (Buttons, Slider, ...)
-                self.adjustSize()
+                #self.adjustSize()
 
                 # Der Thread des Output-Fensters wird gestartet
                 self.plotwindow.start()
@@ -161,6 +168,7 @@ class inputcontrol(QtGui.QDialog):
                 if (self.mode == "3d"):
                         self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
                         self.connect(self.sslider, QtCore.SIGNAL("valueChanged(int)"), self.setscale)
+                self.connect(self.optimize_button, QtCore.SIGNAL("clicked()"), self.optimizeBeam)
 
                 self.show()
 
@@ -171,6 +179,39 @@ class inputcontrol(QtGui.QDialog):
                 if (PORT != "NONE"):
                         t_readserial = threading.Thread(target=self.readserial, args=())
                         t_readserial.start()
+
+        def optimizeBeam(self):
+            optIndex = []
+            for i in xrange(NumberOfInputs):
+                if self.info[i].isChecked():
+                    optIndex.append(i)
+
+            beamline = str(myapp.textedit.toPlainText())
+
+            i = 0
+            _param_ = []
+            for opt in optIndex:
+                beamline = beamline.replace("INPUT[{}]".format(opt), "_param_[{}]".format(i))
+                _param_.append(INPUT[opt])
+                i += 1
+
+            for i in xrange(NumberOfInputs):
+                beamline = beamline.replace("INPUT[{}]".format(i), str(INPUT[i]))
+
+            result = optimize.minimize(limioptic.ErrFkt, _param_[:], (beamline, INPUT, SourceObj.Source))
+
+            print result
+
+            print limioptic.optic.GetSpotSize()
+
+            j = 0
+            self.changing = True
+            for i in optIndex:
+                INPUT[i] = result.x[j]
+                self.input[i].setValue(result.x[j])
+                j += 1
+            self.changing = False
+            self.inputtoslider()
 
         def setopacity(self):
                 """ Nur fuer die 3D-Ausgabe """
@@ -286,6 +327,7 @@ class inputcontrol(QtGui.QDialog):
                     limioptic.optic.CalculateTrajectories()
             except Exception, e:
                     print "\n\nFehler in der Eingabe! ({})".format(limioptic.lastFunction), "\n===============================\n", e, "\n===============================\n\n"
+                    return
 
             parts = limioptic.optic.GetParticleNum()                    # Anz. Partikel
             segs  = limioptic.optic.GetTrajectoriesSize() / parts / 8   # Anz. Segmente
@@ -757,7 +799,11 @@ class doitXY(threading.Thread):
                 else:
                         limioptic.s = -1.
 
-                if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                try:
+                    if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                except Exception, e:
+                    print "\n\ntraceback:", "\n===============================\n", e, "\n===============================\n\n"
+                    return
                 iele = limioptic.GetTrajectory(0, 7)
 
                 ### erzeuge wertetabelle
@@ -1572,7 +1618,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-07-05"
+VERSION          = "2013-07-09"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

@@ -67,6 +67,11 @@ void AddBeamProfile()
    optic.AddBeamProfile();
 }
 
+void AddWaist()
+{
+   optic.AddWaist();
+}
+
 void AddSlit(double x,double dx,double y,double dy)
 {
    optic.AddSlit(x,dx,y,dy);
@@ -152,6 +157,11 @@ int GetTrajectoriesSize()
    return optic.GetTrajectoriesSize();
 }
 
+double GetSpotSize()
+{
+   return optic.GetSpotSize();
+}
+
 void GetTrajectories(double *dst)
 {
    optic.GetTrajectories(dst);
@@ -175,6 +185,11 @@ void ApplyDrift(double *p,int n,double gamma2,double length)
 void ApplyBeamProfile(double *p)
 {
    optic.ApplyBeamProfile(p);
+}
+
+void ApplyWaist(double *p)
+{
+   optic.ApplyWaist(p);
 }
 
 void ApplySlit(double *p,double x,double dx,double y,double dy)

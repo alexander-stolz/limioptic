@@ -34,6 +34,7 @@ public:
    void AddMatrix(int,double*,double); // Allgemeine Matrix zur Beamline hinzufuegen
    void AddDrift(int,double,double); // Driftstrecke zur Beamline hinzufuegen
    void AddBeamProfile();
+   void AddWaist();
    void AddSlit(double,double,double,double);
    void AddModifyEmittance(double, double);
    void ChangeBeamParameters(double, double, double, double, double, double, double, double);
@@ -57,6 +58,7 @@ public:
    void PrintTrajectories(); // alle Teilchen-Trajectorien ausgeben
    void CalculateTrajectories(); // Teilchen-Trajektorien berechnen
    int GetTrajectoriesSize(); // Groesse des Arrays mit den Trajektorien zurueckgeben
+   double GetSpotSize();
    void GetTrajectories(double *); // Teilchen-Trajektorien in ein externes Array kopieren
    // Groesse einer Eigenschaft der Trajektorie eines Teilchens zurueckgeben
    int GetTrajectorySize();
@@ -66,6 +68,7 @@ public:
    void ApplyMatrix(double*,int,double*);
    void ApplyDrift(double*,int,double,double);
    void ApplyBeamProfile(double*);
+   void ApplyWaist(double*);
    void ApplySlit(double*,double,double,double,double);
    void ApplyModifyEmittance(double*, int, double, double);
    void ApplyChangeBeamParameters(double*, int, double, double, double, double, double, double, double, double);
@@ -119,6 +122,10 @@ public:
    // der 'beamline' gespeichert. Zuerst alle Teilchen beim Start, dann alle Teilchen
    // nach der ersten Transfermatrix usw.
    vector<double> trajectories;
+
+   // Fuer Optimierung.
+   // Berechnet sich als Summe der Strahlfleckquadrate.
+   double spotsize;
 };
 
 #endif

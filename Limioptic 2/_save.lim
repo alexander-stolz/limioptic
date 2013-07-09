@@ -1,9 +1,9 @@
-INPUT[7]	=	0.0469	# INPUT[7]
-INPUT[6]	=	0.7584	# INPUT[6]
-INPUT[5]	=	1.0	# INPUT[5]
-INPUT[4]	=	1.02	# INPUT[4]
-INPUT[3]	=	1.0	# INPUT[3]
-INPUT[2]	=	1.0023	# INPUT[2]
+#INPUT[7]	=	0.0469	# INPUT[7]
+#INPUT[6]	=	0.7584	# INPUT[6]
+#INPUT[5]	=	1.0	# INPUT[5]
+#INPUT[4]	=	1.02	# INPUT[4]
+#INPUT[3]	=	1.0	# INPUT[3]
+#INPUT[2]	=	1.0023	# INPUT[2]
 
 AUSGANG = "GIC"	#oder "TOF", "SiGI", "AFD"
 
@@ -37,52 +37,41 @@ K2 	=	0.52818
 beta1 	=1	#INPUT[6]
 
 ###################################
-#AddBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 0,5,10)
-AddBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 0,-0,10)
-#AddBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 5,-0,10)
 
-############################################
-#AddBeamRandomGauss(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9,0,0,800)	# (xmax, x'max, ymax, y'max, dk, dm, num)
-#AddGaussBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, y=30, number=800)
-############################################
+AddBeam(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 0,-0,1)
+#AddBeam3d(.5*1.4384, .1*28.9, .5*1.4384, .1*28.9, 0,-0,10)
+#AddBeamRandomGauss(1.4384,28.9,1.4384,28.9,0,0,1500)
+
+###################################
 
 
 ### WAIST ###
 #AddSlit(0,s3,0,30)
 AddDrift(1,1.00362,1.3487)
 
-AddAMSQPT_YXY(1, q2a, q2b, VT*t, 35000, q, g)
+# QPT 2 - HES
+#####################
+#c
+#AddAMSQPT_YXY(1,52.99,-0.5,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_YXY(1,44.127,0.305,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,35.95,-2.43,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_YXY(1,37.14,-4.16,3.e6*t,35000,3,g)
+#sonst
+AddAMSQPT_YXY(1,q2a,q2b,VT*t,35000,q,g)
 #####################
 
-### FOIL ###
-#Name("FOiL")
+#90grad magnet
+AddDrift(1,1.00362,.7574)
+AddEdgeFocusing(2,.47,K2,50.)
+AddMSA(10,1.00362,2,0.15707963,50)
+AddEdgeFocusing(2,.47,K2,50.)
 
-# 8+
-# Chrom
-#ChangeBeamParameters(dk=0, strag_k=.0338/48.8778 * 1000.)
-# Mangan
-#ChangeBeamParameters(dk=4.28824538, strag_k=.0345/48.6682 * 1000.)
-
-
-#ChangeBeamParameters(dk=5.83868315, strag_k_over_E=0.0266/25.2968) #4+
-
-AddDrift(1, 1.00362, .7574)
-
-Name("MSA")   #90grad magnet
-AddEdgeFocusing(2, .47, K2, 50.)
-AddMSA(10, 1.00362, 2, 0.15707963, 50)
-AddEdgeFocusing(2, .47, K2, 50.)
-
-AddDrift(1, 1.00362, 2.0003)
+AddDrift(1,1.00362,2.0003)
+AddWaist()
 ### WAIST ###
-
-### FOIL ###
-# 8+
-# Chrom
-#ChangeBeamParameters(dk=0, strag_k=.0338/48.8778 * 1000.)
-# Mangan
-ChangeBeamParameters(dk=4.28824538, strag_k=.0345/48.6682 * 1000.)
-
 #AddSlit(0,s4,0,30)
 AddDrift(1,1.00362,1.9888)
 
@@ -90,7 +79,17 @@ AddDrift(1,1.00362,1.9888)
 AddESD(10,1.00362,0.06108652,2.6,1.e6,0.0605,26)
 AddDrift(1,1.00362,.3011)
 
-Name("ESA - QPT - ESA")  # QPT 3 - HEE
+# QPT 3 - HEE
+#####################
+#c
+#AddAMSQPT_YXY(1,37.51,-7.8,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_YXY(1,36.923,-7.998,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,22.17,-6.21,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_YXY(1,22.74,-5.26,3.e6*t,35000,3,g)
+#sonst
 AddAMSQPT_YXY(1,q3a,q3b,VT*t,35000,q,g)
 #####################
 
@@ -99,13 +98,25 @@ AddDrift(1,1.00362,.3078)
 AddESD(10,1.00362,0.06108652,2.6,1.e6,0.0605,26)
 
 AddDrift(1,1.00362,2.2995)
+AddWaist()
 ### WAIST ###
 #AddSlit(0,s5,0,30)
 #AddBeamProfile()
 AddDrift(1,1.00362,3.5456)
 
 # QPT 4 - DSW
+#####################
+#c
+#AddAMSQPT_XYX(1,54.65,-2.5,5.5e6*t,35000,4,g)
+#be
+#AddAMSQPT_XYX(1,46.5,-0.6,4.5e6*t/3.*(2+10./26.),35000,2,g)
+#pu
+#AddAMSQPT_YXY(1,37.39,-1.94,2.9356e6*t/4.*(3+242./258.),35000,3,g)
+#al
+#AddAMSQPT_XYX(1,23.67,1.18,3.e6*t,35000,3,g)
+#sonst
 AddAMSQPT_XYX(1,q4a,q4b,VT*t,35000,q,g)
+#####################
 
 AddDrift(1,1.00362,0.5055)
 
@@ -114,13 +125,12 @@ if (AUSGANG == "GIC"):
 ###################
 #        Ausgang 1 - GIC           #  C
 ###################
-	Name("DSW - MSA")
 	AddMSA(10,1.00362,1.545,0.05235987756,50) #Schaltmagnet
 	AddDrift(1,1.00362,2.111)
 	#AddSlit(0,30,0,30)
-	AddBeamProfile()
+#	AddBeamProfile()
+	AddWaist()
 	AddDrift(1,1.00362,0.104)	#schlitz->det anfang
-	Name("DETECTOR")
 	AddDrift(1,1.00362,2) 	#damit man was sieht
 ###################
 
