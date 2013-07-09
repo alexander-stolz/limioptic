@@ -1492,7 +1492,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
 
         def InsertWaist(self):
-            self.textedit.textCursor().insertText('AddWaist\n')
+            self.textedit.textCursor().insertText('AddWaist()\n')
 
         def InsertESD(self):
             self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
