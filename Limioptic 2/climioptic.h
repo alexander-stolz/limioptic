@@ -126,6 +126,7 @@ public:
    // Fuer Optimierung.
    // Berechnet sich als Summe der Strahlfleckquadrate.
    double spotsize;
+   int nottransmitted;
 };
 
 #endif
