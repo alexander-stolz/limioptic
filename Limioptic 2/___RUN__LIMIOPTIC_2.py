@@ -1431,10 +1431,13 @@ class CQtLimioptic(QtGui.QMainWindow):
         def InsertParticle(self):
                 self.textedit.textCursor().insertText("AddParticle(4,15,4,15,0,0)  # (x, x\', y, y\', dk, dm)\n")
 
-        def InsertSource(self):
+        def InsertSource(self, _filename=None):
                 global SourceObj
-                _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
-                SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endsWith("TRANSMIT.txt") else "limioptic"))
+                if _filename is None:
+                    _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
+                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endsWith("TRANSMIT.txt") else "limioptic"))
+                else:
+                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
                 #SourceObj.NormalizeEnergy()
                 SourceObj.ShowFits()
                 SourceObj.UserInteraction.ChooseFilter()
@@ -1575,8 +1578,11 @@ class myedit(QtGui.QTextEdit):
             for url in event.mimeData().urls():
                 links.append(str(url.toLocalFile()))
             self.emit(QtCore.SIGNAL("dropped"), links)
-            if len(links) == 1 and links[0].endswith(".lim"):
-                myapp.LoadFile(links[0])
+            if len(links) == 1:
+                if links[0].endswith(".lim"):
+                    myapp.LoadFile(links[0])
+                if links[0].endswith("TRANSMIT.txt") or links[0].endswith(".out"):
+                    myapp.InsertSource(links[0])
         else:
             event.ignore()
 
