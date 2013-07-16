@@ -483,7 +483,7 @@ class doit3d(threading.Thread):
                 self.axisactor.ZAxisVisibilityOff()
                 self.axisactor.SetCamera(self.ren.GetActiveCamera())
                 self.axisactor.GetProperty().SetColor(1, 1, 1)
-                self.ren.AddActor(self.axisactor)
+                #self.ren.AddActor(self.axisactor)
                 self.ren.ResetCamera()
 
                 ### Renderfenster

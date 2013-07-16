@@ -511,8 +511,8 @@ int CLimioptic::GetTrajectoriesSize()
 
 double CLimioptic::GetSpotSize()
 {
-    double loss;
-    loss = (double)nottransmitted / (particles.size() / particlesize);
+    //double loss;
+    //loss = (double)nottransmitted / (particles.size() / particlesize);
 
     if (spotsize != spotsize)
     {
@@ -520,9 +520,8 @@ double CLimioptic::GetSpotSize()
     }
     else
     {
-        return spotsize + 9999999999999999. * loss * loss;
+        return spotsize;
     }
-    std::cout << loss;
 }
 
 void CLimioptic::GetTrajectories(double *dst)
@@ -713,14 +712,14 @@ void CLimioptic::ApplyBeamProfile(double *p)
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = pnum - nottransmitted;
 
-    std::cout << "transmission (beamprofile) =\t" << pnum / nottransmitted << "\t@ " << p[i + 6 - particlesize] << " m\n";
+    std::cout << "transmission (beamprofile) =\t" << nottransmitted / pnum << "\t@ " << p[i + 6 - particlesize] << " m\n";
     std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
     std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
 
     fstream datei;
     datei.open("beamprofile.dat", ios::out | ios::app);
 
-    datei << pnum / nottransmitted << " ";      //transmission
+    datei << nottransmitted / pnum << " ";      //transmission
     datei << sqrt(xplus / (durch - 1)) << " ";  //strahlbreite x
     datei << sqrt(aplus / (durch - 1)) << " ";  //divergenz a
     datei << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << " "; //emittanz x
@@ -765,6 +764,9 @@ void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
     double p0, p1, p2, p3, p4, p5;
     int nmat = 1, durch = 0, nichtdurch = 0;
 
+    double xplus = 0.;
+    double yplus = 0.;
+
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen
 
@@ -796,6 +798,8 @@ void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
             }
             else
             {
+                xplus += p[i + 0 - elesize] * p[i + 0 - elesize];
+                yplus += p[i + 2 - elesize] * p[i + 2 - elesize];
                 p0 = 0.;
                 p1 = 0.;
                 p2 = 0.;
@@ -827,6 +831,8 @@ void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
             i = i + particlesize;
         }
     }
+
+    spotsize += (xplus + yplus);
     
     std::cout << "transmission (slit) =\t" << (double) durch / (durch + nichtdurch)
               << ",  total: " << (1. - (double) nottransmitted / pnum)
