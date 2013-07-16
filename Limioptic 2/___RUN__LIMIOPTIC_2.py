@@ -1435,13 +1435,25 @@ class CQtLimioptic(QtGui.QMainWindow):
                 global SourceObj
                 _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
                 SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endsWith("TRANSMIT.txt") else "limioptic"))
-                SourceObj.NormalizeEnergy()
+                #SourceObj.NormalizeEnergy()
                 SourceObj.ShowFits()
                 SourceObj.UserInteraction.ChooseFilter()
                 #SourceObj.Source = SourceObj.Selection
                 #SourceObj.ShowFits()
                 print "Source", SourceObj.SourceFile, "loaded"
-                self.textedit.textCursor().insertText("AddSource()")
+                self.textedit.textCursor().insertText("AddSource()\n")
+                self.textedit.textCursor().insertText(
+                    "# ChangeBeamParameters("
+                    "strag_x={} "
+                    "strag_dx={} "
+                    "strag_y={} "
+                    "strag_dy={} "
+                    "strag_k={})\n".format(
+                    SourceObj.foilparameters["x"],
+                    SourceObj.foilparameters["x'"],
+                    SourceObj.foilparameters["y"],
+                    SourceObj.foilparameters["y'"],
+                    SourceObj.foilparameters["dk"]))
 
         def InsertBeam(self):
             self.textedit.textCursor().insertText('############################################\nAddBeam(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
@@ -1625,7 +1637,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-07-09"
+VERSION          = "2013-07-16"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

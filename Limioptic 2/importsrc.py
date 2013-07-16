@@ -32,6 +32,7 @@ class ImportSource():
         self.Source = []
         self.Selection = []
         self.UserInteraction = UserInteraction(self)
+        self.foilparameters = {}
 
     def LoadSource(self, filename, filetype="limioptic"):
         self.SourceFile = filename
@@ -95,20 +96,25 @@ class ImportSource():
 
         if filetype == "limioptic":
             print "average energy loss is\t{} {}.\t(+/- {})".format(self.mittel[4], "permille", self.sigma[4])
+            self.foilparameters["dk"] = self.sigma[4]
         elif filetype == "SRIM":
             print "average remaining energy is\t{} {}.\t(+/- {})".format(self.mittel[4], "MeV", self.sigma[4])
+            self.foilparameters["dk"] = self.sigma[4] / self.mittel[4] * 1000.
 
         #print "average mass loss is\t{} permille.\t(+/- {})".format(self.mittel[5], self.sigma[5])
 
-        ## Umrechnen absolute in relative Werte der Energie
+        ## Energie Normalisieren
         if filetype == "SRIM":
             if self.mittel[4] != 0.:
                 for i in xrange(len(self.Source)):
-                    self.Source[i][4] = (self.Source[i][4] / self.mittel[4]) - 1
+                    self.Source[i][4] = ((self.Source[i][4] / self.mittel[4]) - 1) * 1000.
             else:
                 print "there was an error while calculating the relative energy deviations. Setting dK = 0."
                 for i in xrange(len(self.Source)):
-                    self.Source[i][4] = (self.Source[i][4] / self.mittel[4]) - 1
+                    self.Source[i][4] = 0.
+        else:
+            for i in xrange(len(self.Source)):
+                self.Source[i][4] -= self.mittel[4]
 
     def NormalizeEnergy(self):
         for i in xrange(len(self.Source)):
@@ -163,9 +169,8 @@ class ImportSource():
 
             ax[z].plot(binsX, gauss(p1, binsX), "r-")
 
-            #if firstfit:
-            #    self.sigma[z]  = p1[0]
-            #    self.mittel[z] = p1[1]
+            if firstfit:
+                self.foilparameters[art[z]] = p1[0]
 
             """
             # cauchy-fit
@@ -196,7 +201,7 @@ class ImportSource():
 
             print "mu {}\t=".format(art[z]), p1[1], "\nsigma {}\t=".format(art[z]), p1[0]
 
-        fig.canvas.set_window_title("Source Beam - {}".format(self.SourceFile))
+        fig.canvas.set_window_title("Source Beam - {}".format(self.SourceFile.replace("\\", "/")))
         tight_layout()
         show()
 
@@ -318,7 +323,7 @@ if __name__ == "__main__":
     root.destroy()
 
     myapp.LoadSource(source, filetype=("SRIM" if source.endswith("TRANSMIT.txt") else "limioptic"))
-    myapp.NormalizeEnergy()
+    #myapp.NormalizeEnergy()
     myapp.ShowFits()
     myapp.UserInteraction.ChooseFilter()
     app.exec_()
