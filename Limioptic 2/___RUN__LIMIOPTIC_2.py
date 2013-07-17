@@ -198,7 +198,9 @@ class inputcontrol(QtGui.QDialog):
             for i in xrange(NumberOfInputs):
                 beamline = beamline.replace("INPUT[{}]".format(i), str(INPUT[i]))
 
+            print "computing..."
             result = optimize.minimize(limioptic.ErrFkt, _param_[:], (beamline, INPUT, SourceObj.Source))
+            self.optimize_button.setText("optimize selected parameters")
 
             print result
 
@@ -248,7 +250,8 @@ class inputcontrol(QtGui.QDialog):
                     for i in xrange(NumberOfInputs):
                             INPUT[i] = self.input[i].value()
                     for i in xrange(NumberOfInputs):
-                            self.slider[i].setValue(int((INPUT[i] - self.min[i].value()) * 100000.))
+                            self.min[i].setValue(INPUT[i] - 2.5)
+                            self.slider[i].setValue(250000)
                     if (RUNNINGQT): self.plotwindow.update(self.calculate())
                     if (RUNNING2D): self.plotwindow.update = True
                     if (RUNNING3D): self.plotwindow.neu()
@@ -1447,10 +1450,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.textedit.textCursor().insertText("AddSource()\n")
                 self.textedit.textCursor().insertText(
                     "# ChangeBeamParameters("
-                    "strag_x={} "
-                    "strag_dx={} "
-                    "strag_y={} "
-                    "strag_dy={} "
+                    "strag_x={}, "
+                    "strag_dx={}, "
+                    "strag_y={}, "
+                    "strag_dy={}, "
                     "strag_k={})\n".format(
                     SourceObj.foilparameters["x"],
                     SourceObj.foilparameters["x'"],

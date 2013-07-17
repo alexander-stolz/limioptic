@@ -712,7 +712,7 @@ void CLimioptic::ApplyBeamProfile(double *p)
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = pnum - nottransmitted;
 
-    std::cout << "transmission (beamprofile) =\t" << nottransmitted / pnum << "\t@ " << p[i + 6 - particlesize] << " m\n";
+    std::cout << "transmission (beamprofile) =\t" << 1. - nottransmitted / pnum << "\t@ " << p[i + 6 - particlesize] << " m\n";
     std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
     std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
 
