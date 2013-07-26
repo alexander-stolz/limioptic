@@ -685,6 +685,9 @@ void CLimioptic::ApplyBeamProfile(double *p)
     aplus = 0;
     bplus = 0;
 
+    fstream datei;
+    datei.open("particles.dat", ios::out);
+
     i = 0;
     for (ip = 0; ip < pnum; ip++)
     {
@@ -693,12 +696,17 @@ void CLimioptic::ApplyBeamProfile(double *p)
         yplus += p[i + 2 - elesize] * p[i + 2 - elesize];
         bplus += p[i + 3 - elesize] * p[i + 3 - elesize];
 
-        /*
-        if ((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.))
+
+        if (!((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.)))
         {
-            nichtdurch++;
+            datei << p[i + 0 - elesize] << " ";
+            datei << p[i + 1 - elesize] << " ";
+            datei << p[i + 2 - elesize] << " ";
+            datei << p[i + 3 - elesize] << " ";
+            datei << p[i + 4 - elesize] << " ";
+            datei << p[i + 5 - elesize] << endl;
         }
-        */
+
 
         for (j = 0; j < 8; j++)
         {
@@ -709,6 +717,8 @@ void CLimioptic::ApplyBeamProfile(double *p)
         i = i + particlesize;
     }
 
+    datei.close();
+
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = pnum - nottransmitted;
 
@@ -716,7 +726,7 @@ void CLimioptic::ApplyBeamProfile(double *p)
     std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
     std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
 
-    fstream datei;
+    //fstream datei;
     datei.open("beamprofile.dat", ios::out | ios::app);
 
     datei << nottransmitted / pnum << " ";      //transmission

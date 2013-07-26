@@ -195,8 +195,8 @@ class inputcontrol(QtGui.QDialog):
                 _param_.append(INPUT[opt])
                 i += 1
 
-            for i in xrange(NumberOfInputs):
-                beamline = beamline.replace("INPUT[{}]".format(i), str(INPUT[i]))
+            #for i in xrange(NumberOfInputs):
+            #    beamline = beamline.replace("INPUT[{}]".format(i), str(INPUT[i]))
 
             print "computing..."
             result = optimize.minimize(limioptic.ErrFkt, _param_[:], (beamline, INPUT, SourceObj.Source))

@@ -13,8 +13,8 @@ import vtk
 #import pickle
 from scipy import optimize
 
-s        = 0.
-SOURCE   = []
+s           = 0.
+SOURCE      = []
 SOURCEFILES = []
 
 geolines = vtk.vtkTable()

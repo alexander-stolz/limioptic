@@ -27,12 +27,12 @@ T    2 17 ,2055665E+08   1000197E-02 -,4745E+02  ,1586E+02   ,9999768 -,0063336 
 
 class ImportSource():
     def __init__(self):
-        self.mittel = [0.]*6
-        self.sigma  = [0.]*6
-        self.Source = []
-        self.Selection = []
+        self.mittel          = [0.]*6
+        self.sigma           = [0.]*6
+        self.Source          = []
+        self.Selection       = []
+        self.foilparameters  = {}
         self.UserInteraction = UserInteraction(self)
-        self.foilparameters = {}
 
     def LoadSource(self, filename, filetype="limioptic"):
         self.SourceFile = filename
@@ -44,9 +44,11 @@ class ImportSource():
         currentLineNr = 1
 
         if filetype == "limioptic":
+            currentLineNr = 0
             for line in open(self.SourceFile):
                 currentLineNr += 1
-                if currentLineNr % 100 == 0: print "\r{} particles processed.".format(currentLineNr),
+                if currentLineNr % 100 == 0:
+                    print "\r{} particles processed.".format(currentLineNr),
                 try:
                     temp = [float(elem) for elem in line.split()]
                     if len(temp) == 6:
@@ -70,7 +72,8 @@ class ImportSource():
             _laenge = len(content) + 12
             for line in content:
                 currentLineNr += 1
-                if currentLineNr % 100 == 0: print "\r{} of {}".format(currentLineNr, _laenge),
+                if currentLineNr % 100 == 0:
+                    print "\r{} of {}".format(currentLineNr, _laenge),
                 try:
                     (_energy, _s, _x, _y, _cosS, _cosX, _cosY) = [float(x.replace(",", ".")) for x in line[1:].split()[2:]]
                     self.Source.append([_x*1e-7, _cosX*1e3, _y*1e-7, _cosY*1e3, _energy*1e-6, 0.])
@@ -89,7 +92,8 @@ class ImportSource():
         summeDeltaX = [0.]*6
         for i in xrange(processedParticleNr):
             summeDeltaX = [summeDeltaX[j] + (self.Source[i][j] - self.mittel[j])**2 for j in xrange(6)]
-            if i % 100 == 0: print "\r{} of {}".format(i, processedParticleNr),
+            if i % 100 == 0:
+                print "\r{} of {}".format(i, processedParticleNr),
         self.sigma = [(summeDeltaX[j] / (processedParticleNr - 1))**.5 for j in xrange(6)]
 
         print "\r{} of {} particles read.".format(len(self.Source), currentLineNr)
@@ -247,7 +251,9 @@ class ImportSource():
         print "\nFilter applied. Before:", len(self.Source), "Particles, after:", len(self.Selection), "Particles.\n"
 
     def SaveSource(self, data=None, filename="source.dat"):
-        if data is None: data = self.Source
+        if data is None:
+            data = self.Source
+
         f = open(filename, "w")
         for line in data:
             print >> f, line[0], line[1], line[2], line[3], line[4], line[5]
@@ -316,7 +322,7 @@ if __name__ == "__main__":
     root.withdraw()
 
     options = {}
-    options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt")]
+    options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt"), ("all files", ".*")]
     source = tkFileDialog.askopenfile(mode="r", **options).name
 
     root.quit()
@@ -325,8 +331,8 @@ if __name__ == "__main__":
     myapp.LoadSource(source, filetype=("SRIM" if source.endswith("TRANSMIT.txt") else "limioptic"))
     #myapp.NormalizeEnergy()
     myapp.ShowFits()
-    myapp.UserInteraction.ChooseFilter()
-    app.exec_()
+    #myapp.UserInteraction.ChooseFilter()
+    #app.exec_()
     #myapp.Source = myapp.Selection
     #myapp.ShowFits()
     sys.exit()
