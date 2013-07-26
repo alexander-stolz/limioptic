@@ -691,10 +691,10 @@ void CLimioptic::ApplyBeamProfile(double *p)
     i = 0;
     for (ip = 0; ip < pnum; ip++)
     {
-        xplus += p[i + 0 - elesize] * p[i + 0 - elesize];
-        aplus += p[i + 1 - elesize] * p[i + 1 - elesize];
-        yplus += p[i + 2 - elesize] * p[i + 2 - elesize];
-        bplus += p[i + 3 - elesize] * p[i + 3 - elesize];
+        xplus += (p[i + 0 - elesize] * p[i + 0 - elesize]);
+        aplus += (p[i + 1 - elesize] * p[i + 1 - elesize]);
+        yplus += (p[i + 2 - elesize] * p[i + 2 - elesize]);
+        bplus += (p[i + 3 - elesize] * p[i + 3 - elesize]);
 
 
         if (!((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.)))
@@ -720,9 +720,9 @@ void CLimioptic::ApplyBeamProfile(double *p)
     datei.close();
 
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
-    durch = pnum - nottransmitted;
+    durch = (double)(pnum - nottransmitted);
 
-    std::cout << "transmission (beamprofile) =\t" << 1. - nottransmitted / pnum << "\t@ " << p[i + 6 - particlesize] << " m\n";
+    std::cout << "transmission (beamprofile) =\t" << 1. - (double)nottransmitted / pnum << " (" << durch << "/" << pnum << " particles)\t@ " << p[i + 6 - particlesize] << " m\n";
     std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
     std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
 
