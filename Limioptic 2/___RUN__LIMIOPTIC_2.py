@@ -806,7 +806,9 @@ class doitXY(threading.Thread):
                     if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
                 except Exception, e:
                     print "\n\ntraceback:", "\n===============================\n", e, "\n===============================\n\n"
+                    self.threadlock.release()
                     return
+                    print "bananarama"
                 iele = limioptic.GetTrajectory(0, 7)
 
                 ### erzeuge wertetabelle
@@ -1646,7 +1648,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-07-16"
+VERSION          = "2013-08-05"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

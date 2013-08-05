@@ -11,6 +11,7 @@ CLimioptic::CLimioptic()
     ClearBeamline();
     ClearTrajectories();
     spotsize = 0.;
+    nottransmitted = 0;
 }
 
 CLimioptic::CLimioptic(const CLimioptic &copyobj)
