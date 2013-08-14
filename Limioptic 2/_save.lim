@@ -1,16 +1,17 @@
 # Variablen
 linse1 = INPUT[0] * 1e3
 
-v_ext = 22.7e3 + 2.31e3
+v_ext = 22.7e3 / 2. + 2.31e3
 print "Extraktion = ", v_ext
 v_vb  = INPUT[1] * 10e3
 v_inj  = v_ext + v_vb
+print "Injection = ", v_inj
 
 #########################
-AddGaussBeam(.15*5., 40./3., .15/3., 40./3., 0, 0, number=1000)
+AddGaussBeam(.15, 40./3, .15/3., 40./3., 0, 0, number=1000)
 #########################
 
-AddDrift(1,1,.17)
+AddDrift(1,1,.172)
 
 Name("EL1") # Linse 1
 #AddThinLens(linse1, linse1, 50)
@@ -19,7 +20,7 @@ AddFNEL(v_ext, linse1)	# (v_ext, v_lens)
 AddDrift(1,1,.78)
 
 Name("VB") # Vorbeschleunigung
-AddVBFN(v_ext, v_vb, b = .575, laenge = .28)
+AddVBFN(v_ext, v_vb, segment=0, b = INPUT[2])
 
 AddDrift(1,1,1.026)
 AddDrift(1,1,0.259)
@@ -32,19 +33,17 @@ AddEdgeFocusing(.9906, 0., 0., 15)
 AddDrift(1, 1, .14) # Magnetkammer aus
 
 AddDrift(1, 1, .31)
-
-Name("EL2") # Linse 2
-#AddThinLens(linse2, linse2, 80)	# (fx, fy, R)
-
 AddDrift(1, 1, .31)
 
 Name("FC") # Schlitz und Cup
 #AddSlit(0,30,0,30)
 
-AddDrift(1, 1, 1.1)
+AddDrift(1, 1, 1.146-.5)
+AddBeamProfile()
+AddSlit(0, 30, 0, 30)
+AddDrift(1, 1, .5)
 
 Name("QK..") ## Quellenkasten 2 Eingang D=30mm
-AddBeamProfile()
 AddSlit(0, 30, 0, 30)
 
 AddDrift(1, 1, .25)

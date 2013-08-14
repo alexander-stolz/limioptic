@@ -724,7 +724,10 @@ class doitXY(threading.Thread):
                         limioptic.geolines.AddColumn(limioptic.geo_y)
                         self.line3 = self.chart.AddPlot(0)
                         self.line3.SetInput(limioptic.geolines, 0, 1)
-                        self.line3.SetColor(0., 0., 1.)
+                        if myapp.menu_plot_bg.isChecked():
+                            self.line3.SetColor(1, 1, 0)
+                        else:
+                            self.line3.SetColor(0., 0., 1.)
                         self.line3.SetWidth(.7)
 
                 for name in limioptic.textArray:

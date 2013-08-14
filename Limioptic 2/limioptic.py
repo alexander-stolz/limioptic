@@ -322,7 +322,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
     AddSegment(1, 447.81e-3)
 
 
-def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1.):
+def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0):
     """ Vorbeschleunigung FN """
     global lastFunction
     lastFunction = "AddVBFN"
@@ -334,7 +334,15 @@ def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1.):
     T0 = float(extraktion)
     T1 = float(extraktion + deltaV)
 
-    AddSegment11(T0, T1, .09, .09, laenge, b1, b2)
+    if segment == 0:
+        AddSegment11(T0, T1, .09, .09, laenge, b1, b2)
+    elif segment == 1:
+        AddSegment(math.sqrt(T1/T0), laenge)
+    elif segment == 2:
+        AddSegment1(T0, T1, -1., .09, .09, laenge, b)
+    elif segment == 3:
+        AddSegment2VBFN(T0, T1, .09, laenge, 0., -(T1-T0)/laenge, 0., -1.)
+
 
 
 def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=1., beamprofile=False):
@@ -1002,12 +1010,12 @@ def AddSegment(N, L):
         s = s + L
 
     try:
-        m11  = (3.0-N)/2.0
-        m12  = 2.0*L/(1.0+N)
-        m21  = -3.0/8.0/N/N/L*(N*N-1.0)*(N-1.0)
-        m22  = (3.0*N-1.0)/(2.0*N*N)
-        dkdk = 1.0/N/N
-        dmdm = 1.0
+        m11  = (3. - N) / 2.
+        m12  = 2. * L / (1. + N)
+        m21  = -3. / 8. / N / N / L * (N * N - 1.) * (N - 1.)
+        m22  = (3. * N - 1.) / (2. * N * N)
+        dkdk = 1. / N / N
+        dmdm = 1.
 
         AddMatrix(1, [
             m11, m12, 0., 0., 0., 0.,
@@ -1376,6 +1384,7 @@ def AddFNEL(phi1, v_el):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(63)
 
+    """
     # phi2/phi1
     x = (phi1 - v_el) / phi1
 
@@ -1389,6 +1398,19 @@ def AddFNEL(phi1, v_el):
         - 529.9264768291281  * x**5
         + 288.3485380347237  * x**6
         - 68.5022805970122   * x**7)
+    """
+    
+    x = (phi1 + v_el) / phi1
+    # reihenentwicklung fuer x=1..2
+    f = 1. / (
+        + 6.76764
+        - 22.3617   * x
+        + 30.8469   * x**2 
+        - 24.4108   * x**3 
+        + 12.5201   * x**4 
+        - 4.05526   * x**5
+        + 0.754707  * x**6
+        - 0.0615853 * x**7)
 
     optic.AddThinLens(
         ctypes.c_int(1),
