@@ -5,7 +5,7 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 
 1. Download the Limioptic 2 folder
 2. Download and install python(x,y): <a href="https://code.google.com/p/pythonxy/">https://code.google.com/p/pythonxy</a>
-3. Download and install MinGW or Cygwin (instructions follow when I get my hands on a windows machine again)
+3. Download and install <a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20120426/">MinGW</a>. Make shure you install the C++ compiler.
 
 
 <b>Installation (Linux):</b>
