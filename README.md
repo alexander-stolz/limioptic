@@ -11,7 +11,12 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 <b>Installation (Linux):</b>
 
 1. Download the Limioptic 2 folder
-2. Install python-qt4 and python-vtk and <a href="http://www.pyqtgraph.org/">PyQtGraph</a> (depends on numpy and scipy)
+2. Limioptic imports the following libraries. Make sure you have these:
+  - python-qt4
+  - (python-vtk)
+  - <a href="http://www.pyqtgraph.org/">PyQtGraph</a> (depends on numpy and scipy)
+  - scipy
+  - pylab
 
 <b> To start the program, execute "__RUN__LIMIOPTIC_2.py"</b>
 
