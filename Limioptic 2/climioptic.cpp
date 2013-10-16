@@ -12,6 +12,8 @@ CLimioptic::CLimioptic()
     ClearTrajectories();
     spotsize = 0.;
     nottransmitted = 0;
+    x_verteilung = 0.;
+    y_verteilung = 0.;
 }
 
 CLimioptic::CLimioptic(const CLimioptic &copyobj)
@@ -21,6 +23,8 @@ CLimioptic::CLimioptic(const CLimioptic &copyobj)
     trajectories   = copyobj.trajectories;
     spotsize       = copyobj.spotsize;
     nottransmitted = copyobj.nottransmitted;
+    x_verteilung   = copyobj.x_verteilung;
+    y_verteilung   = copyobj.y_verteilung;
 }
 
 CLimioptic::~CLimioptic()
@@ -36,6 +40,8 @@ CLimioptic &CLimioptic::operator=(const CLimioptic &assignobj)
         trajectories   = assignobj.trajectories;
         spotsize       = assignobj.spotsize;
         nottransmitted = assignobj.nottransmitted;
+        x_verteilung   = assignobj.x_verteilung;
+        y_verteilung   = assignobj.y_verteilung;
     }
 
     return *this;
@@ -48,6 +54,8 @@ void CLimioptic::Clear()
     ClearTrajectories();
     spotsize = 0.;
     nottransmitted = 0;
+    x_verteilung = 0.;
+    y_verteilung = 0.;
 }
 
 void CLimioptic::ClearParticles()
@@ -170,6 +178,7 @@ void CLimioptic::AddDrift(int number, double gamma2, double length)
     drift.push_back(gamma2);
     drift.push_back(length);
     beamline.push_back(drift);
+    if (length < 0.) { spotsize = 9999999999999999.; }
 }
 
 void CLimioptic::AddBeamProfile()
@@ -512,9 +521,7 @@ int CLimioptic::GetTrajectoriesSize()
 
 double CLimioptic::GetSpotSize()
 {
-    //double loss;
-    //loss = (double)nottransmitted / (particles.size() / particlesize);
-
+    //cout << "spotsize return = " << spotsize << endl;
     if (spotsize != spotsize)
     {
         return 9999999999999999.;
@@ -524,6 +531,9 @@ double CLimioptic::GetSpotSize()
         return spotsize;
     }
 }
+
+double CLimioptic::GetSigmaX() { return x_verteilung; }
+double CLimioptic::GetSigmaY() { return y_verteilung; }
 
 void CLimioptic::GetTrajectories(double *dst)
 {
@@ -726,6 +736,9 @@ void CLimioptic::ApplyBeamProfile(double *p)
     std::cout << "transmission (beamprofile) =\t" << 1. - (double)nottransmitted / pnum << " (" << durch << "/" << pnum << " particles)\t@ " << p[i + 6 - particlesize] << " m\n";
     std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
     std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
+
+    x_verteilung = sqrt(xplus / (durch - 1));
+    y_verteilung = sqrt(yplus / (durch - 1));
 
     //fstream datei;
     datei.open("beamprofile.dat", ios::out | ios::app);

@@ -59,6 +59,8 @@ public:
    void CalculateTrajectories(); // Teilchen-Trajektorien berechnen
    int GetTrajectoriesSize(); // Groesse des Arrays mit den Trajektorien zurueckgeben
    double GetSpotSize();
+   double GetSigmaX();
+   double GetSigmaY();
    void GetTrajectories(double *); // Teilchen-Trajektorien in ein externes Array kopieren
    // Groesse einer Eigenschaft der Trajektorie eines Teilchens zurueckgeben
    int GetTrajectorySize();
@@ -127,6 +129,8 @@ public:
    // Berechnet sich als Summe der Strahlfleckquadrate.
    double spotsize;
    int nottransmitted;
+   double x_verteilung;
+   double y_verteilung;
 };
 
 #endif

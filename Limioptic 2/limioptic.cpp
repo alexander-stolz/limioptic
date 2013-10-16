@@ -162,6 +162,16 @@ double GetSpotSize()
    return optic.GetSpotSize();
 }
 
+double GetSigmaX()
+{
+   return optic.GetSigmaX();
+}
+
+double GetSigmaY()
+{
+   return optic.GetSigmaY();
+}
+
 void GetTrajectories(double *dst)
 {
    optic.GetTrajectories(dst);

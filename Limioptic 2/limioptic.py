@@ -345,7 +345,7 @@ def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0):
 
 
 
-def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=1., beamprofile=False):
+def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=1., beamprofile=False, addwaist=False):
     """ FN Beschleuniger einfach (ohne einzelne Elektroden) """
     global lastFunction
     lastFunction = "AddFNAccNeu"
@@ -395,6 +395,9 @@ def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=
     if (beamprofile):
         print "\n"
         AddBeamProfile()
+
+    if (addwaist):
+        AddWaist()
 
     AddModifyEmittance(factor1, factor2)
 
@@ -1384,7 +1387,7 @@ def AddFNEL(phi1, v_el):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(63)
 
-    """
+
     # phi2/phi1
     x = (phi1 - v_el) / phi1
 
@@ -1398,8 +1401,8 @@ def AddFNEL(phi1, v_el):
         - 529.9264768291281  * x**5
         + 288.3485380347237  * x**6
         - 68.5022805970122   * x**7)
+
     """
-    
     x = (phi1 + v_el) / phi1
     # reihenentwicklung fuer x=1..2
     f = 1. / (
@@ -1411,6 +1414,31 @@ def AddFNEL(phi1, v_el):
         - 4.05526   * x**5
         + 0.754707  * x**6
         - 0.0615853 * x**7)
+    """
+    optic.AddThinLens(
+        ctypes.c_int(1),
+        ctypes.c_double(float(f)),
+        ctypes.c_double(float(f)),
+        ctypes.c_double(0.))
+
+
+def AddFNSputterEL(phi1, v_el):
+    global lastFunction
+    lastFunction = "AddFNSputterEL"
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(31)
+
+    # phi2/phi1
+    x = (phi1 + v_el) / phi1
+
+    # reihenentwicklung fuer x=1.5..2.5
+    f = 1. / (
+        + 16.8905
+        - 22.8709    * x
+        + 7.80307    * x**2)
 
     optic.AddThinLens(
         ctypes.c_int(1),
@@ -1831,6 +1859,8 @@ else:
 
 
 optic.GetSpotSize.restype = ctypes.c_double
+optic.GetSigmaX.restype = ctypes.c_double
+optic.GetSigmaY.restype = ctypes.c_double
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):

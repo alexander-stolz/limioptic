@@ -44,6 +44,8 @@ void PrintTrajectories();
 void CalculateTrajectories();
 int GetTrajectoriesSize();
 double GetSpotSize();
+double GetSigmaX();
+double GetSigmaY();
 void GetTrajectories(double *);
 int GetTrajectorySize();
 void GetTrajectory(int,int,double *);
