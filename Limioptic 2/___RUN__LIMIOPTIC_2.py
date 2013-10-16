@@ -253,7 +253,7 @@ class inputcontrol(QtGui.QDialog):
                             self.min[i].setValue(INPUT[i] - 2.5)
                             self.slider[i].setValue(250000)
                     if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                    if (RUNNING2D): self.plotwindow.update = True
+                    if (RUNNING2D): self.plotwindow.neu()
                     if (RUNNING3D): self.plotwindow.neu()
                     self.changing = False
 
@@ -267,7 +267,7 @@ class inputcontrol(QtGui.QDialog):
                         for i in xrange(NumberOfInputs):
                                 INPUT[i] = self.input[i].value()
                         if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                        if (RUNNING2D): self.plotwindow.update = True
+                        if (RUNNING2D): self.plotwindow.neu()
                         if (RUNNING3D): self.plotwindow.neu()
                         self.changing = False
 
@@ -302,6 +302,9 @@ class inputcontrol(QtGui.QDialog):
                         del self.plotwindow.mycells
                         del self.plotwindow.writer
                         del self.plotwindow.w2iFilter
+                        for segment in self.segments:
+                            del segment
+                        del self.segments
                 except: pass
                 del self.plotwindow
 
@@ -390,6 +393,56 @@ class doitqt2(threading.Thread):
         self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
 
 
+class Segment:
+    """ Fuer die 3D-Ausgabe der Geometrie """
+    def __init__(self, s1, s2, radius):
+        self.source     = vtk.vtkLineSource()
+        self.tubefilter = vtk.vtkTubeFilter()
+        self.mapper     = vtk.vtkPolyDataMapper()
+        self.actor      = vtk.vtkActor()
+
+        self.source.SetPoint1(s1, 0, 0)
+        self.source.SetPoint2(s2, 0, 0)
+
+        self.tubefilter.SetInputConnection(self.source.GetOutputPort())
+        self.tubefilter.SetRadius(radius)
+        self.tubefilter.SetNumberOfSides(50)
+        self.tubefilter.Update()
+
+        self.mapper.SetInputConnection(self.tubefilter.GetOutputPort())
+        self.actor.SetMapper(self.mapper)
+
+        self.actor.GetProperty().SetOpacity(.25)
+        self.actor.GetProperty().SetColor(255, 255, 0)
+
+        #print "added: ", s1, s2, radius
+
+    def __del__(self):
+        del self.actor
+        del self.mapper
+        del self.tubefilter
+        del self.source
+
+
+class Text3D(vtk.vtkActor):
+    """ Labels in der 3D-Ausgabe """
+    def __init__(self, pos, text, posY=60.):
+        posY = posY / SUPERSCALE3D
+        self.vectorlabel = vtk.vtkVectorText()
+        self.vectorlabel.SetText(text)
+        self.extrusionfilter = vtk.vtkLinearExtrusionFilter()
+        self.extrusionfilter.SetInputConnection(self.vectorlabel.GetOutputPort())
+        self.extrusionfilter.SetExtrusionTypeToNormalExtrusion()
+        self.extrusionfilter.SetVector(0, 0, 1)
+        self.extrusionfilter.SetScaleFactor(.5)
+
+        self.mapper = vtk.vtkPolyDataMapper()
+        self.mapper.SetInputConnection(self.extrusionfilter.GetOutputPort())
+
+        self.SetMapper(self.mapper)
+        self.SetPosition(pos, posY, 0)
+
+
 class doit3d(threading.Thread):
         """ 3D-Ausgabe """
         def __init__(self, parent):
@@ -414,14 +467,14 @@ class doit3d(threading.Thread):
                 for part in xrange(parts):
                         self.polylines[part].GetPointIds().SetNumberOfIds(segs)
                         for seg in xrange(segs):
-                                self.mypoints.InsertNextPoint(zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
+                                self.mypoints.InsertNextPoint(zi[seg] * SCALE3D/SUPERSCALE3D, xi[part][seg]/SUPERSCALE3D, yi[part][seg]/SUPERSCALE3D)
                                 self.polylines[part].GetPointIds().SetId(seg, part * segs + seg)
                         self.mycells.InsertNextCell(self.polylines[part])
 
                 # Sollbahn
                 self.polylines[parts].GetPointIds().SetNumberOfIds(2)
                 self.mypoints.InsertNextPoint(0., 0., 0.)
-                self.mypoints.InsertNextPoint(zi[-1] * SCALE3D, 0., 0.)
+                self.mypoints.InsertNextPoint(zi[-1] * SCALE3D/SUPERSCALE3D, 0., 0.)
                 self.polylines[parts].GetPointIds().SetId(0, parts * segs)
                 self.polylines[parts].GetPointIds().SetId(1, parts * segs + 1)
                 self.mycells.InsertNextCell(self.polylines[parts])
@@ -429,8 +482,8 @@ class doit3d(threading.Thread):
                 # Marker
                 marker = 1
                 for seg in zi:
-                    self.mypoints.InsertNextPoint(seg * SCALE3D, -10., 0)
-                    self.mypoints.InsertNextPoint(seg * SCALE3D, +10., 0)
+                    self.mypoints.InsertNextPoint(seg * SCALE3D/SUPERSCALE3D, -10./SUPERSCALE3D, 0)
+                    self.mypoints.InsertNextPoint(seg * SCALE3D/SUPERSCALE3D, +10./SUPERSCALE3D, 0)
                     self.polylines[parts+marker].GetPointIds().SetNumberOfIds(2)
                     self.polylines[parts+marker].GetPointIds().SetId(0, parts * segs + 2 * marker)
                     self.polylines[parts+marker].GetPointIds().SetId(1, parts * segs + 2 * marker + 1)
@@ -440,11 +493,17 @@ class doit3d(threading.Thread):
                 # Geometrie
                 if (myapp.menu_plot_geo.isChecked()):
                     iele  = limioptic.geo_s.GetNumberOfTuples()
-                    self.polylines[-1].GetPointIds().SetNumberOfIds(iele)
-                    for point in xrange(iele):
-                        self.mypoints.InsertNextPoint(limioptic.geo_s.GetValue(point) * SCALE3D, limioptic.geo_y.GetValue(point), 0.)
-                        self.polylines[-1].GetPointIds().SetId(point, parts * segs + 2 * marker + point)
-                    self.mycells.InsertNextCell(self.polylines[-1])
+                    #self.polylines[-1].GetPointIds().SetNumberOfIds(iele)
+                    self.segments = []
+                    for point in xrange(iele/2):
+                        s1 = limioptic.geo_s.GetValue(point * 2) * SCALE3D
+                        s2 = limioptic.geo_s.GetValue((point * 2) + 1) * SCALE3D
+                        radius = limioptic.geo_y.GetValue(point * 2)
+                        if ((s2 - s1)/SCALE3D > .1) and (radius != 55.): self.segments.append(Segment(s1/SUPERSCALE3D, s2/SUPERSCALE3D, radius/SUPERSCALE3D))
+                        #self.mypoints.InsertNextPoint(limioptic.geo_s.GetValue(point) * SCALE3D, limioptic.geo_y.GetValue(point), 0.)
+                        #self.polylines[-1].GetPointIds().SetId(point, parts * segs + 2 * marker + point)
+
+                    #self.mycells.InsertNextCell(self.polylines[-1])
 
                 # Datenobjekt erzeugen
                 self.mydata = vtk.vtkPolyData()
@@ -475,19 +534,29 @@ class doit3d(threading.Thread):
                 self.ren.SetBackground(.01, .01, .01)
                 self.ren.SetBackground2(.2, .2, .2)
                 self.ren.AddActor(self.actor)
+                for segment in self.segments:
+                    self.ren.AddActor(segment.actor)
 
                 ### Axen
-                self.axisactor = vtk.vtkCubeAxesActor()
-                self.axisactor.SetXAxisRange(0., zi[-1])
-                self.axisactor.SetYAxisRange(-30., 30)
-                self.axisactor.SetBounds(self.actor.GetBounds())
-                self.axisactor.SetXTitle("s in m")
-                self.axisactor.YAxisVisibilityOff()
-                self.axisactor.ZAxisVisibilityOff()
-                self.axisactor.SetCamera(self.ren.GetActiveCamera())
-                self.axisactor.GetProperty().SetColor(1, 1, 1)
+                #self.axisactor = vtk.vtkCubeAxesActor()
+                #self.axisactor.SetXAxisRange(0., zi[-1])
+                #self.axisactor.SetYAxisRange(-30., 30)
+                #self.axisactor.SetBounds(self.actor.GetBounds())
+                #self.axisactor.SetXTitle("s in m")
+                #self.axisactor.YAxisVisibilityOff()
+                #self.axisactor.ZAxisVisibilityOff()
+                #self.axisactor.SetCamera(self.ren.GetActiveCamera())
+                #self.axisactor.GetProperty().SetColor(1, 1, 1)
                 #self.ren.AddActor(self.axisactor)
                 self.ren.ResetCamera()
+
+                ### Labels
+                labels = []
+                for label in limioptic.textArray:
+                    labels.append(Text3D(label[0] * SCALE3D/SUPERSCALE3D, label[1]))
+                    self.ren.AddActor(labels[-1])
+                sourcelabel = Text3D(-1 * SCALE3D/SUPERSCALE3D, "*", -8.)
+                self.ren.AddActor(sourcelabel)
 
                 ### Renderfenster
                 self.renwin = vtk.vtkRenderWindow()
@@ -557,18 +626,18 @@ class doit3d(threading.Thread):
 
                 for part in xrange(parts):
                         for seg in xrange(segs):
-                                self.mypoints.InsertPoint(part * segs + seg, zi[seg] * SCALE3D, xi[part][seg], yi[part][seg])
+                                self.mypoints.InsertPoint(part * segs + seg, zi[seg] * SCALE3D/SUPERSCALE3D, xi[part][seg]/SUPERSCALE3D, yi[part][seg]/SUPERSCALE3D)
 
                 self.mypoints.Modified()
                 self.render = True
 
         def animate(self, obj=None, event=None):
                 """ Nur animieren, wenn etwas geaendert wurde. Die Funktion wird alle 50 ms aufgerufen """
-                if self.render:
-                        self.render = False
-                        self.threadlock.acquire()
-                        self.renwin.Render()
-                        self.threadlock.release()
+                #if self.render:
+                #self.render = False
+                self.threadlock.acquire()
+                self.renwin.Render()
+                self.threadlock.release()
 
         def keypress(self, obj=None, event=None):
             key = obj.GetKeySym()
@@ -787,14 +856,14 @@ class doitXY(threading.Thread):
             #    SCREENSHOTNUMBER += 1
 
         def animate(self, obj=None, event=None):
-                if self.render:
-                    self.render = False
-                    self.threadlock.acquire()
-                    self.view.Render()
-                    self.threadlock.release()
-                if self.update:
-                    self.update = False
-                    self.neu()
+                #if self.render:
+                #self.render = False
+                self.threadlock.acquire()
+                self.view.Render()
+                self.threadlock.release()
+                #if self.update:
+                #    self.update = False
+                #    self.neu()
 
         def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
                 self.threadlock.acquire()
@@ -1651,13 +1720,14 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-08-05"
+VERSION          = "2013-10-16"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
 OPACITY          = 50
 NumberOfInputs   = 8
 SCALE3D          = 10.
+SUPERSCALE3D     = 10.
 SCREENSHOTNUMBER = 0
 XCOLOR           = 255, 0, 0, 255
 YCOLOR           = 0, 255, 0, 255
