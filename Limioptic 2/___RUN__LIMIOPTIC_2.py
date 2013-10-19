@@ -267,7 +267,7 @@ class inputcontrol(QtGui.QDialog):
                         for i in xrange(NumberOfInputs):
                                 INPUT[i] = self.input[i].value()
                         if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                        if (RUNNING2D): self.plotwindow.neu()
+                        if (RUNNING2D): self.plotwindow.update = True
                         if (RUNNING3D): self.plotwindow.neu()
                         self.changing = False
 
