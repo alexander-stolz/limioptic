@@ -253,7 +253,7 @@ class inputcontrol(QtGui.QDialog):
                             self.min[i].setValue(INPUT[i] - 2.5)
                             self.slider[i].setValue(250000)
                     if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                    if (RUNNING2D): self.plotwindow.neu()
+                    if (RUNNING2D): self.plotwindow.update = True
                     if (RUNNING3D): self.plotwindow.neu()
                     self.changing = False
 
@@ -871,9 +871,9 @@ class doitXY(threading.Thread):
                 self.threadlock.acquire()
                 self.view.Render()
                 self.threadlock.release()
-                #if self.update:
-                #    self.update = False
-                #    self.neu()
+                if self.update:
+                    self.update = False
+                    self.neu()
 
         def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
                 self.threadlock.acquire()
