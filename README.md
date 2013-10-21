@@ -1,7 +1,7 @@
 Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously. Plot->PyQtGraph should work until this problem is fixed.
 
 
-<b>Installation (Windows):</b>
+<b>Installation (Windows): (this doesn't work perfekt yet. an installer ist coming very soon!)</b>
 
 1. Download the Limioptic 2 folder
 2. Download and install python(x,y): <a href="https://code.google.com/p/pythonxy/">https://code.google.com/p/pythonxy</a>
