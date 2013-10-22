@@ -1,0 +1,102 @@
+from os import system
+
+filename = "lithium1.dat"
+a = open(filename, "w");   a.close()
+global s
+
+for i in xrange(350, 600):
+#try:
+    INPUT[0] = 0 # i / 10.
+    INPUT[1] = i / 100.
+    optic.Clear()
+    geo_s.Reset()
+    geo_y.Reset()
+    s = 0
+    # Variablen
+    linse1 = INPUT[0] * 1e3
+
+    v_ext = 11.5e3 + 3.04e3
+    print "Extraktion = ", v_ext
+    v_vb  = INPUT[1] * 10e3
+    v_inj  = v_ext + v_vb
+    #b = 1.1
+    b = 0.65
+    print "Injection = ", v_inj
+
+    #########################
+    AddGaussBeam(.15*9, 40/2.8, 0*.15/3., 0*40./3., 0, 0, number=1000)
+    #AddGaussBeam(.15*6, 40/11., 0*.15/3., 0*40./3., 0, 0, number=1000)
+    #########################
+
+    AddDrift(1, 1, .30)
+
+    Name("EL1")
+    #AddThinLens(linse1, linse1, 50)
+    AddFNEL(v_ext, linse1)  # (v_ext, v_lens)
+
+    AddDrift(1, 1, .95)
+
+    Name("VB")
+    AddVBFN(v_ext, v_vb, segment=0, b=b, laenge=.30)
+
+    AddDrift(1,1,1.026)
+    AddDrift(1,1,0.259)
+
+    Name("MSA") # 20 Grad Magnet
+    AddEdgeFocusing(.9906, .174533,0, 15)
+    AddMSA(10, 1, 0.9906, 0.34906585/10., 15)
+    AddEdgeFocusing(.9906, 0., 0., 15)
+
+    AddDrift(1, 1, .14) # Magnetkammer aus
+    AddDrift(1, 1, .38)
+
+    Name("Slit"); AddSlit(0,100,0,100)
+
+    AddDrift(1, 1, .31)
+    Name("FC")
+
+    AddDrift(1, 1, .72)
+
+    #### PYTHON CODE ####
+    a = open(filename, "a")
+    AddWaist()
+    optic.CalculateTrajectories()
+    print >> a, "{}\t{}".format(str(INPUT[1]*10.).replace(".", "."), str((optic.GetSpotSize()/999.)**.5).replace(".", "."))
+    #print >> a, "{}\t{}".format(str(INPUT[0]).replace(".", "."), str((optic.GetSpotSize()/999.)**.5).replace(".", "."))
+    a.close()
+    ###//  PYTHON CODE ####
+
+    Name("BPM");  AddBeamProfile();  AddSlit(0, 50, 0, 50)
+    AddDrift(1, 1, .31)
+
+    Name("QK..") ## Quellenkasten 2 Eingang D=30mm
+    AddSlit(0, 30, 0, 30)
+
+    AddDrift(1, 1, .25)
+
+    #Name("EL3") # Linse 3
+    #AddThinLens(linse3, linse3, 75)    # (fx, fy, R)
+
+    AddDrift(1, 1, .25)
+    #Name("TARGET") ### TARGET
+    AddDrift(1, 1, .10)
+
+    #Name("..QK") ## Quellenkasten 2 Ausgang D=30mm
+    AddSlit(0, 30, 0, 30)
+
+    AddDrift(1,1,.259) 
+
+    Name("MSA") # 20 Grad Magnet
+    AddEdgeFocusing(.9906, .174533, 0, 15)
+    AddMSA(10, 1, .9906, .34906585/10., 15)
+    AddEdgeFocusing(.9906, 0, 0, 15)
+
+    AddDrift(1, 1, .265)
+
+    Name("Slit")
+    AddSlit(0,30,0,30)
+
+    AddDrift(1, 1, .485)
+
+system('plottest.py "' + filename + '"')
+#except: pass
