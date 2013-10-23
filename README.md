@@ -3,7 +3,7 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 
 <b>Installation (Windows):</b>
 
-run <b>setup.exe</b>
+1. Run <b>setup.exe</b>
 
 <b>Installation (Linux):</b>
 
