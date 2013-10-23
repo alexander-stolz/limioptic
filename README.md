@@ -1,12 +1,9 @@
 Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously. Plot->PyQtGraph should work until this problem is fixed.
 
 
-<b>Installation (Windows): (this doesn't work perfekt yet. an installer ist coming very soon!)</b>
+<b>Installation (Windows):</b>
 
-1. Download the Limioptic 2 folder
-2. Download and install python(x,y): <a href="https://code.google.com/p/pythonxy/">https://code.google.com/p/pythonxy</a>
-3. Download and install <a href="http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20120426/">MinGW</a>. Make sure to install the C++ compiler.
-
+run <b>setup.exe</b>
 
 <b>Installation (Linux):</b>
 
