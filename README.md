@@ -4,6 +4,8 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 <b>Installation (Windows):</b>
 
 1. Run <b>setup.exe</b>
+2. Install the prerequisites in their default directories.
+3. Make sure to select the C++ compiler during the MinGW installation!.
 
 <b>Installation (Linux):</b>
 
