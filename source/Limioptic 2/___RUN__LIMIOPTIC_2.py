@@ -311,18 +311,18 @@ class inputcontrol(QtGui.QDialog):
                 del self.plotwindow
 
                 print "saving autosave..",
-                myfile = open("_save.lim", "w")
+                myfile = open(backup_file + ".lim", "w")
                 myfile.write(str(myapp.textedit.toPlainText()))
                 myfile.close()
 
-                myfile = open("_save.var", "w")
+                myfile = open(backup_file + ".var", "w")
                 for i in xrange(NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
                 
                 time.sleep(.1)
                 self.close()
-                print "\rsaved to _save.var"
+                print "\rsaved to {}".format(backup_file + ".lim")
 
         def infochange(self):
                 """ Spezialbefehle im "Beschreibung" Feld """
