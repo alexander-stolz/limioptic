@@ -17,7 +17,6 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
   - scipy
   - pylab
 
-<b> To start the program, execute "__RUN__LIMIOPTIC_2.py"</b>
 
 <br>
 <b>Licence</b>
