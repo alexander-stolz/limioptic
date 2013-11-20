@@ -3,9 +3,11 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 
 <b>Installation (Windows):</b>
 
+This is the web-installer! Full setup: <a href="https://sourceforge.net/projects/limioptic/">https://sourceforge.net/projects/limioptic/</a>
+
 1. Run <b>setup.exe</b>
 2. Install the prerequisites in their default directories.
-3. Make sure to select the C++ compiler during the MinGW installation!.
+3. <b>Make sure to select the C++ compiler during the MinGW installation!</b>
 
 <b>Installation (Linux):</b>
 
