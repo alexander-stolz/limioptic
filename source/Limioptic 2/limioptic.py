@@ -1265,7 +1265,21 @@ def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0., strag_x=0., strag
         ctypes.c_double(float(strag_x)),
         ctypes.c_double(float(strag_y)),
         ctypes.c_double(float(strag_dx)),
-        ctypes.c_double(float(strag_dy)))
+        ctypes.c_double(float(strag_dy)),
+        ctypes.c_double(1.))
+
+def AddFoil(dk=0., strag_k=0., strag_phi=0.):
+    """ Fuer Degraderfolie """
+    optic.ChangeBeamParameters(
+        ctypes.c_double(float(dk)),
+        ctypes.c_double(0.),
+        ctypes.c_double(float(strag_k)),
+        ctypes.c_double(0.),
+        ctypes.c_double(0.),
+        ctypes.c_double(0.),
+        ctypes.c_double(float(strag_phi)),
+        ctypes.c_double(float(strag_phi)),
+        ctypes.c_double(.5))
 
 
 def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):

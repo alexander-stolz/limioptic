@@ -1085,6 +1085,9 @@ class CQtLimioptic(QtGui.QMainWindow):
                 # Change Parameters
                 self.menu_insert_chgparams = QtGui.QAction('ChangeBeamParameters', self)
                 self.connect(self.menu_insert_chgparams, QtCore.SIGNAL('triggered()'), self.InsertChgParams)
+                # Foil
+                self.menu_insert_foil = QtGui.QAction('Foil', self)
+                self.connect(self.menu_insert_foil, QtCore.SIGNAL('triggered()'), self.InsertFoil)
                 # Waist
                 self.menu_insert_waist = QtGui.QAction('AddWaist', self)
                 self.connect(self.menu_insert_waist, QtCore.SIGNAL('triggered()'), self.InsertWaist)
@@ -1241,6 +1244,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_bpm)
                 menu_insert.addAction(self.menu_insert_modifyemittance)
                 menu_insert.addAction(self.menu_insert_chgparams)
+                menu_insert.addAction(self.menu_insert_foil)
                 menu_insert.addAction(self.menu_insert_matrix)
                 menu_insert.addAction(self.menu_insert_waist)
                 menu_insert.addSeparator()
@@ -1276,6 +1280,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.main_frame = QtGui.QWidget()
                 self.textedit = myedit(self)
                 self.textedit.setLineWrapMode(QtGui.QTextEdit.NoWrap)
+                self.textedit.setTabStopWidth(30)
                 self.setAcceptDrops(True)
                 self.highlighter = syntax.PythonHighlighter(self.textedit.document())
                 hbox1 = QtGui.QHBoxLayout()
@@ -1595,6 +1600,9 @@ class CQtLimioptic(QtGui.QMainWindow):
         def InsertChgParams(self):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
 
+        def InsertFoil(self):
+            self.textedit.textCursor().insertText('AddFoil(\n\tdk=0.,\t \t# delta energy in permille\n\tstrag_k=0.,\t \t# energy straggling in permille\n\tstrag_phi=0.)\t# angular straggling in mrad\t\n')
+
         def InsertWaist(self):
             self.textedit.textCursor().insertText('AddWaist()\n')
 
@@ -1732,7 +1740,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-10-16"
+VERSION          = "2013-12-02"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

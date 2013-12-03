@@ -223,7 +223,7 @@ void CLimioptic::AddModifyEmittance(double factor1, double factor2)
     beamline.push_back(mod);
 }
 
-void CLimioptic::ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
+void CLimioptic::ChangeBeamParameters(double dk, double dm, double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy, double percentage)
 {
     vector<double> param;
     param.clear();
@@ -237,6 +237,7 @@ void CLimioptic::ChangeBeamParameters(double dk, double dm, double strag_k, doub
     param.push_back(strag_y);
     param.push_back(strag_dx);
     param.push_back(strag_dy);
+    param.push_back(percentage);
     beamline.push_back(param);
 }
 
@@ -488,7 +489,7 @@ void CLimioptic::CalculateTrajectories()
         case 12:
             ApplyChangeBeamParameters(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
                   beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5],
-                  beamline[ibeamline][6], beamline[ibeamline][7], beamline[ibeamline][8], beamline[ibeamline][9]);
+                  beamline[ibeamline][6], beamline[ibeamline][7], beamline[ibeamline][8], beamline[ibeamline][9], beamline[ibeamline][10]);
             break;
         case 13:
             ApplyChangeBeamParameters2(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
@@ -959,7 +960,7 @@ void CLimioptic::ApplyModifyEmittance(double *p, int nmat, double factor1, doubl
 
 
 void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, double dm,
-        double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy)
+        double strag_k, double strag_m, double strag_x, double strag_y, double strag_dx, double strag_dy, double percentage)
 {
     /*
     dk, dm aendern. Zb bei Folie. strag = stragling
@@ -969,11 +970,13 @@ void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, doubl
 
     std::default_random_engine generator;
     std::normal_distribution<double> k_distribution(dk, strag_k);
+    std::normal_distribution<double> k0_distribution(0., strag_k);
     std::normal_distribution<double> m_distribution(dm, strag_m);
     std::normal_distribution<double> x_distribution(0., strag_x);
     std::normal_distribution<double> y_distribution(0., strag_y);
     std::normal_distribution<double> dx_distribution(0., strag_dx);
     std::normal_distribution<double> dy_distribution(0., strag_dy);
+    std::uniform_real_distribution<double> uf_distribution(0., 1.);
 
     elesize = particles.size();
     pnum    = elesize / particlesize;  // Anzahl der Teilchen
@@ -987,7 +990,14 @@ void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, doubl
             p1 = p[i + 1 - elesize] + dx_distribution(generator);
             p2 = p[i + 2 - elesize] + y_distribution(generator);
             p3 = p[i + 3 - elesize] + dy_distribution(generator);
-            p4 = p[i + 4 - elesize] + k_distribution(generator);
+            if (uf_distribution(generator) > (1. - percentage))
+            {
+                p4 = p[i + 4 - elesize] + k_distribution(generator);
+            }
+            else
+            {
+                p4 = p[i + 4 - elesize] + k0_distribution(generator);
+            }
             p5 = p[i + 5 - elesize] + m_distribution(generator);
 
             p[i + 0] = p0;

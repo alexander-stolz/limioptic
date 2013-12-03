@@ -42,7 +42,7 @@ class PythonHighlighter (QSyntaxHighlighter):
         "AddThinLens", "AddMSA", "AddSlit", "AddESD",
         "AddVBFN", "AddAMSAcc", "AddBeam", "AddFNAccNeu",
         "ChangeBeamParameters", "AddGaussBeam", "AddBeamRandomGauss", "AddBeam3d",
-        "AddBeamX", "AddQuadrupolRadFoc", "AddQuadrupolAxFoc", "AddAMSQPT", "AddBeamProfile"]
+        "AddBeamX", "AddQuadrupolRadFoc", "AddQuadrupolAxFoc", "AddAMSQPT", "AddBeamProfile", "AddFoil"]
 
     boldGreen = []
 
