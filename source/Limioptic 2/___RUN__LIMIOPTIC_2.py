@@ -164,6 +164,7 @@ class inputcontrol(QtGui.QDialog):
 
                 for i in xrange(NumberOfInputs):
                         self.connect(self.slider[i], QtCore.SIGNAL("valueChanged(int)"), self.slidertoinput)
+                        self.connect(self.slider[i], QtCore.SIGNAL("sliderReleased()"), self.centerslider)
                         self.connect(self.input[i], QtCore.SIGNAL("valueChanged(double)"), self.inputtoslider)
                         self.connect(self.min[i], QtCore.SIGNAL("valueChanged(double)"), self.slidertoinput)
                         self.connect(self.infobox[i], QtCore.SIGNAL("textChanged(const QString)"), self.infochange)
@@ -258,6 +259,13 @@ class inputcontrol(QtGui.QDialog):
                     if (RUNNING2D): self.plotwindow.update = True
                     if (RUNNING3D): self.plotwindow.neu()
                     self.changing = False
+
+        def centerslider(self):
+            self.changing = True
+            for i in xrange(NumberOfInputs):
+                self.min[i].setValue(INPUT[i] - 2.5)
+                self.slider[i].setValue(250000)
+            self.changing = False
 
         def slidertoinput(self):
                 """ Aenderung des Sliders wird auf self.INPUT uebertragen. """
