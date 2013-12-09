@@ -384,7 +384,6 @@ class inputcontrol(QtGui.QDialog):
                             del segment
                         del self.segments
                 except: pass
-                del self.plotwindow
 
                 print "saving autosave..",
                 myfile = open(backup_file + ".lim", "w")
@@ -402,8 +401,10 @@ class inputcontrol(QtGui.QDialog):
                 for i in xrange(8, NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
+
+                del self.plotwindow
                 
-                time.sleep(.1)
+                time.sleep(.5)
                 self.close()
                 print "\rsaved to {}".format(backup_file + ".lim")
 
@@ -1838,7 +1839,6 @@ YCOLOR           = 0, 255, 0, 255
 try:
     backup_file = "/".join([os.environ["PROGRAMDATA"], "_save"])
 except Exception, e:
-    print e
     backup_file = "_save"
 
 for i in xrange(32):
