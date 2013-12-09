@@ -1448,11 +1448,14 @@ def AddFNSputterEL(phi1, v_el):
     # phi2/phi1
     x = (phi1 + v_el) / phi1
 
-    # reihenentwicklung fuer x=1.5..2.5
+    if (x < 1.44) or (x > 1.56):
+        print "WARNUNG: Sputterlinse nicht im optimalen Bereich!\nx = ", x, "\n"
+
+    # reihenentwicklung fuer x=1.44..1.56 nach Messung
     f = 1. / (
-        + 16.8905
-        - 22.8709    * x
-        + 7.80307    * x**2)
+        - 158.38929665
+        + 195.04834326    * x
+        - 58.4629772      * x**2)
 
     optic.AddThinLens(
         ctypes.c_int(1),

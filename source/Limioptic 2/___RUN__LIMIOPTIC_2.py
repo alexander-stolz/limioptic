@@ -65,6 +65,8 @@ from scipy import optimize
 class inputcontrol(QtGui.QDialog):
         """ Hier wird das Fenster mit den Schiebereglern zur Variablenmanipulation definiert """
         def __init__(self, mode):
+                global NumberOfInputs
+                
                 QtGui.QDialog.__init__(self)
                 self.mode = mode
                 self.changing = False
@@ -79,17 +81,17 @@ class inputcontrol(QtGui.QDialog):
 
                 self.setWindowTitle("input control")
                 self.vbox = QtGui.QVBoxLayout()
-                layout = QtGui.QGridLayout()
+                self.layout = QtGui.QGridLayout()
 
                 CheckInputNumber = True
                 myapp.textedit.moveCursor(QtGui.QTextCursor.Start)
-                NumberOfInputs = -1
+                _NumberOfInputs = -1
                 while (CheckInputNumber):
-                        NumberOfInputs += 1
-                        texttofind = QtCore.QString("INPUT[{}]".format(NumberOfInputs))
+                        _NumberOfInputs += 1
+                        texttofind = QtCore.QString("INPUT[{}]".format(_NumberOfInputs))
                         if not (myapp.textedit.find(texttofind)): CheckInputNumber = False
-                NumberOfInputs += 1
-                if (NumberOfInputs < 8): NumberOfInputs = 8
+                _NumberOfInputs += 1
+                if (_NumberOfInputs > NumberOfInputs): NumberOfInputs = _NumberOfInputs
 
                 self.min     = []
                 self.input   = []
@@ -120,17 +122,26 @@ class inputcontrol(QtGui.QDialog):
                         if (INPUT[i] > 5.):   self.min[i].setValue(INPUT[i] - 5.)
                         self.slider[i].setValue(int(INPUT[i] * 100000.))
 
-                        layout.addWidget(self.info[i], i, 0)
-                        layout.addWidget(self.min[i], i, 1)
-                        layout.addWidget(self.slider[i], i, 2)
-                        layout.addWidget(self.input[i], i, 3)
-                        layout.addWidget(self.infobox[i], i, 4)
+                        self.layout.addWidget(self.info[i], i, 0)
+                        self.layout.addWidget(self.min[i], i, 1)
+                        self.layout.addWidget(self.slider[i], i, 2)
+                        self.layout.addWidget(self.input[i], i, 3)
+                        self.layout.addWidget(self.infobox[i], i, 4)
 
-                layout.setColumnStretch(2, 100)
-                self.vbox.addLayout(layout)
-
+                self.layout.setColumnStretch(2, 100)
+                self.vbox.addLayout(self.layout)
+                
+                moreinputsbox        = QtGui.QGridLayout()
+                self.plusbutton      = QtGui.QPushButton("+ INPUT")
+                self.minusbutton     = QtGui.QPushButton("- INPUT")
                 self.optimize_button = QtGui.QPushButton("optimize selected parameters")
-                self.vbox.addWidget(self.optimize_button)
+                moreinputsbox.addWidget(self.plusbutton, 0, 2)
+                #moreinputsbox.addWidget(self.minusbutton, 0, 0)
+                moreinputsbox.addWidget(self.optimize_button, 0, 1)
+                moreinputsbox.setColumnStretch(1, 100)
+                self.vbox.addLayout(moreinputsbox)
+
+                #self.vbox.addWidget(self.optimize_button)
 
                 if (self.mode == "3d"):
                         opacitybox   = QtGui.QHBoxLayout()
@@ -172,6 +183,8 @@ class inputcontrol(QtGui.QDialog):
                         self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
                         self.connect(self.sslider, QtCore.SIGNAL("valueChanged(int)"), self.setscale)
                 self.connect(self.optimize_button, QtCore.SIGNAL("clicked()"), self.optimizeBeam)
+                #self.connect(self.minusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
+                self.connect(self.plusbutton, QtCore.SIGNAL("clicked()"), self.plusinput)
 
                 self.show()
 
@@ -182,6 +195,40 @@ class inputcontrol(QtGui.QDialog):
                 if (PORT != "NONE"):
                         t_readserial = threading.Thread(target=self.readserial, args=())
                         t_readserial.start()
+
+        def minusinput(self):
+            pass
+
+        def plusinput(self):
+            global NumberOfInputs
+            NumberOfInputs += 1
+
+            self.info.append(QtGui.QCheckBox())
+            self.min.append(QtGui.QDoubleSpinBox())
+            self.slider.append(QtGui.QSlider(QtCore.Qt.Horizontal, self))
+            self.input.append(QtGui.QDoubleSpinBox())
+            self.infobox.append(QtGui.QLineEdit())
+            self.min[-1].setRange(-100., 100.)
+            self.infobox[-1].setPlaceholderText("INPUT[{}]".format(NumberOfInputs - 1))
+            self.infobox[-1].setText(BEZEICHNUNGEN[NumberOfInputs - 1])
+            self.input[-1].setDecimals(4)
+            self.slider[-1].setOrientation(QtCore.Qt.Horizontal)
+            self.slider[-1].setRange(0, 500000)
+            self.slider[-1].setSingleStep(500)
+            self.input[-1].setSingleStep(0.0001)
+            self.input[-1].setRange(-100., 100.)
+            self.input[-1].setPrefix("= ")
+            self.min[-1].setSingleStep(.01)
+            self.input[-1].setValue(INPUT[NumberOfInputs - 1])
+
+            if (INPUT[NumberOfInputs] > 5.):   self.min[NumberOfInputs - 1].setValue(INPUT[NumberOfInputs - 1] - 5.)
+            self.slider[NumberOfInputs - 1].setValue(int(INPUT[NumberOfInputs - 1] * 100000.))
+
+            self.layout.addWidget(self.info[-1], NumberOfInputs - 1, 0)
+            self.layout.addWidget(self.min[-1], NumberOfInputs - 1, 1)
+            self.layout.addWidget(self.slider[-1], NumberOfInputs - 1, 2)
+            self.layout.addWidget(self.input[-1], NumberOfInputs - 1, 3)
+            self.layout.addWidget(self.infobox[-1], NumberOfInputs - 1, 4)
 
         def optimizeBeam(self):
             optIndex = []
