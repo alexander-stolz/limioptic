@@ -66,7 +66,7 @@ class inputcontrol(QtGui.QDialog):
         """ Hier wird das Fenster mit den Schiebereglern zur Variablenmanipulation definiert """
         def __init__(self, mode):
                 global NumberOfInputs
-                
+
                 QtGui.QDialog.__init__(self)
                 self.mode = mode
                 self.changing = False
@@ -109,6 +109,7 @@ class inputcontrol(QtGui.QDialog):
                         self.min[i].setRange(-100., 100.)
                         self.infobox[i].setPlaceholderText("INPUT[{}]".format(i))
                         self.infobox[i].setText(BEZEICHNUNGEN[i])
+                        self.infobox[i].setToolTip("append > or # to the text and see what happens.")
                         self.input[i].setDecimals(4)
                         self.slider[i].setOrientation(QtCore.Qt.Horizontal)
                         self.slider[i].setRange(0, 500000)
@@ -133,11 +134,17 @@ class inputcontrol(QtGui.QDialog):
                 
                 moreinputsbox        = QtGui.QGridLayout()
                 self.plusbutton      = QtGui.QPushButton("+ INPUT")
-                self.minusbutton     = QtGui.QPushButton("- INPUT")
+                self.plusbutton.setToolTip("add a slider. if you don't use a slider, e.g. value = 1 and no text, it will not be saved.")
+                #self.minusbutton     = QtGui.QPushButton("- INPUT")
                 self.optimize_button = QtGui.QPushButton("optimize selected parameters")
                 moreinputsbox.addWidget(self.plusbutton, 0, 2)
                 #moreinputsbox.addWidget(self.minusbutton, 0, 0)
+                #self.NumberOfInputsSpinBox = QtGui.QSpinBox()
+                #self.NumberOfInputsSpinBox.setMinimum(8)
+                #self.NumberOfInputsSpinBox.setToolTip("how many sliders do you want to see?")
+                #self.NumberOfInputsSpinBox.setSuffix(" INPUTs")
                 moreinputsbox.addWidget(self.optimize_button, 0, 1)
+                #moreinputsbox.addWidget(self.NumberOfInputsSpinBox, 0, 2)
                 moreinputsbox.setColumnStretch(1, 100)
                 self.vbox.addLayout(moreinputsbox)
 
@@ -185,6 +192,7 @@ class inputcontrol(QtGui.QDialog):
                 self.connect(self.optimize_button, QtCore.SIGNAL("clicked()"), self.optimizeBeam)
                 #self.connect(self.minusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
                 self.connect(self.plusbutton, QtCore.SIGNAL("clicked()"), self.plusinput)
+                #self.connect(self.NumberOfInputsSpinBox, QtCore.SIGNAL("valueChanged(int)"), self.changeNumberOfInputs)
 
                 self.show()
 
@@ -195,6 +203,12 @@ class inputcontrol(QtGui.QDialog):
                 if (PORT != "NONE"):
                         t_readserial = threading.Thread(target=self.readserial, args=())
                         t_readserial.start()
+
+        def changeNumberOfInputs(self):
+            global NumberOfInputs
+
+            NumberOfInputs = self.NumberOfInputsSpinBox.value()
+
 
         def minusinput(self):
             pass
@@ -229,6 +243,13 @@ class inputcontrol(QtGui.QDialog):
             self.layout.addWidget(self.slider[-1], NumberOfInputs - 1, 2)
             self.layout.addWidget(self.input[-1], NumberOfInputs - 1, 3)
             self.layout.addWidget(self.infobox[-1], NumberOfInputs - 1, 4)
+
+            self.connect(self.slider[-1], QtCore.SIGNAL("valueChanged(int)"), self.slidertoinput)
+            self.connect(self.slider[-1], QtCore.SIGNAL("sliderReleased()"), self.centerslider)
+            self.connect(self.input[-1], QtCore.SIGNAL("valueChanged(double)"), self.inputtoslider)
+            self.connect(self.min[-1], QtCore.SIGNAL("valueChanged(double)"), self.slidertoinput)
+            self.connect(self.infobox[-1], QtCore.SIGNAL("textChanged(const QString)"), self.infochange)
+
 
         def optimizeBeam(self):
             optIndex = []
@@ -330,7 +351,7 @@ class inputcontrol(QtGui.QDialog):
 
         def closeit(self):
                 """ Wird aufgerufen, wenn das Outputfenster geschlossen wird. """
-                global BEZEICHNUNGEN, RUNNING2D, RUNNING3D
+                global BEZEICHNUNGEN, RUNNING2D, RUNNING3D, NumberOfInputs
 
                 for i in xrange(NumberOfInputs):
                         BEZEICHNUNGEN[i] = self.infobox[i].text()
@@ -371,7 +392,14 @@ class inputcontrol(QtGui.QDialog):
                 myfile.close()
 
                 myfile = open(backup_file + ".var", "w")
-                for i in xrange(NumberOfInputs):
+                for i in xrange(8):
+                        print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
+                for i in xrange(NumberOfInputs - 1, 7, -1):
+                        if (INPUT[i] == 1.) and (BEZEICHNUNGEN[i] == ""):
+                                NumberOfInputs -= 1
+                                continue
+                        break
+                for i in xrange(8, NumberOfInputs):
                         print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
                 myfile.close()
                 
