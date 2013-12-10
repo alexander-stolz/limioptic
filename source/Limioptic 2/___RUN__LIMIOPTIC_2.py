@@ -1858,6 +1858,9 @@ YCOLOR           = 0, 255, 0, 255
 
 try:
     backup_file = "/".join([os.environ["PROGRAMDATA"], "_save"])
+    _test = open(backup_file + ".test", "w")
+    print >> _test, "writetest"
+    _test.close()
 except Exception, e:
     backup_file = "_save"
 
