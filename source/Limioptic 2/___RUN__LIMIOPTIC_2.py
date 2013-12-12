@@ -1144,6 +1144,12 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_plot_bg.setCheckable(True)
                 self.menu_plot_bg.setChecked(False)
 
+                # INPUT
+                self.menu_insert_input = QtGui.QAction('INPUT[]', self)
+                self.menu_insert_input.setShortcut('Ctrl+Shift+I')
+                self.menu_insert_input.setStatusTip('insert INPUT[]')
+                self.connect(self.menu_insert_input, QtCore.SIGNAL('triggered()'), self.InsertINPUT)
+
                 # Source
                 self.menu_insert_source = QtGui.QAction('Source', self)
                 self.menu_insert_source.setStatusTip('Use input file')
@@ -1331,6 +1337,8 @@ class CQtLimioptic(QtGui.QMainWindow):
 
                 ## INSERT
                 menu_insert = menubar.addMenu('Insert')
+                menu_insert.addAction(self.menu_insert_input)
+                menu_insert.addSeparator()
                 menu_insert.addAction(self.menu_insert_source)
                 menu_insert.addAction(self.menu_insert_particle)
                 menu_insert.addAction(self.menu_insert_beam)
@@ -1626,6 +1634,11 @@ class CQtLimioptic(QtGui.QMainWindow):
 
 ##### INSERT Funktionen #####
 #############################
+        def InsertINPUT(self):
+                self.textedit.textCursor().insertText("INPUT[ ]")
+                self.textedit.moveCursor(QtGui.QTextCursor.Left)
+                self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+
         def InsertParticle(self):
                 self.textedit.textCursor().insertText("AddParticle(4,15,4,15,0,0)  # (x, x\', y, y\', dk, dm)\n")
 
@@ -1844,7 +1857,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-12-02"
+VERSION          = "2013-12-12"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
