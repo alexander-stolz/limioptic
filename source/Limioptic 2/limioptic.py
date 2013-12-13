@@ -1446,16 +1446,16 @@ def AddFNSputterEL(phi1, v_el):
         geo_y.InsertNextValue(31)
 
     # phi2/phi1
-    x = (phi1 + v_el) / phi1
+    x = (phi1 - v_el) / phi1
 
-    if (x < 1.44) or (x > 1.56):
+    if (x < .44) or (x > .57):
         print "WARNUNG: Sputterlinse nicht im optimalen Bereich!\nx = ", x, "\n"
 
-    # reihenentwicklung fuer x=1.44..1.56 nach Messung
+    # reihenentwicklung fuer x=.44...57 nach Messung
     f = 1. / (
-        - 158.38929665
-        + 195.04834326    * x
-        - 58.4629772      * x**2)
+        - 2.14464643
+        + 38.80407837 * x
+        - 58.46349099 * x**2)
 
     optic.AddThinLens(
         ctypes.c_int(1),
