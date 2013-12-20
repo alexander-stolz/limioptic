@@ -485,6 +485,7 @@ class doitqt2(threading.Thread):
         self.lineX = self.plot1.plot()
         self.lineY = self.plot1.plot()
         self.linegeo = self.plot1.plot()
+        self.labels = []
 
     def run(self):
         self.update(self.parent.calculate())
@@ -502,6 +503,16 @@ class doitqt2(threading.Thread):
             z_all += zi + [zi[-1], zi[0]]
         self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
         self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
+
+        ### Labels
+        for label in self.labels:
+            self.plot1.removeItem(label)
+            del label
+        self.labels = []
+        for label in limioptic.textArray:
+            self.labels.append(pg.TextItem(label[1], angle=-90, anchor=(0, .5)))
+            self.labels[-1].setPos(label[0], 56)
+            self.plot1.addItem(self.labels[-1])
 
         iele  = limioptic.geo_s.GetNumberOfTuples()
         geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(iele)]
@@ -1857,7 +1868,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-12-12"
+VERSION          = "2013-12-20"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
