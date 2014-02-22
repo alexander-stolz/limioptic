@@ -177,6 +177,8 @@ class inputcontrol(QtGui.QDialog):
 
                 # Der Thread des Output-Fensters wird gestartet
                 self.plotwindow.start()
+                if self.mode == "qt":
+                    self.plotwindow.update()
 
                 # Wichtig, damit Aenderungen von Variablen nicht waerend des Berechnens/Plottens stattfinden
                 self.threadlock = threading.Lock()
@@ -478,6 +480,10 @@ class doitqt2(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
         self.parent = parent
+        if myapp.menu_output_smoothing.isChecked():
+            pg.setConfigOptions(antialias=True)
+        else:
+            pg.setConfigOptions(antialias=False)
         self.win = pg.GraphicsWindow(title="Limioptic 2 - Output (2D)")
         self.win.resize(800, 350)
         self.plot1 = self.win.addPlot()
@@ -486,9 +492,6 @@ class doitqt2(threading.Thread):
         self.lineY = self.plot1.plot()
         self.linegeo = self.plot1.plot()
         self.labels = []
-
-    def run(self):
-        self.update(self.parent.calculate())
 
     def update(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
         if xi is None:   (xi, yi, zi, segs, parts) = self.parent.calculate()
@@ -799,7 +802,8 @@ class doitXY(threading.Thread):
                 self.view = vtk.vtkContextView()
                 self.view.GetRenderer().SetBackground(1., 1., 1.)
                 if myapp.menu_plot_bg.isChecked():  self.view.GetRenderer().SetBackground(0., 0., 0.)
-                self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
+                #self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
+                self.view.GetRenderWindow().SetSize(800, 350)
 
                 self.chart = vtk.vtkChartXY()
                 self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTitle("beamline (m)")
