@@ -177,7 +177,7 @@ class inputcontrol(QtGui.QDialog):
 
                 # Der Thread des Output-Fensters wird gestartet
                 self.plotwindow.start()
-                if self.mode == "qt":
+                if (self.mode == "qt"):
                     self.plotwindow.update()
 
                 # Wichtig, damit Aenderungen von Variablen nicht waerend des Berechnens/Plottens stattfinden
@@ -475,6 +475,12 @@ class inputcontrol(QtGui.QDialog):
             return xi, yi, zi, segs, parts
 
 
+class MyQtWindow(pg.GraphicsWindow):
+    def closeEvent(self, event):
+        event.accept()
+        myapp.inputwindowqt.closeit()
+
+
 class doitqt2(threading.Thread):
     """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
@@ -484,12 +490,19 @@ class doitqt2(threading.Thread):
             pg.setConfigOptions(antialias=True)
         else:
             pg.setConfigOptions(antialias=False)
-        self.win = pg.GraphicsWindow(title="Limioptic 2 - Output (2D)")
+        self.win = MyQtWindow(title="Limioptic 2 - Output (2D)")
         self.win.resize(800, 350)
         self.plot1 = self.win.addPlot()
+        if myapp.menu_plot_splitview.isChecked():
+            self.plot2 = self.win.addPlot(row=1, col=0)
+            self.plot2.showGrid(x=True, y=True)
         self.plot1.showGrid(x=True, y=True)
         self.lineX = self.plot1.plot()
-        self.lineY = self.plot1.plot()
+        if myapp.menu_plot_splitview.isChecked():
+            self.lineY = self.plot2.plot()
+            self.linegeo2 = self.plot2.plot()
+        else:
+            self.lineY = self.plot1.plot()
         self.linegeo = self.plot1.plot()
         self.labels = []
 
@@ -505,6 +518,7 @@ class doitqt2(threading.Thread):
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
         self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
+        #self.lineX.setData(x=z_all, y=x_all, pen=(250, 250, 250))
         self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
 
         ### Labels
@@ -521,6 +535,8 @@ class doitqt2(threading.Thread):
         geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(iele)]
         geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(iele)]
         self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
+        if myapp.menu_plot_splitview.isChecked():
+            self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
 
 
 class Segment:
@@ -1155,9 +1171,19 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_plot_y.setChecked(True)
                 self.connect(self.menu_plot_y, QtCore.SIGNAL('triggered()'), self.setxy)
                 # Background
-                self.menu_plot_bg = QtGui.QAction('black background', self)
+                self.menu_plot_bg = QtGui.QAction('black background (vtk)', self)
                 self.menu_plot_bg.setCheckable(True)
                 self.menu_plot_bg.setChecked(False)
+                # smoothing
+                self.menu_output_smoothing = QtGui.QAction("line smoothing", self)
+                self.menu_output_smoothing.setStatusTip('draw smoother lines (apply before rendering)')
+                self.menu_output_smoothing.setCheckable(True)
+                self.menu_output_smoothing.setChecked(True)
+                # split view
+                self.menu_plot_splitview = QtGui.QAction("split view (PyQtGraph)", self)
+                self.menu_plot_splitview.setStatusTip('seperate x, y')
+                self.menu_plot_splitview.setCheckable(True)
+                self.menu_plot_splitview.setChecked(False)
 
                 # INPUT
                 self.menu_insert_input = QtGui.QAction('INPUT[]', self)
@@ -1290,11 +1316,6 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_output_file.setCheckable(True)
                 self.menu_output_file.setChecked(False)
                 self.connect(self.menu_output_file, QtCore.SIGNAL("triggered()"), self.todat)
-                # smoothing
-                self.menu_output_smoothing = QtGui.QAction("line smoothing", self)
-                self.menu_output_smoothing.setStatusTip('draw smoother lines (apply before rendering)')
-                self.menu_output_smoothing.setCheckable(True)
-                self.menu_output_smoothing.setChecked(True)
                 # AMS-Spicker
                 self.menu_output_spicker = QtGui.QAction("AMS Spicker", self)
                 self.menu_output_spicker.setStatusTip('Cologne AMS Spicker')
@@ -1349,6 +1370,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_plot.addAction(self.menu_plot_y)
                 menu_plot.addAction(self.menu_output_smoothing)
                 menu_plot.addAction(self.menu_plot_bg)
+                menu_plot.addAction(self.menu_plot_splitview)
 
                 ## INSERT
                 menu_insert = menubar.addMenu('Insert')
@@ -1872,7 +1894,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2013-12-20"
+VERSION          = "2014-02-22"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
