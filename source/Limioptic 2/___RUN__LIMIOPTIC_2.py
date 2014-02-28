@@ -15,12 +15,19 @@ it for some work whose results are made public, then you
 have to reference it properly.
 """
 
+# Set this to True if you want to use py2exe
+if __name__ == "__main__":
+    PY2EXE = False
+else:
+    PY2EXE = True
+
 print "loading:",
 
 print "os",            # unterdruecken von import fehlern
 import os
-print "imp",            # unterdruecken von import fehlern
-import imp
+if not PY2EXE:
+    print "imp",            # unterdruecken von import fehlern
+    import imp
 print "sys",
 import sys
 print "Qt",
@@ -33,7 +40,7 @@ print "time",
 import time             # debuggen + sleep
 #import serial          # auslesen des potis
 try:
-    imp.find_module("vtk")
+    if not PY2EXE: imp.find_module("vtk")
     import vtk          # grafische ausgabe ueber VTK
     print "vtk",
 except:
@@ -48,12 +55,12 @@ from importsrc import ImportSource
 print "syntax_highlighting",
 import syntax
 try:
-    imp.find_module("pyqtgraph")
-    import pyqtgraph as pg
+    if not PY2EXE:  imp.find_module("pyqtgraph")
+    import pyqtgraph
     print "PyQtGraph",
 except:
     print "<PyQtGraph NOT FOUND>",
-    pg = False
+    pyqtgraph = False
 print "optimize"
 from scipy import optimize
 
@@ -475,7 +482,7 @@ class inputcontrol(QtGui.QDialog):
             return xi, yi, zi, segs, parts
 
 
-class MyQtWindow(pg.GraphicsWindow):
+class MyQtWindow(pyqtgraph.GraphicsWindow):
     def closeEvent(self, event):
         event.accept()
         myapp.inputwindowqt.closeit()
@@ -487,9 +494,9 @@ class doitqt2(threading.Thread):
         threading.Thread.__init__(self)
         self.parent = parent
         if myapp.menu_output_smoothing.isChecked():
-            pg.setConfigOptions(antialias=True)
+            pyqtgraph.setConfigOptions(antialias=True)
         else:
-            pg.setConfigOptions(antialias=False)
+            pyqtgraph.setConfigOptions(antialias=False)
         self.win = MyQtWindow(title="Limioptic 2 - Output (2D)")
         self.win.resize(800, 350)
         self.plot1 = self.win.addPlot()
@@ -527,7 +534,7 @@ class doitqt2(threading.Thread):
             del label
         self.labels = []
         for label in limioptic.textArray:
-            self.labels.append(pg.TextItem(label[1], angle=-90, anchor=(0, .5)))
+            self.labels.append(pyqtgraph.TextItem(label[1], angle=-90, anchor=(0, .5)))
             self.labels[-1].setPos(label[0], 56)
             self.plot1.addItem(self.labels[-1])
 
@@ -1148,7 +1155,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_translate_qt = QtGui.QAction('2D (PyQtGraph)', self)
                 menu_translate_qt.setShortcut('Ctrl+F')
                 menu_translate_qt.setStatusTip('Translate Text to GUI 2D')
-                if not pg: menu_translate_qt.setEnabled(False)
+                if not pyqtgraph: menu_translate_qt.setEnabled(False)
                 self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'), self.plotqt)
 
                 # Plot markers
