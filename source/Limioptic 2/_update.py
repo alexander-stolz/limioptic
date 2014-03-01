@@ -24,13 +24,13 @@ else:
 	try:
 		sys.winver
 		print "windows os detected"
-		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/blob/master/precompiled%20for%20windows/___LIMIOPTIC.exe", "___LIMIOPTIC.exe")
+		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/___LIMIOPTIC.exe", "___LIMIOPTIC.exe")
 		print "___LIMIOPTIC.exe updated"
-		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/blob/master/precompiled%20for%20windows/liblimioptic-win.so", "liblimioptic-win.so")
+		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/liblimioptic-win.so", "liblimioptic-win.so")
 		print "liblimioptic-win updated"
 	except:
 		print "linux os detected"
-		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/blob/master/precompiled%20for%20windows/___LIMIOPTIC.exe", "___LIMIOPTIC.exe")
+		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/___LIMIOPTIC.exe", "___LIMIOPTIC.exe")
 		print "___LIMIOPTIC.exe updated"
-		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/blob/master/precompiled%20for%20windows/liblimioptic-linux.so", "liblimioptic-linux.so")
+		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/liblimioptic-linux.so", "liblimioptic-linux.so")
 		print "liblimioptic-linux updated"
