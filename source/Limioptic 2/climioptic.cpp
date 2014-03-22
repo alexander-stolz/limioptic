@@ -5,6 +5,14 @@
 #include <fstream>
 #include <random>
 
+
+#include <sstream>
+
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
+
+
+
 CLimioptic::CLimioptic()
 {
     ClearParticles();
@@ -181,12 +189,13 @@ void CLimioptic::AddDrift(int number, double gamma2, double length)
     if (length < 0.) { spotsize = 9999999999999999.; }
 }
 
-void CLimioptic::AddBeamProfile()
+void CLimioptic::AddBeamProfile(int index)
 {
     vector<double> bp;
     bp.clear();
     bp.push_back(10.0);
     bp.push_back(1.);
+    bp.push_back((double)index);
     beamline.push_back(bp);
 }
 
@@ -473,7 +482,8 @@ void CLimioptic::CalculateTrajectories()
                   beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
             break;
         case 10:
-            ApplyBeamProfile(&trajectories.front() + itraj);
+            ApplyBeamProfile(&trajectories.front() + itraj,
+                  beamline[ibeamline][2]);
             break;
         case 21:
             ApplyWaist(&trajectories.front() + itraj);
@@ -683,7 +693,7 @@ void CLimioptic::ApplyDrift(double *p, int nmat, double gamma2, double length)
     }
 }
 
-void CLimioptic::ApplyBeamProfile(double *p)
+void CLimioptic::ApplyBeamProfile(double *p, double index)
 {
     int pnum, i, j, elesize, ip, durch;
     double xplus, yplus, aplus, bplus;
@@ -698,7 +708,7 @@ void CLimioptic::ApplyBeamProfile(double *p)
     bplus = 0;
 
     fstream datei;
-    datei.open("particles.dat", ios::out);
+    datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
 
     i = 0;
     for (ip = 0; ip < pnum; ip++)
@@ -741,7 +751,7 @@ void CLimioptic::ApplyBeamProfile(double *p)
     x_verteilung = sqrt(xplus / (durch - 1));
     y_verteilung = sqrt(yplus / (durch - 1));
 
-    //fstream datei;
+    /*
     datei.open("beamprofile.dat", ios::out | ios::app);
 
     datei << nottransmitted / pnum << " ";      //transmission
@@ -752,6 +762,7 @@ void CLimioptic::ApplyBeamProfile(double *p)
     datei << sqrt(bplus / (durch - 1)) << " ";  //divergenz b
     datei << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n"; //emittanz y
     datei.close();
+    */
 }
 
 void CLimioptic::ApplyWaist(double *p)

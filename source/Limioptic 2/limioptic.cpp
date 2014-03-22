@@ -62,9 +62,9 @@ void AddDrift(int num,double gamma2,double length)
    optic.AddDrift(num,gamma2,length);
 }
 
-void AddBeamProfile()
+void AddBeamProfile(int index)
 {
-   optic.AddBeamProfile();
+   optic.AddBeamProfile(index);
 }
 
 void AddWaist()
@@ -192,9 +192,9 @@ void ApplyDrift(double *p,int n,double gamma2,double length)
    optic.ApplyDrift(p,n,gamma2,length);
 }
 
-void ApplyBeamProfile(double *p)
+void ApplyBeamProfile(double *p, int index)
 {
-   optic.ApplyBeamProfile(p);
+   optic.ApplyBeamProfile(p, index);
 }
 
 void ApplyWaist(double *p)

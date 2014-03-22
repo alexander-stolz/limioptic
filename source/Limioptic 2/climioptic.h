@@ -33,7 +33,7 @@ public:
 
    void AddMatrix(int,double*,double); // Allgemeine Matrix zur Beamline hinzufuegen
    void AddDrift(int,double,double); // Driftstrecke zur Beamline hinzufuegen
-   void AddBeamProfile();
+   void AddBeamProfile(int);
    void AddWaist();
    void AddSlit(double,double,double,double);
    void AddModifyEmittance(double, double);
@@ -69,7 +69,7 @@ public:
 
    void ApplyMatrix(double*,int,double*);
    void ApplyDrift(double*,int,double,double);
-   void ApplyBeamProfile(double*);
+   void ApplyBeamProfile(double*, double);
    void ApplyWaist(double*);
    void ApplySlit(double*,double,double,double,double);
    void ApplyModifyEmittance(double*, int, double, double);

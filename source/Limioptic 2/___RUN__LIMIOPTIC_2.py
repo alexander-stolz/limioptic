@@ -61,8 +61,10 @@ try:
 except:
     print "<PyQtGraph NOT FOUND>",
     pyqtgraph = False
-print "optimize"
+print "optimize",
 from scipy import optimize
+print "plotBeamprofile"
+import plotEmittance
 
 
 #################################################
@@ -412,6 +414,7 @@ class inputcontrol(QtGui.QDialog):
                         for segment in self.segments:
                             del segment
                         del self.segments
+                    plotEmittance.stop()
                 except: pass
 
                 print "saving autosave..",
@@ -1328,6 +1331,13 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_output_spicker.setStatusTip('Cologne AMS Spicker')
                 self.menu_output_spicker.setCheckable(False)
                 self.connect(self.menu_output_spicker, QtCore.SIGNAL('triggered()'), self.spicker)
+                # plotEmittance
+                self.menu_output_emittance = QtGui.QAction("Plot Beamprofile", self)
+                self.menu_output_emittance.setStatusTip('Plot Beamprofile')
+                self.menu_output_emittance.setCheckable(False)
+                self.connect(self.menu_output_emittance, QtCore.SIGNAL('triggered()'), self.emittance)
+                
+
 
                 ## Interface
                 self.menu_setcom1 = QtGui.QAction('COM1', self)
@@ -1416,6 +1426,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_output = menubar.addMenu('Tools')
                 menu_output.addAction(self.menu_output_file)
                 menu_output.addAction(self.menu_output_spicker)
+                menu_output.addAction(self.menu_output_emittance)
 
                 ## INTERFACE
                 """
@@ -1519,6 +1530,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 """ Der AMS-Spicker """
                 self.swidget = ams_spicker.Spicker()
                 self.swidget.show()
+
+#############################
+        def emittance(self):
+            plotEmittance.start(limioptic.PROFILEINDEX + 1)
 
 #############################
         def todat(self):
@@ -1901,7 +1916,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2014-02-22"
+VERSION          = "2014-03-22"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []

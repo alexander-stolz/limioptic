@@ -13,9 +13,10 @@ import vtk
 #import pickle
 from scipy import optimize
 
-s           = 0.
-SOURCE      = []
-SOURCEFILES = []
+s            = 0.
+SOURCE       = []
+SOURCEFILES  = []
+PROFILEINDEX = -1
 
 geolines = vtk.vtkTable()
 geo_s    = vtk.vtkFloatArray()
@@ -1212,7 +1213,9 @@ def AddDrift(num, gamma2, length):
 
 
 def AddBeamProfile():
-    optic.AddBeamProfile()
+    global PROFILEINDEX
+    PROFILEINDEX += 1
+    optic.AddBeamProfile(PROFILEINDEX)
 
 
 def AddWaist():
@@ -1797,10 +1800,11 @@ def PrintTrajectories(traj):
 
 
 def ExecText(text, INPUT=None, SOURCE1=None, _param_=None):
-    global textArray, lastFunction
+    global textArray, lastFunction, PROFILEINDEX
 
     textArray = []
     lastFunction = "unknown"
+    PROFILEINDEX = -1
 
     global SOURCE
     if len(SOURCE1) > 0:
