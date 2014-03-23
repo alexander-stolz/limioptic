@@ -11,8 +11,8 @@ This is the web-installer! Full setup: <a href="https://sourceforge.net/projects
 1. Run <b>setup.exe</b>
 2. Install the prerequisites in their default directories.
 3. <b>Make sure to select the C++ compiler during the MinGW installation!</b>
-4. If you have installed LIMIOPTIC in the default directory, you will not be able to update via update.py because of the windows rights management. <b>To fix this, copy the LIMIOPTIC folder to another directory</b> (for example to the desktop).
-5. Run update.py in the LIMIOPTIC directory to update LIMIOPTIC to the newest version.
+4. If you have installed LIMIOPTIC in the default directory, you will not be able to update via update.py because of the windows rights management. <b>To fix this, copy the Limioptic 2 folder to another directory</b> (for example to the desktop).
+5. Run update.py in the Limioptic 2 directory to update LIMIOPTIC to the newest version.
 
 
 <br>
