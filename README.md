@@ -4,12 +4,15 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 <b>Installation (Windows):</b>
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b>
+(This might not work on every machine. Windows 8 should work, Windows 7 might not)
 
 This is the web-installer! Full setup: <a href="https://sourceforge.net/projects/limioptic/">https://sourceforge.net/projects/limioptic/</a>
 
 1. Run <b>setup.exe</b>
 2. Install the prerequisites in their default directories.
 3. <b>Make sure to select the C++ compiler during the MinGW installation!</b>
+4. If you have installed LIMIOPTIC in the default directory, you will not be able to update via update.py because of the windows rights management. <b>To fix this, copy the LIMIOPTIC folder to another directory</b> (for example to the Desktop).
+5. Run update.py in the LIMIOPTIC directory to update LIMIOPTic to the newest version.
 
 
 <br>
