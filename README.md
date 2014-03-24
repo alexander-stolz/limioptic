@@ -4,7 +4,7 @@ Under some Linux systems there is a known bug which causes the vtkRenderWindowIn
 <b>Installation (Windows):</b>
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b>
-(this might not work on every machine. Windows 8 should work, Windows 7 might not)
+(this might not work on every machine)
 
 This is the web-installer! Full setup: <a href="https://sourceforge.net/projects/limioptic/">https://sourceforge.net/projects/limioptic/</a>
 
@@ -19,6 +19,7 @@ This is the web-installer! Full setup: <a href="https://sourceforge.net/projects
 <b>Installation (Linux):</b>
 
 <b>NEW: You can now just run the precompiled version for Windows with WINE. No installation needed!</b>
+(You will have to use the newest (beta-) version of Wine:  <a href="http://www.winehq.org/download/ubuntu">http://www.winehq.org/download/ubuntu</a>)
 
 1. Download the Limioptic 2 folder
 2. Limioptic imports the following libraries. Make sure you have these:
