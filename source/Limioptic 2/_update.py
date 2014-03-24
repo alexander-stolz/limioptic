@@ -16,9 +16,6 @@ if sys.argv[0].endswith(".py"):
 	        ul.urlretrieve(b[i].split()[0], b[i].split()[1])
 	        print "{} updated".format(b[i].split()[1])
 	    print "\n",b[0]
-
-	    print "update complete."
-	    raw_input("press enter to exit")
 else:
 	print "precompiled version detected"
 	try:
@@ -34,3 +31,6 @@ else:
 		print "___LIMIOPTIC.exe updated"
 		ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/liblimioptic-linux.so", "liblimioptic-linux.so")
 		print "liblimioptic-linux updated"
+
+print "update complete."
+raw_input("press enter to exit")
