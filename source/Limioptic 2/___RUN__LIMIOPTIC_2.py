@@ -527,9 +527,15 @@ class doitqt2(threading.Thread):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
-        self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
-        #self.lineX.setData(x=z_all, y=x_all, pen=(250, 250, 250))
-        self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
+        if myapp.menu_plot_x.isChecked():
+            self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
+        else:
+            self.lineX.setData(x=[], y=[], pen=(255, 0, 0))
+        if myapp.menu_plot_y.isChecked():
+            #self.lineX.setData(x=z_all, y=x_all, pen=(250, 250, 250))
+            self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
+        else:
+            self.lineY.setData(x=[], y=[], pen=(255, 0, 0))
 
         ### Labels
         for label in self.labels:
@@ -1709,7 +1715,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
 
         def InsertParticle(self):
-                self.textedit.textCursor().insertText("AddParticle(4,15,4,15,0,0)  # (x, x\', y, y\', dk, dm)\n")
+                self.textedit.textCursor().insertText("AddParticle(4, 15, 4, 15, 0, 0)\t\t\t# (x, x\', y, y\', dk, dm)\n")
 
         def InsertSource(self, _filename=None):
                 global SourceObj
@@ -1772,7 +1778,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.dialog.exec_()
 
         def InsertDrift(self):
-            self.textedit.textCursor().insertText('AddDrift(1, 1, 5)\t# (n, gamma^2, length)\n')
+            self.textedit.textCursor().insertText('AddDrift(1, 1, 5)\t\t\t\t\t# (n, gamma^2, length)\n')
 
         def InsertSlit(self):
             self.textedit.textCursor().insertText('AddSlit(0,10,0,10)\t# (x, dx, y, dy)\n')
@@ -1805,7 +1811,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('AddQuadrupolAxFoc(n,gamma^2,k,l,R)\n\n')  # axial fokusierend
 
         def InsertThinLens(self):
-            self.textedit.textCursor().insertText('AddThinLens(.5,.5,25)\t# (fx, fy, R)\n\n')
+            self.textedit.textCursor().insertText('AddThinLens(.5, .5, 25)\t\t\t\t# (fx, fy, R)\n\n')
 
         def InsertSO110EL(self):
             self.textedit.textCursor().insertText('AddAMSSO110EL(vext,vlens)\n\n')

@@ -1,9 +1,0 @@
-############################################
-AddBeam(4,15,4,15,0,0, 10)	# (xmax, x'max, ymax, y'max, dk, dm, delta: 1...360)
-############################################
-
-AddDrift(1, 1, 5)	# (n, gamma^2, length)
-AddThinLens(INPUT[0], INPUT[1], 25)	# (fx, fy, R)
-AddBeamProfile(0)
-AddDrift(1, 1, 5)	# (n, gamma^2, length)
-AddBeamProfile(1)
