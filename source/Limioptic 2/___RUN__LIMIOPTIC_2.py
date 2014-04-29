@@ -838,6 +838,16 @@ class doitXY(threading.Thread):
                 self.Ticks  = vtk.vtkDoubleArray()
                 self.Labels = vtk.vtkStringArray()
 
+                if len(limioptic.textArray) > 0:
+                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.CUSTOM)
+                    self.Ticks.Reset()
+                    self.Labels.Reset()
+                    for name in limioptic.textArray:
+                        self.Ticks.InsertNextValue(name[0])
+                        self.Labels.InsertNextValue(name[1])
+                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
+                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
+
                 self.view.GetScene().AddItem(self.chart)
 
                 if (myapp.menu_plot_geo.isChecked()):
@@ -1079,9 +1089,9 @@ class doitXY(threading.Thread):
                                         msg = QtGui.QMessageBox()
                                         msg.setText("you need to close the output-window and rerender\n(Ctrl+G) to show the markers correctly")
                                         msg.exec_()
+                        self.markertable.Modified()
 
                 self.table.Modified()
-                self.markertable.Modified()
                 if (myapp.menu_plot_geo.isChecked()):   limioptic.geolines.Modified()
                 if myapp.menu_plot_bg.isChecked():
                     self.view.GetRenderer().SetBackground(0, 0, 0)
