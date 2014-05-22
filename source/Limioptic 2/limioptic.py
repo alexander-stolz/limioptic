@@ -37,7 +37,7 @@ def AddParticle(p1, p2, p3, p4, p5, p6):
         ctypes.c_double(float(p2)), ctypes.c_double(float(p3)),
         ctypes.c_double(float(p4)), ctypes.c_double(float(p5)),
         ctypes.c_double(float(p6)))
-
+Particle = AddParticle
 
 def AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta):
     """ Einfachen 3d-Strahl einfuegen """
@@ -60,6 +60,7 @@ def AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta):
             ctypes.c_double(float(bmax * math.sin(degtorad))),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
+BeamX = AddBeamX
 
 
 def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
@@ -77,6 +78,7 @@ def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
                 ctypes.c_double(bmax * math.sin(nu) * math.sin(phi)),
                 ctypes.c_double(float(dk)),
                 ctypes.c_double(float(dm)))
+Beam3d = AddBeam3d
 
 
 def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., number=250.):
@@ -98,6 +100,7 @@ def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=
         ctypes.c_double(float(dm)),
         ctypes.c_double(float(strag_m)),
         ctypes.c_double(float(number)))
+GaussBeam = AddGaussBeam
 
 
 def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number):
@@ -119,9 +122,10 @@ def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number):
             ctypes.c_double(b),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
+BeamRandomGauss = AddBeamRandomGauss
 
 
-def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta):
+def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta=10):
     """ Einfachen 2d-Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeam"
@@ -133,6 +137,24 @@ def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta):
             ctypes.c_double(float(xmax * math.cos(degtorad))),
             ctypes.c_double(float(amax * math.sin(degtorad))),
             ctypes.c_double(float(ymax * math.cos(degtorad))),
+            ctypes.c_double(float(bmax * math.sin(degtorad))),
+            ctypes.c_double(float(dk)),
+            ctypes.c_double(float(dm)))
+
+
+def Beam(xmax, amax, ymax, bmax, dk, dm, x=0, y=0, delta=10):
+
+    """ Einfachen 2d-Strahl einfuegen """
+    global lastFunction
+    lastFunction = "AddBeam"
+
+    for i in xrange(0, 360, int(delta)):
+        degtorad = i*math.pi/180
+
+        optic.AddParticle(
+            ctypes.c_double(float(x + xmax * math.cos(degtorad))),
+            ctypes.c_double(float(amax * math.sin(degtorad))),
+            ctypes.c_double(float(y + ymax * math.cos(degtorad))),
             ctypes.c_double(float(bmax * math.sin(degtorad))),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
@@ -167,6 +189,7 @@ def AddSource(file=None):
             ctypes.c_double(SOURCE[i][3]),
             ctypes.c_double(SOURCE[i][4]),
             ctypes.c_double(SOURCE[i][5]))
+Source = AddSource
 
 
 def ClearSource():
@@ -189,6 +212,7 @@ def AddMatrix(num, mat, length):
         ctypes.c_int(int(num)),
         matrix,
         ctypes.c_double(float(length)))
+Matrix = AddMatrix
 
 
 def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
@@ -321,6 +345,7 @@ def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
 
     # Letzte Elektrode..Flansch aussen = 487.8mm
     AddSegment(1, 447.81e-3)
+AMSAcc = AddAMSAcc
 
 
 def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0):
@@ -343,7 +368,7 @@ def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0):
         AddSegment1(T0, T1, -1., .09, .09, laenge, b)
     elif segment == 3:
         AddSegment2VBFN(T0, T1, .09, laenge, 0., -(T1-T0)/laenge, 0., -1.)
-
+VBFN = AddVBFN
 
 
 def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=1., beamprofile=False, addwaist=False):
@@ -408,6 +433,7 @@ def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=
     AddSegment11(T2, T3, D5, D6, l3, b1, b2)             #HE1
     AddSegment11(T3, T3, D6, D7, space2, b1, b2)         #Space2
     AddSegment11(T3, T4, D7, D8, l4, b1, b2)             #HE2
+FNAccNeu = AddFNAccNeu
 
 
 # Beschleunigung Cologne FN
@@ -598,6 +624,7 @@ def AddFNAcc(v_gesamt, v_vorbeschl, q):
     T0 = T1
     T1 = T1
     AddSegment2(T0, T1, D, 117.738 / 100., E1, E2, E3, q)
+FNAcc = AddFNAcc
 
 
 def AddFNAcc1(v_gesamt, v_vorbeschl, q):
@@ -1077,7 +1104,7 @@ def AddSegment1(T0, T1, q, D1, D2, L, b=.57):
 
 
 # Korrektur Apertur
-def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57):
+def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57, f1=True, f2=True):
     global s, geo_x, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
@@ -1097,10 +1124,20 @@ def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57):
     D2 = float(D2)
     deltaT = T1-T0
 
-    N = math.sqrt(T1/T0)
+    try:
+        N = math.sqrt(T1/T0)
+    except:
+        print "T0 must not be zero!"
 
-    f1  = + deltaT / (L * 2. * T0 * (1. + math.sqrt(1. + deltaT * b1 * D1 / T0 / L)))  # 1/f1
-    f2  = - deltaT / (L * 2. * T1 * (1. + math.sqrt(1. - deltaT * b2 * D2 / T1 / L)))  # 1/f2
+    if f1:
+        f1  = + deltaT / (L * 2. * T0 * (1. + math.sqrt(1. + deltaT * b1 * D1 / T0 / L)))  # 1/f1
+    else:
+        f1 = 0.
+    if f2:
+        f2  = - deltaT / (L * 2. * T1 * (1. + math.sqrt(1. - deltaT * b2 * D2 / T1 / L)))  # 1/f2
+    else:
+        f2 = 0.
+
     LL  = 2. * L / (1. + N)
     m11 = 1. - LL * f1
     m12 = LL
@@ -1212,35 +1249,37 @@ def AddDrift(num, gamma2, length):
         ctypes.c_double(float(length)))
 
 
+def Drift(length):
+    global s, geo_s, geo_y
+    global lastFunction
+    lastFunction = "AddDrift"
+
+    num = 1
+    gamma2 = 1.
+
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + length)
+        geo_y.InsertNextValue(55)
+        geo_y.InsertNextValue(55)
+        s = s + length
+
+    optic.AddDrift(
+        ctypes.c_int(int(num)),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(length)))
+
+
 def AddBeamProfile():
     global PROFILEINDEX
     PROFILEINDEX += 1
     optic.AddBeamProfile(PROFILEINDEX)
+BeamProfile = AddBeamProfile
 
 
 def AddWaist():
     optic.AddWaist()
-
-
-def TestOptFkt():
-    INPUT = [1., 1.]
-    print optimize.fmin(TestErrFkt, INPUT[:])
-
-
-def TestErrFkt(INPUT):
-    TestBeamLine = "AddBeam(1, 15, 1, 15, 0, 0, 1)\n"\
-        "AddDrift(1, 1, 1)\n"\
-        "AddThinLens(INPUT[0], INPUT[0], 25)\n"\
-        "AddDrift(1, 1, .5)\n"\
-        "AddDrift(1, 1, .5)\n"\
-        "AddThinLens(INPUT[1], INPUT[1], 25)\n"\
-        "AddDrift(1, 1, 2)\n"\
-        "AddWaist()"
-
-    optic.Clear()
-    ExecText(TestBeamLine, INPUT, SOURCE)
-    optic.CalculateTrajectories()
-    return optic.GetSpotSize()
+Waist = AddWaist
 
 
 def ErrFkt(_param_, beamline, INPUT, source):
@@ -1256,6 +1295,7 @@ def AddModifyEmittance(factor1, factor2):
     optic.AddModifyEmittance(
         ctypes.c_double(float(factor1)),
         ctypes.c_double(float(factor2)))
+ModifyEmittance = AddModifyEmittance
 
 
 def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0., strag_x=0., strag_y=0., strag_dx=0., strag_dy=0.):
@@ -1271,6 +1311,7 @@ def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0., strag_x=0., strag
         ctypes.c_double(float(strag_dy)),
         ctypes.c_double(1.))
 
+
 def AddFoil(dk=0., strag_k=0., strag_phi=0.):
     """ Fuer Degraderfolie """
     optic.ChangeBeamParameters(
@@ -1283,7 +1324,7 @@ def AddFoil(dk=0., strag_k=0., strag_phi=0.):
         ctypes.c_double(float(strag_phi)),
         ctypes.c_double(float(strag_phi)),
         ctypes.c_double(.5))
-
+Foil = AddFoil
 
 def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
     """ Z. B. fuer Folie in der Beamline """
@@ -1315,9 +1356,10 @@ def AddSlit(x, dx, y, dy):
         ctypes.c_double(float(dx)),
         ctypes.c_double(float(y)),
         ctypes.c_double(float(dy)))
+Slit = AddSlit
 
 
-def AddThinLens(arg1, arg2, geo):
+def AddThinLens(arg1, arg2, geo=25):
     global s, geo_s, geo_y
     global lastFunction
     lastFunction = "AddThinLens"
@@ -1331,6 +1373,12 @@ def AddThinLens(arg1, arg2, geo):
         ctypes.c_double(float(arg1)),
         ctypes.c_double(float(arg2)),
         ctypes.c_double(0.))
+ThinLens = AddThinLens
+
+
+def AddEinzelLens(f, geo=25.):
+    AddThinLens(f, f, geo)
+EinzelLens = AddEinzelLens
 
 
 def AddAMSSO110EL(phi1, v_el):
@@ -1363,6 +1411,7 @@ def AddAMSSO110EL(phi1, v_el):
         ctypes.c_double(float(f)),
         ctypes.c_double(float(f)),
         ctypes.c_double(0.))
+AMSSO110EL = AddAMSSO110EL
 
 
 def AddAMSBIEL(phi1, v_el):
@@ -1393,6 +1442,7 @@ def AddAMSBIEL(phi1, v_el):
         ctypes.c_double(float(f)),
         ctypes.c_double(float(f)),
         ctypes.c_double(0.))
+AMSBIEL = AddAMSBIEL
 
 
 def AddFNEL(phi1, v_el):
@@ -1437,6 +1487,7 @@ def AddFNEL(phi1, v_el):
         ctypes.c_double(float(f)),
         ctypes.c_double(float(f)),
         ctypes.c_double(0.))
+FNEL = AddFNEL
 
 
 def AddFNSputterEL(phi1, v_el):
@@ -1465,6 +1516,12 @@ def AddFNSputterEL(phi1, v_el):
         ctypes.c_double(float(f)),
         ctypes.c_double(float(f)),
         ctypes.c_double(0.))
+FNSputterEL = AddFNSputterEL
+
+
+def AddFNSputterEL_SIMION(phi1, v_el):
+    global lastFunction
+    lastFunction = "AddFNSputterEL_SIMION"
 
 
 def AddESD(num, arg1, arg2, arg3, arg4, arg5, geo, korrektur=None, V_ist=1., V_soll=1.):
@@ -1530,6 +1587,80 @@ def AddMSA(num, arg1, arg2, arg3, geo, korrektur=None, B_ist=1., B_soll=1.):
         ctypes.c_double(float(korrektur)))
 
 
+def ESD(alpha, arg3, arg4, geo=25., korrektur=None, V_ist=1., V_soll=1.):
+
+    global lastFunction
+    lastFunction = "AddESD"
+
+    alpha = math.radians(alpha)
+    beta0 = 0.
+    num = 10
+
+    if not korrektur:
+        korrektur = float(V_ist) / float(V_soll)
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + alpha * arg3)
+        geo_y.InsertNextValue(geo)
+        geo_y.InsertNextValue(geo)
+        s = s + alpha * arg3
+
+    optic.AddESD(
+        ctypes.c_int(int(num)),
+        ctypes.c_double(float(1)),
+        ctypes.c_double(float(alpha)),
+        ctypes.c_double(float(arg3)),
+        ctypes.c_double(float(arg4)),
+        ctypes.c_double(float(beta0)),
+        ctypes.c_double(float(korrektur)))
+
+
+def EdgeFocusing(r, beta, K=.45, geo=30.):
+
+    global lastFunction
+    lastFunction = "AddEdgeFocusing"
+
+    g = 2. * geo / 1.e3
+    beta = math.radians(beta)
+
+    betaeff = beta - g / r * K * (1. + math.sin(beta) * math.sin(beta)) / (math.cos(beta))
+
+    optic.AddEdgeFocusing(
+        ctypes.c_int(1),
+        ctypes.c_double(float(r)),
+        ctypes.c_double(float(beta)),
+        ctypes.c_double(float(betaeff)))
+
+
+def MSA(r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1.):
+
+    global lastFunction
+    lastFunction = "AddMSA"
+
+    alpha = math.radians(alpha)
+    num = 10
+
+    if not korrektur:
+        korrektur = float(B_ist) / float(B_soll)
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + r * alpha)
+        geo_y.InsertNextValue(geo)
+        geo_y.InsertNextValue(geo)
+        s = s + r * alpha
+
+    optic.AddHomDeflectingMagnet(
+        ctypes.c_int(int(num)),
+        ctypes.c_double(float(1)),
+        ctypes.c_double(float(r)),
+        ctypes.c_double(float(alpha)),
+        ctypes.c_double(float(korrektur)))
+
+
 def AddInhomMSA(num, rho, phi, n, geo):
     global s, geo_s, geo_y
 
@@ -1578,6 +1709,46 @@ def AddQuadrupolAxFoc(num, arg1, arg2, arg3, geo):
     optic.AddQuadrupolAxFoc(
         ctypes.c_int(int(num)),
         ctypes.c_double(float(arg1)),
+        ctypes.c_double(float(arg2)),
+        ctypes.c_double(float(arg3)))
+
+
+def QuadrupolRadFoc(arg2, arg3, geo=25.):
+    global lastFunction, s, geo_s, geo_y
+    lastFunction = "AddQuadrupolRadFoc"
+
+    num = 10
+
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + arg3)
+        geo_y.InsertNextValue(geo)
+        geo_y.InsertNextValue(geo)
+        s = s + arg3
+    optic.AddQuadrupolRadFoc(
+        ctypes.c_int(int(num)),
+        ctypes.c_double(float(1.)),
+        ctypes.c_double(float(arg2)),
+        ctypes.c_double(float(arg3)))
+
+
+def QuadrupolAxFoc(arg2, arg3, geo=25.):
+
+    global lastFunction, s, geo_s, geo_y
+    lastFunction = "AddQuadrupolAxFoc"
+
+    num = 10
+
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + arg3)
+        geo_y.InsertNextValue(geo)
+        geo_y.InsertNextValue(geo)
+        s = s + arg3
+
+    optic.AddQuadrupolAxFoc(
+        ctypes.c_int(int(num)),
+        ctypes.c_double(float(1.)),
         ctypes.c_double(float(arg2)),
         ctypes.c_double(float(arg3)))
 
@@ -1889,4 +2060,4 @@ if __name__ == "__main__":
     else:
         Limioptic(sys.argv[1])
 
-#TestOptFkt()
+#TestOptFkt

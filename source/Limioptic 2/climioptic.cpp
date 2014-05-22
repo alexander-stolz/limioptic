@@ -655,7 +655,6 @@ void CLimioptic::ApplyDrift(double *p, int nmat, double gamma2, double length)
     elesize = particles.size();
     pnum    = elesize / particlesize;  // Anzahl der Teilchen
 
-
     i = 0;
     for (imat = 0; imat < nmat; imat++)
     {
@@ -1103,6 +1102,8 @@ void CLimioptic::ApplyQuadrupolRadFoc(double *p, int nmat, double gamma2, double
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen
 
+    l = l / nmat;
+
     i = 0;
     for (imat = 0; imat < nmat; imat++)
     {
@@ -1151,6 +1152,8 @@ void CLimioptic::ApplyAMSQuadrupolRadFoc(double *p, int nmat, double gamma2, dou
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen
 
+    l = l / nmat;
+
     i = 0;
     for (imat = 0; imat < nmat; imat++)
     {
@@ -1198,6 +1201,8 @@ void CLimioptic::ApplyQuadrupolAxFoc(double *p, int nmat, double gamma2, double 
 
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen
+
+    l = l / nmat;
 
     i = 0;
     for (imat = 0; imat < nmat; imat++)
@@ -1286,6 +1291,8 @@ void CLimioptic::ApplyESD(double *p, int nmat, double gamma2, double alpha, doub
     int pnum, imat, i, j, elesize, ip;
     double p0, p1, p2, p3, p4, p5;
     double l, ne, kx, ky;
+
+    alpha = alpha / nmat;
 
     korrektur = (korrektur - 1) * 1000.;
 
@@ -1388,6 +1395,8 @@ void CLimioptic::ApplyHomDeflectingMagnet(double *p, int nmat, double gamma2, do
     double p0, p1, p2, p3, p4, p5;
     double l;
 
+    alpha = alpha / nmat;
+
     l = r * alpha;
     korrektur = ((korrektur * korrektur) - 1.) * 1000.;
 
@@ -1442,6 +1451,7 @@ void CLimioptic::ApplyInhomDeflectingMagnet(double *p, int nmat, double rho, dou
     double p0, p1, p2, p3, p4, p5;
     double w, kx, ky, cx, cy, sx, sy, dx, Nk, Nm;
 
+    phi = phi / nmat;
 
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen

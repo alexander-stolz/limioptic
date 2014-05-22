@@ -86,7 +86,7 @@ class inputcontrol(QtGui.QDialog):
 
                 ### Ab hier Definition des Layouts
                 self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-                self.setGeometry(100, screen.height() - 300, 500, 1)
+                self.setGeometry(100, screen.height() - 300, 650, 1)
 
                 self.setWindowTitle("input control")
                 self.vbox = QtGui.QVBoxLayout()
@@ -1745,22 +1745,22 @@ class CQtLimioptic(QtGui.QMainWindow):
                     SourceObj.foilparameters["dk"]))
 
         def InsertBeam(self):
-            self.textedit.textCursor().insertText('############################################\nAddBeam(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nBeam(4, 15, 4, 15, 0, 0)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
 
         def InsertBeamX(self):
-            self.textedit.textCursor().insertText('############################################\nAddBeamX(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nBeamX(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
 
         def InsertBeam3d(self):
-            self.textedit.textCursor().insertText('############################################\nAddBeam3d(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta_phi: 1...360)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nBeam3d(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta_phi: 1...360)\n############################################\n\n')
 
         def InsertRGauss(self):
-            self.textedit.textCursor().insertText('############################################\nAddBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
 
         def InsertGaussBeam(self):
-            self.textedit.textCursor().insertText('############################################\nAddGaussBeam(4,15,4,15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m, strag_k, strag_m, number)\n############################################\n\n')
+            self.textedit.textCursor().insertText('############################################\nGaussBeam(4, 15, 4, 15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m, strag_k, strag_m, number)\n############################################\n\n')
 
         def InsertAMSAcc(self):
-            self.textedit.textCursor().insertText('AddAMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
+            self.textedit.textCursor().insertText('AMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
 
         def InsertFNAcc(self):
             #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
@@ -1770,7 +1770,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('AddFNAccNeu(vt, T0, q, b = 0.57, b1 = -1., b2 = -1., D1 = .088, factor1 = 1., factor2 = 1., beamprofile = False)\n\n')
 
         def InsertVBFN(self):
-            self.textedit.textCursor().insertText('AddVBFN(extraktion, deltaV, laenge)\t# (v_ext, deltaV, length, [b, b1, b2])\n\n')
+            self.textedit.textCursor().insertText('VBFN(extraktion, deltaV, laenge)\t# (v_ext, deltaV, length, [b, b1, b2])\n\n')
 
         def InsertMatrix(self):
             # uebergebe Zeiger auf das TextEdit an den Dialog
@@ -1778,52 +1778,52 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.dialog.exec_()
 
         def InsertDrift(self):
-            self.textedit.textCursor().insertText('AddDrift(1, 1, 5)\t\t\t\t\t# (n, gamma^2, length)\n')
+            self.textedit.textCursor().insertText('Drift(5.)\t\t\t\t\t\t# (length)\n')
 
         def InsertSlit(self):
-            self.textedit.textCursor().insertText('AddSlit(0,10,0,10)\t# (x, dx, y, dy)\n')
+            self.textedit.textCursor().insertText('Slit(0,10,0,10)\t# (x, dx, y, dy)\n')
 
         def InsertBPM(self):
-            self.textedit.textCursor().insertText('AddBeamProfile()\n')
+            self.textedit.textCursor().insertText('BeamProfile()\n')
 
         def InsertModifyEmittance(self):
-            self.textedit.textCursor().insertText('AddModifyEmittance(1., 1.)\t# (factor x, factor dx)\n')
+            self.textedit.textCursor().insertText('ModifyEmittance(1., 1.)\t# (factor x, factor dx)\n')
 
         def InsertChgParams(self):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
 
         def InsertFoil(self):
-            self.textedit.textCursor().insertText('AddFoil(\n\tdk=0.,\t \t# delta energy in permille\n\tstrag_k=0.,\t \t# energy straggling in permille\n\tstrag_phi=0.)\t# angular straggling in mrad\t\n')
+            self.textedit.textCursor().insertText('Foil(\n\tdk=0.,\t \t# delta energy in permille\n\tstrag_k=0.,\t \t# energy straggling in permille\n\tstrag_phi=0.)\t# angular straggling in mrad\t\n')
 
         def InsertWaist(self):
-            self.textedit.textCursor().insertText('AddWaist()\n')
+            self.textedit.textCursor().insertText('Waist()\n')
 
         def InsertESD(self):
-            self.textedit.textCursor().insertText('AddESD(10,1.,.5*math.pi,2.,1.e9,0.,25)\t# (n, gamma^2, alpha, r_hor, r_vert, beta0, R)\n\n')
+            self.textedit.textCursor().insertText('ESD(30., 2., 1.e9)\t# (alpha, r_hor, r_vert, R)\n\n')
 
         def InsertHomDeflectingMagnet(self):
-            self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n')    # Kantenfokussierung
-            self.textedit.textCursor().insertText('AddMSA(n,gamma^2,r,alpha,R)\n')    # Magnet
-            self.textedit.textCursor().insertText('AddEdgeFocusing(r,beta,K,R)\n\n')  # Kantenfokussierung
+            self.textedit.textCursor().insertText('EdgeFocusing(r, beta, K=.45, R)\n')    # Kantenfokussierung
+            self.textedit.textCursor().insertText('MSA(r, alpha)\n')    # Magnet
+            self.textedit.textCursor().insertText('EdgeFocusing(r, beta, K=.45, R)\n\n')  # Kantenfokussierung
 
         def InsertQuadrupol(self):
-            self.textedit.textCursor().insertText('AddQuadrupolRadFoc(n,gamma^2,k,l,R)\n')   # radial fokussierend
-            self.textedit.textCursor().insertText('AddQuadrupolAxFoc(n,gamma^2,k,l,R)\n\n')  # axial fokusierend
+            self.textedit.textCursor().insertText('QuadrupolRadFoc(k, l, R)\n')   # radial fokussierend
+            self.textedit.textCursor().insertText('QuadrupolAxFoc(k, l, R)\n\n')  # axial fokusierend
 
         def InsertThinLens(self):
-            self.textedit.textCursor().insertText('AddThinLens(.5, .5, 25)\t\t\t\t# (fx, fy, R)\n\n')
+            self.textedit.textCursor().insertText('EinzelLens(2.)\t\t\t\t# (f, [R])\n\n')
 
         def InsertSO110EL(self):
-            self.textedit.textCursor().insertText('AddAMSSO110EL(vext,vlens)\n\n')
+            self.textedit.textCursor().insertText('AMSSO110EL(vext, vlens)\n\n')
 
         def InsertBIEL(self):
-            self.textedit.textCursor().insertText('AddAMSBIEL(vext,vlens)\n\n')
+            self.textedit.textCursor().insertText('AMSBIEL(vext, vlens)\n\n')
 
         def InsertFNEL(self):
-            self.textedit.textCursor().insertText('AddFNEL(v_ext,17.e3)\t# (v_ext, v_lens)\n\n')
+            self.textedit.textCursor().insertText('FNEL(v_ext, v_lens)\n\n')
 
         def InsertAMSQPT(self):
-            self.textedit.textCursor().insertText('AddAMSQPT(gamma2,prozent,astigm,v_terminal,v_ext,q,geo)\n\n')
+            self.textedit.textCursor().insertText('AddAMSQPT(gamma2, prozent, astigm, v_terminal, v_ext, q, geo)\n\n')
 
         def About(self):
             title = "About Limioptic 2"
@@ -1932,7 +1932,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2014-03-22"
+VERSION          = "2014-05-22"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
