@@ -68,7 +68,7 @@ def BeamX(xmax, amax, ymax, bmax, dk, dm, num):
     """ Einfachen 3d-Strahl einfuegen """
     global lastFunction
     lastFunction = "BeamX"
-    for degree in linspace(0, 360, num / 2):
+    for degree in linspace(0, 360, int(num / 2)):
         degtorad = math.radians(degree)
 
         optic.AddParticle(
@@ -102,7 +102,23 @@ def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
                 ctypes.c_double(bmax * math.sin(nu) * math.sin(phi)),
                 ctypes.c_double(float(dk)),
                 ctypes.c_double(float(dm)))
-Beam3d = AddBeam3d
+
+
+def Beam3d(xmax, amax, ymax, bmax, dk, dm, num):
+    """ Komplexen 3d-Strahl einfuegen """
+    global lastFunction
+    lastFunction = "AddBeam3d"
+    for i in linspace(0, 360, int(num / 36)):
+        nu = math.radians(i)
+        for j in xrange(0, 360, 10):
+            phi = math.radians(j)
+            optic.AddParticle(
+                ctypes.c_double(xmax * math.cos(nu) * math.cos(phi)),
+                ctypes.c_double(amax * math.cos(nu) * math.sin(phi)),
+                ctypes.c_double(ymax * math.sin(nu) * math.cos(phi)),
+                ctypes.c_double(bmax * math.sin(nu) * math.sin(phi)),
+                ctypes.c_double(float(dk)),
+                ctypes.c_double(float(dm)))
 
 
 def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., number=250.):
@@ -124,20 +140,40 @@ def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=
         ctypes.c_double(float(dm)),
         ctypes.c_double(float(strag_m)),
         ctypes.c_double(float(number)))
-GaussBeam = AddGaussBeam
 
 
-def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number):
+def GaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., num=250, strag_k=0., strag_m=0., sigma=1.):
+    """ Gaussverteilten zufallsbasierten Strahl einfuegen """
+    global lastFunction
+    lastFunction = "AddGaussBeam"
+
+    optic.AddGaussBeam(
+        ctypes.c_double(float(x)),
+        ctypes.c_double(float(strag_x / sigma)),
+        ctypes.c_double(float(a)),
+        ctypes.c_double(float(strag_a / sigma)),
+        ctypes.c_double(float(y)),
+        ctypes.c_double(float(strag_y / sigma)),
+        ctypes.c_double(float(b)),
+        ctypes.c_double(float(strag_b / sigma)),
+        ctypes.c_double(float(dk)),
+        ctypes.c_double(float(strag_k / sigma)),
+        ctypes.c_double(float(dm)),
+        ctypes.c_double(float(strag_m / sigma)),
+        ctypes.c_double(float(number)))
+
+
+def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeamRandomGauss"
 
     random.seed()
     for i in xrange(number):
-        x = random.gauss(0, xmax / 3.)
-        y = random.gauss(0, ymax / 3.)
-        a = random.gauss(0, amax / 3.)
-        b = random.gauss(0, bmax / 3.)
+        x = random.gauss(0, xmax / sigma)
+        y = random.gauss(0, ymax / sigma)
+        a = random.gauss(0, amax / sigma)
+        b = random.gauss(0, bmax / sigma)
 
         optic.AddParticle(
             ctypes.c_double(x),
@@ -146,7 +182,27 @@ def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number):
             ctypes.c_double(b),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
-BeamRandomGauss = AddBeamRandomGauss
+
+
+def BeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
+    """ Gaussverteilten zufallsbasierten Strahl einfuegen """
+    global lastFunction
+    lastFunction = "AddBeamRandomGauss"
+
+    #random.seed()
+    for i in xrange(number):
+        x = random.gauss(0, xmax / sigma)
+        y = random.gauss(0, ymax / sigma)
+        a = random.gauss(0, amax / sigma)
+        b = random.gauss(0, bmax / sigma)
+
+        optic.AddParticle(
+            ctypes.c_double(x),
+            ctypes.c_double(a),
+            ctypes.c_double(y),
+            ctypes.c_double(b),
+            ctypes.c_double(float(dk)),
+            ctypes.c_double(float(dm)))
 
 
 def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta=10):
@@ -155,7 +211,7 @@ def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta=10):
     lastFunction = "AddBeam"
 
     for i in xrange(0, 360, int(delta)):
-        degtorad = i*math.pi/180
+        degtorad = i * math.pi / 180
 
         optic.AddParticle(
             ctypes.c_double(float(xmax * math.cos(degtorad))),
@@ -166,14 +222,13 @@ def AddBeam(xmax, amax, ymax, bmax, dk, dm, delta=10):
             ctypes.c_double(float(dm)))
 
 
-def Beam(xmax, amax, ymax, bmax, dk, dm, x=0, y=0, delta=10):
-
+def Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0):
     """ Einfachen 2d-Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeam"
 
-    for i in xrange(0, 360, int(delta)):
-        degtorad = i*math.pi/180
+    for i in linspace(0, 360, int(num)):
+        degtorad = i * math.pi / 180.
 
         optic.AddParticle(
             ctypes.c_double(float(x + xmax * math.cos(degtorad))),

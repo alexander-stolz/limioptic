@@ -39,7 +39,8 @@ delta = degree steps of the emittance elipse.
 
 BeamX = """BeamX(xmax, amax, ymax, bmax, dk, dm, num)
 
-produces an X-shaped ion beam. it is better to use BeamX.
+produces an X-shaped ion beam.
+it is better to use BeamX.
 
 x   = maximal radial deviation [mm]
 a   = maximal radial angle [mrad]
@@ -48,3 +49,34 @@ b   = maximal axial angle [mrad]
 dk  = relative energy deviation [permille]
 dm  = relative mass deviation [permille]
 num = number of particles [unitless]"""
+
+
+AddBeam3d = """AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta)
+
+produces a nice 3d ion beam.
+it is better to use Beam3d(xmax, amax, ymax, bmax, dk, dm, num).
+
+x     = maximal radial deviation [mm]
+a     = maximal radial angle [mrad]
+y     = maximal axial deviation [mm]
+b     = maximal axial angle [mrad]
+dk    = relative energy deviation [permille]
+dm    = relative mass deviation [permille]
+delta = degree steps of the emittance elipse.
+        smaller delta --> more particles [1..360]"""
+
+
+Beam3d = """BeamX(xmax, amax, ymax, bmax, dk, dm, num)
+
+produces a nice 3d ion beam.
+it is better to use BeamX.
+
+x   = maximal radial deviation [mm]
+a   = maximal radial angle [mrad]
+y   = maximal axial deviation [mm]
+b   = maximal axial angle [mrad]
+dk  = relative energy deviation [permille]
+dm  = relative mass deviation [permille]
+num = number of particles [unitless]"""
+
+
