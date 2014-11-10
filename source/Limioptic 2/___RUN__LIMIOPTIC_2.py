@@ -65,7 +65,8 @@ print "optimize",
 from scipy import optimize
 print "plotBeamprofile"
 import plotEmittance
-
+print "help"
+import helper
 
 #################################################
 #################################################
@@ -140,7 +141,7 @@ class inputcontrol(QtGui.QDialog):
 
                 self.layout.setColumnStretch(2, 100)
                 self.vbox.addLayout(self.layout)
-                
+
                 moreinputsbox        = QtGui.QGridLayout()
                 #self.plusbutton      = QtGui.QPushButton("+ INPUT")
                 #self.plusbutton.setToolTip("add a slider. if you don't use a slider, e.g. value = 1 and no text, it will not be saved.")
@@ -223,7 +224,7 @@ class inputcontrol(QtGui.QDialog):
                 self.plusinput(i)
             for i in xrange(NumberOfInputs, self.NumberOfInputsSpinBox.value(), -1):
                 self.minusinput(i - 1)
-                
+
             NumberOfInputs = self.NumberOfInputsSpinBox.value()
 
         def minusinput(self, row):
@@ -435,7 +436,7 @@ class inputcontrol(QtGui.QDialog):
                 myfile.close()
 
                 del self.plotwindow
-                
+
                 time.sleep(.5)
                 self.close()
                 print "\rsaved to {}".format(backup_file + ".lim")
@@ -1352,7 +1353,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_output_emittance.setStatusTip('Plot Beamprofile')
                 self.menu_output_emittance.setCheckable(False)
                 self.connect(self.menu_output_emittance, QtCore.SIGNAL('triggered()'), self.emittance)
-                
+
 
 
                 ## Interface
@@ -1466,12 +1467,17 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.textedit.setTabStopWidth(30)
                 self.setAcceptDrops(True)
                 self.highlighter = syntax.PythonHighlighter(self.textedit.document())
-                hbox1 = QtGui.QHBoxLayout()
+
+                #self.helpwidget = QtGui.QTextEdit()
+
+                hbox1 = QtGui.QVBoxLayout()
                 hbox1.addWidget(self.textedit)
+                #hbox1.addWidget(self.helpwidget)
                 self.main_frame.setLayout(hbox1)
                 self.setCentralWidget(self.main_frame)
 
                 self.connect(self.textedit, QtCore.SIGNAL("textChanged()"), self.setunsaved)
+                self.connect(self.textedit, QtCore.SIGNAL("selectionChanged()"), self.help)
                 # print "started"
 
                 try:
@@ -1483,6 +1489,13 @@ class CQtLimioptic(QtGui.QMainWindow):
                 ## UPDATE
                 updatethread = threading.Thread(target=self.update, args=())
                 updatethread.start()
+
+        def help(self):
+            selection = self.textedit.textCursor().selectedText()
+            if selection in dir(helper):
+                print "\nHELP:\n------------------------------------------"
+                print eval("helper.%s" % (selection))
+                print "------------------------------------------"
 
         def update(self):
                 """ Check uebers Internet ob Updates verfuegbar sind """
@@ -1738,11 +1751,11 @@ class CQtLimioptic(QtGui.QMainWindow):
                     "strag_y={}, "
                     "strag_dy={}, "
                     "strag_k={})\n".format(
-                    SourceObj.foilparameters["x"],
-                    SourceObj.foilparameters["x'"],
-                    SourceObj.foilparameters["y"],
-                    SourceObj.foilparameters["y'"],
-                    SourceObj.foilparameters["dk"]))
+                        SourceObj.foilparameters["x"],
+                        SourceObj.foilparameters["x'"],
+                        SourceObj.foilparameters["y"],
+                        SourceObj.foilparameters["y'"],
+                        SourceObj.foilparameters["dk"]))
 
         def InsertBeam(self):
             self.textedit.textCursor().insertText('############################################\nBeam(4, 15, 4, 15, 0, 0)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')

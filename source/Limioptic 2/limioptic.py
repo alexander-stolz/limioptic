@@ -12,6 +12,7 @@ import random
 import vtk
 #import pickle
 from scipy import optimize
+from numpy import linspace
 
 s            = 0.
 SOURCE       = []
@@ -28,16 +29,17 @@ textArray    = []
 lastFunction = ""
 
 
-def AddParticle(p1, p2, p3, p4, p5, p6):
+def AddParticle(x, a, y, b, dk, dm):
     """ Normales Partikel einfuegen """
     global lastFunction
     lastFunction = "AddParticle"
     optic.AddParticle(
-        ctypes.c_double(float(p1)),
-        ctypes.c_double(float(p2)), ctypes.c_double(float(p3)),
-        ctypes.c_double(float(p4)), ctypes.c_double(float(p5)),
-        ctypes.c_double(float(p6)))
+        ctypes.c_double(float(x)),
+        ctypes.c_double(float(a)), ctypes.c_double(float(y)),
+        ctypes.c_double(float(b)), ctypes.c_double(float(dk)),
+        ctypes.c_double(float(dm)))
 Particle = AddParticle
+
 
 def AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta):
     """ Einfachen 3d-Strahl einfuegen """
@@ -60,7 +62,29 @@ def AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta):
             ctypes.c_double(float(bmax * math.sin(degtorad))),
             ctypes.c_double(float(dk)),
             ctypes.c_double(float(dm)))
-BeamX = AddBeamX
+
+
+def BeamX(xmax, amax, ymax, bmax, dk, dm, num):
+    """ Einfachen 3d-Strahl einfuegen """
+    global lastFunction
+    lastFunction = "BeamX"
+    for degree in linspace(0, 360, num / 2):
+        degtorad = math.radians(degree)
+
+        optic.AddParticle(
+            ctypes.c_double(float(xmax * math.cos(degtorad))),
+            ctypes.c_double(float(amax * math.sin(degtorad))),
+            ctypes.c_double(0.),
+            ctypes.c_double(0.),
+            ctypes.c_double(float(dk)),
+            ctypes.c_double(float(dm)))
+        optic.AddParticle(
+            ctypes.c_double(0.),
+            ctypes.c_double(0.),
+            ctypes.c_double(float(ymax * math.cos(degtorad))),
+            ctypes.c_double(float(bmax * math.sin(degtorad))),
+            ctypes.c_double(float(dk)),
+            ctypes.c_double(float(dm)))
 
 
 def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
@@ -1238,7 +1262,7 @@ def AddDrift(num, gamma2, length):
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+length)
+        geo_s.InsertNextValue(s + length)
         geo_y.InsertNextValue(55)
         geo_y.InsertNextValue(55)
         s = s + length
@@ -1475,9 +1499,9 @@ def AddFNEL(phi1, v_el):
     f = 1. / (
         + 6.76764
         - 22.3617   * x
-        + 30.8469   * x**2 
-        - 24.4108   * x**3 
-        + 12.5201   * x**4 
+        + 30.8469   * x**2
+        - 24.4108   * x**3
+        + 12.5201   * x**4
         - 4.05526   * x**5
         + 0.754707  * x**6
         - 0.0615853 * x**7)
