@@ -80,3 +80,17 @@ dm  = relative mass deviation [permille]
 num = number of particles [unitless]"""
 
 
+AddGaussBeam = """(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., num=250.)
+
+produces a gaussian distributed ion beam.
+it is better to use GaussBeam.
+
+strag_x   = radial straggling [mm]
+strag_a   = radial angular straggling [mrad]
+strag_y   = axial straggling [mm]
+strag_b   = axial angular straggling [mrad]
+x, y      = radial/axial deviation [mm]
+a, b      = radial/axial angle [mrad]
+strag_k  = relative energy straggling [permille]
+strag_m  = relative mass straggling [permille]
+num = number of particles [unitless]"""

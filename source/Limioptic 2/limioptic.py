@@ -107,7 +107,7 @@ def AddBeam3d(xmax, amax, ymax, bmax, dk, dm, delta):
 def Beam3d(xmax, amax, ymax, bmax, dk, dm, num):
     """ Komplexen 3d-Strahl einfuegen """
     global lastFunction
-    lastFunction = "AddBeam3d"
+    lastFunction = "Beam3d"
     for i in linspace(0, 360, int(num / 36)):
         nu = math.radians(i)
         for j in xrange(0, 360, 10):
@@ -121,7 +121,7 @@ def Beam3d(xmax, amax, ymax, bmax, dk, dm, num):
                 ctypes.c_double(float(dm)))
 
 
-def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., number=250.):
+def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., num=250):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
     lastFunction = "AddGaussBeam"
@@ -139,13 +139,13 @@ def AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=
         ctypes.c_double(float(strag_k)),
         ctypes.c_double(float(dm)),
         ctypes.c_double(float(strag_m)),
-        ctypes.c_double(float(number)))
+        ctypes.c_double(float(num)))
 
 
 def GaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., num=250, strag_k=0., strag_m=0., sigma=1.):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
-    lastFunction = "AddGaussBeam"
+    lastFunction = "GaussBeam"
 
     optic.AddGaussBeam(
         ctypes.c_double(float(x)),
@@ -160,7 +160,7 @@ def GaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0.,
         ctypes.c_double(float(strag_k / sigma)),
         ctypes.c_double(float(dm)),
         ctypes.c_double(float(strag_m / sigma)),
-        ctypes.c_double(float(number)))
+        ctypes.c_double(float(num)))
 
 
 def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
