@@ -80,7 +80,7 @@ dm  = relative mass deviation [permille]
 num = number of particles [unitless]"""
 
 
-AddGaussBeam = """(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., num=250.)
+AddGaussBeam = """AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., num=250.)
 
 produces a gaussian distributed ion beam.
 it is better to use GaussBeam.

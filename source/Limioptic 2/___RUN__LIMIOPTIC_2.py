@@ -1500,6 +1500,8 @@ class CQtLimioptic(QtGui.QMainWindow):
                 print helptext
                 print "------------------------------------------"
                 self.setToolTip(helptext)
+            else:
+                self.setToolTip("double-click on function for help!")
 
         def update(self):
                 """ Check uebers Internet ob Updates verfuegbar sind """
