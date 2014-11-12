@@ -63,10 +63,12 @@ except:
     pyqtgraph = False
 print "optimize",
 from scipy import optimize
-print "plotBeamprofile"
+print "plotBeamprofile",
 import plotEmittance
-print "help"
+print "helper",
 import helper
+print "pickle"
+import pickle
 
 #################################################
 #################################################
@@ -1582,15 +1584,13 @@ class CQtLimioptic(QtGui.QMainWindow):
 #############################
         def LoadFile(self, filename=None):
                 if not filename:
-                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim;;*.*")
+                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim;*.*")
                 else:
                     self.FileName = filename
-                if (self.FileName != ''):
+                if (self.FileName.endswith("lim")):
                         myfile = open(self.FileName, 'r')
                         self.textedit.setText(myfile.read())
                         myfile.close()
-                        self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
-                        print "{} was loaded".format(self.FileName)
 
                         try:
                             global NumberOfInputs, BEZEICHNUNGEN, INPUT
@@ -1604,19 +1604,31 @@ class CQtLimioptic(QtGui.QMainWindow):
                         except:
                             print "could not load variables"
 
-        def LoadAutosave(self):
-                try:
-                    myfile = open(backup_file + ".lim", "r")
-                    title  = "Limioptic 2  -  _save.lim"
-                    self.textedit.setText(myfile.read())
-                    myfile.close()
-                    self.setWindowTitle(title)
+                elif (self.FileName.endswith("lim2")):
+                    (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
+                    self.textedit.setText(text)
 
+                self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+                print "{} was loaded".format(self.FileName)
+
+        def LoadAutosave(self):
+                global NumberOfInputs, BEZEICHNUNGEN, INPUT
+
+                try:
+                    if backup_file.endswith("lim2"):
+                        (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
+                        self.textedit.setText(text)
+                        return 0
+                    else:
+                        myfile = open(backup_file + ".lim", "r")
+                        title  = "Limioptic 2  -  _save.lim"
+                        self.textedit.setText(myfile.read())
+                        myfile.close()
+                        self.setWindowTitle(title)
                 except:
                         print "_save.lim not found!"
 
                 try:
-                    global NumberOfInputs, BEZEICHNUNGEN, INPUT
                     i = -1
                     for line in open(backup_file + ".var", "r"):
                         i += 1
@@ -1626,55 +1638,49 @@ class CQtLimioptic(QtGui.QMainWindow):
                 except:
                     print "_save.var not found"
 
-        def SaveFileAs(self):
-                self.FileName = QtGui.QFileDialog.getSaveFileName(self, "Save file", ".", "*.lim;;*.*")
-                if (self.FileName != ""):
-                        myfile = open(self.FileName, "w")
-                        myfile.write(str(self.textedit.toPlainText()))
-                        myfile.close()
-                        self.setWindowTitle("Limioptic 2")
-                        print "saved to", self.FileName
-                        self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+        def SaveAlt(self):
+            myfile = open(self.FileName, "w")
+            myfile.write(str(self.textedit.toPlainText()))
+            myfile.close()
+            self.setWindowTitle("Limioptic 2")
+            print "saved to", self.FileName
+            self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
 
-                        myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
-                        for i in xrange(NumberOfInputs):
-                                print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
-                        myfile.close()
+            myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
+            for i in xrange(NumberOfInputs):
+                    print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
+            myfile.close()
+
+        def SaveNeu(self, filename=None):
+            if filename:
+                pickle.dump((str(self.textedit.toPlainText()), INPUT, BEZEICHNUNGEN), open(filename, "wb"))
+            else:
+                pickle.dump((str(self.textedit.toPlainText()), INPUT, BEZEICHNUNGEN), open(self.FileName, "wb"))
+
+        def SaveFileAs(self):
+                self.FileName = QtGui.QFileDialog.getSaveFileName(self, "Save file", ".", "*.lim2;*.lim;*.*")
+                if (self.FileName.endswith("lim")):
+                    self.SaveAlt()
+                elif (self.FileName.endswith("lim2")):
+                    self.SaveNeu()
 
         def SaveFile(self):
                 try:
-                        if (self.FileName != ""):
-                                myfile = open(self.FileName, "w")
-                                myfile.write(str(self.textedit.toPlainText()))
-                                myfile.close()
-                                self.setWindowTitle('Limioptic 2')
-                                print "saved to", self.FileName
-                                self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
-                                saved = True
+                    if (self.FileName.endswith("lim")):
+                        self.SaveAlt()
+                    elif (self.FileName.endswith("lim2")):
+                        self.SaveNeu()
                 except:
                         print "Noch kein Filename definiert!"
                         self.SaveFileAs()
 
-                if saved:
-                        myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
-                        for i in xrange(NumberOfInputs):
-                                print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
-                        myfile.close()
-
 #############################
         def plot2d(self):
                 global RUNNING2D, RUNNING
-                myfile = open(backup_file + ".lim", "w")
-                myfile.write(str(self.textedit.toPlainText()))
-                myfile.close()
-
-                myfile = open(backup_file + ".var", "w")
-                for i in xrange(NumberOfInputs):
-                        print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
-                myfile.close()
+                self.SaveNeu(backup_file)
 
                 if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file + ".lim"
+                        print "Sicherungsdatei: ", backup_file
                         self.inputwindow2d = inputcontrol("2d")
                         RUNNING2D = RUNNING = True
                         self.inputwindow2d.exec_()
@@ -1684,17 +1690,10 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def plotqt(self):
                 global RUNNINGQT, RUNNING
-                myfile = open(backup_file + ".lim", "w")
-                myfile.write(str(self.textedit.toPlainText()))
-                myfile.close()
-
-                myfile = open(backup_file + ".var", "w")
-                for i in xrange(NumberOfInputs):
-                        print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
-                myfile.close()
+                self.SaveNeu(backup_file)
 
                 if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file + ".lim"
+                        print "Sicherungsdatei: ", backup_file
                         self.inputwindowqt = inputcontrol("qt")
                         RUNNINGQT = RUNNING = True
                         self.inputwindowqt.exec_()
@@ -1704,17 +1703,10 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def plot3d(self):
                 global RUNNING3D, RUNNING
-                myfile = open(backup_file + ".lim", "w")
-                myfile.write(str(self.textedit.toPlainText()))
-                myfile.close()
-
-                myfile = open(backup_file + ".var", "w")
-                for i in xrange(NumberOfInputs):
-                        print >> myfile, "{} = {}".format(BEZEICHNUNGEN[i], INPUT[i])
-                myfile.close()
+                self.SaveNeu(backup_file)
 
                 if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file + ".lim"
+                        print "Sicherungsdatei: ", backup_file
                         self.inputwindow3d = inputcontrol("3d")
                         RUNNING3D = RUNNING = True
                         self.inputwindow3d.exec_()
@@ -1736,7 +1728,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 global SourceObj
                 if _filename is None:
                     _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
-                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endsWith("TRANSMIT.txt") else "limioptic"))
+                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
                 else:
                     SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
                 #SourceObj.NormalizeEnergy()
@@ -1960,12 +1952,12 @@ XCOLOR           = 255, 0, 0, 255
 YCOLOR           = 0, 255, 0, 255
 
 try:
-    backup_file = "/".join([os.environ["PROGRAMDATA"], "_save"])
+    backup_file = "/".join([os.environ["PROGRAMDATA"], "_save.lim2"])
     _test = open(backup_file + ".test", "w")
     print >> _test, "writetest"
     _test.close()
 except Exception, e:
-    backup_file = "_save"
+    backup_file = "_save.lim2"
 
 for i in xrange(32):
         INPUT.append(1.)
