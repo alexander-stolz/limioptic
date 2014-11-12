@@ -1493,9 +1493,11 @@ class CQtLimioptic(QtGui.QMainWindow):
         def help(self):
             selection = self.textedit.textCursor().selectedText()
             if selection in dir(helper):
+                helptext = eval("helper.%s" % (selection))
                 print "\nHELP:\n------------------------------------------"
-                print eval("helper.%s" % (selection))
+                print helptext
                 print "------------------------------------------"
+                self.setToolTip(helptext)
 
         def update(self):
                 """ Check uebers Internet ob Updates verfuegbar sind """
