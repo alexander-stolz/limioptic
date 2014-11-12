@@ -27,14 +27,14 @@ AddBeamX = """AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta)
 produces an X-shaped ion beam.
 it is better to use BeamX(xmax, amax, ymax, bmax, dk, dm, num).
 
-x     = maximal radial deviation [mm]
-a     = maximal radial angle [mrad]
-y     = maximal axial deviation [mm]
-b     = maximal axial angle [mrad]
-dk    = relative energy deviation [permille]
-dm    = relative mass deviation [permille]
-delta = degree steps of the emittance elipse.
-        smaller delta --> more particles [1..360]"""
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+delta  = degree steps of the emittance elipse.
+         smaller delta --> more particles [1..360]"""
 
 
 BeamX = """BeamX(xmax, amax, ymax, bmax, dk, dm, num)
@@ -42,13 +42,13 @@ BeamX = """BeamX(xmax, amax, ymax, bmax, dk, dm, num)
 produces an X-shaped ion beam.
 it is better to use BeamX.
 
-x   = maximal radial deviation [mm]
-a   = maximal radial angle [mrad]
-y   = maximal axial deviation [mm]
-b   = maximal axial angle [mrad]
-dk  = relative energy deviation [permille]
-dm  = relative mass deviation [permille]
-num = number of particles [unitless]"""
+xmax = maximal radial deviation [mm]
+amax = maximal radial angle [mrad]
+ymax = maximal axial deviation [mm]
+bmax = maximal axial angle [mrad]
+dk   = relative energy deviation [permille]
+dm   = relative mass deviation [permille]
+num  = number of particles [unitless]"""
 
 
 AddBeam3d = """AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta)
@@ -56,13 +56,13 @@ AddBeam3d = """AddBeamX(xmax, amax, ymax, bmax, dk, dm, delta)
 produces a nice 3d ion beam.
 it is better to use Beam3d(xmax, amax, ymax, bmax, dk, dm, num).
 
-x     = maximal radial deviation [mm]
-a     = maximal radial angle [mrad]
-y     = maximal axial deviation [mm]
-b     = maximal axial angle [mrad]
-dk    = relative energy deviation [permille]
-dm    = relative mass deviation [permille]
-delta = degree steps of the emittance elipse.
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+delta  = degree steps of the emittance elipse.
         smaller delta --> more particles [1..360]"""
 
 
@@ -71,13 +71,13 @@ Beam3d = """BeamX(xmax, amax, ymax, bmax, dk, dm, num)
 produces a nice 3d ion beam.
 it is better to use BeamX.
 
-x   = maximal radial deviation [mm]
-a   = maximal radial angle [mrad]
-y   = maximal axial deviation [mm]
-b   = maximal axial angle [mrad]
-dk  = relative energy deviation [permille]
-dm  = relative mass deviation [permille]
-num = number of particles [unitless]"""
+xmax = maximal radial deviation [mm]
+amax = maximal radial angle [mrad]
+ymax = maximal axial deviation [mm]
+bmax = maximal axial angle [mrad]
+dk   = relative energy deviation [permille]
+dm   = relative mass deviation [permille]
+num  = number of particles [unitless]"""
 
 
 AddGaussBeam = """AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., strag_k=0., strag_m=0., num=250.)
@@ -85,12 +85,58 @@ AddGaussBeam = """AddGaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y
 produces a gaussian distributed ion beam.
 it is better to use GaussBeam.
 
-strag_x   = radial straggling [mm]
-strag_a   = radial angular straggling [mrad]
-strag_y   = axial straggling [mm]
-strag_b   = axial angular straggling [mrad]
-x, y      = radial/axial deviation [mm]
-a, b      = radial/axial angle [mrad]
+strag_x  = radial straggling [mm]
+strag_a  = radial angular straggling [mrad]
+strag_y  = axial straggling [mm]
+strag_b  = axial angular straggling [mrad]
+x, y     = radial/axial deviation [mm]
+a, b     = radial/axial angle [mrad]
 strag_k  = relative energy straggling [permille]
 strag_m  = relative mass straggling [permille]
-num = number of particles [unitless]"""
+num      = number of particles [unitless]"""
+
+
+GaussBeam = """GaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0., dm=0., num=250, strag_k=0., strag_m=0., sigma=1.)
+
+produces a gaussian distributed ion beam.
+it is better to use GaussBeam.
+
+strag_x  = radial straggling [mm]
+strag_a  = radial angular straggling [mrad]
+strag_y  = axial straggling [mm]
+strag_b  = axial angular straggling [mrad]
+x, y     = radial/axial deviation [mm]
+a, b     = radial/axial angle [mrad]
+strag_k  = relative energy straggling [permille]
+strag_m  = relative mass straggling [permille]
+num      = number of particles [unitless]
+sigma    = how many standard deviations is the straggling"""
+
+
+BeamRandomGauss = AddBeamRandomGauss = """[Add]BeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, num, sigma=1.)
+
+like GaussBeam, but the beam is different for every calculation.
+
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+num    = number of particles"""
+
+
+AddBeam = """AddBeam(xmax, amax, ymax, bmax, dk, dm, delta=10)
+
+produces a simple beam for fast calculations.
+better use Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0)
+
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+delta  = degree steps of the emittance elipse.
+         smaller delta --> more particles [1..360]"""
+

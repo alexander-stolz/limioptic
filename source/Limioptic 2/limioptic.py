@@ -163,13 +163,13 @@ def GaussBeam(strag_x, strag_a, strag_y, strag_b, x=0., a=0., y=0., b=0., dk=0.,
         ctypes.c_double(float(num)))
 
 
-def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
+def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, num, sigma=1.):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
     lastFunction = "AddBeamRandomGauss"
 
     random.seed()
-    for i in xrange(number):
+    for i in xrange(num):
         x = random.gauss(0, xmax / sigma)
         y = random.gauss(0, ymax / sigma)
         a = random.gauss(0, amax / sigma)
@@ -184,13 +184,13 @@ def AddBeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
             ctypes.c_double(float(dm)))
 
 
-def BeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, number, sigma=1.):
+def BeamRandomGauss(xmax, amax, ymax, bmax, dk, dm, num, sigma=1.):
     """ Gaussverteilten zufallsbasierten Strahl einfuegen """
     global lastFunction
-    lastFunction = "AddBeamRandomGauss"
+    lastFunction = "BeamRandomGauss"
 
-    #random.seed()
-    for i in xrange(number):
+    random.seed()
+    for i in xrange(num):
         x = random.gauss(0, xmax / sigma)
         y = random.gauss(0, ymax / sigma)
         a = random.gauss(0, amax / sigma)
