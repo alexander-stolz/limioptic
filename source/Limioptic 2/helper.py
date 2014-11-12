@@ -140,3 +140,49 @@ dm     = relative mass deviation [permille]
 delta  = degree steps of the emittance elipse.
          smaller delta --> more particles [1..360]"""
 
+
+Beam = """Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0)
+
+produces a simple beam for fast calculations.
+better use Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0)
+
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+num    = number of particles,
+x, y   = radial/axial deviation"""
+
+
+Source = AddSource = """[Add]Source()
+
+use particle-file from srim (TRANSMIT.txt) or in vector-format."""
+
+
+Matrix = AddMatrix = """AddMatrix(num, mat, length)
+
+add your own matrix num times. length is the length of the corresponding element."""
+
+
+AMSAcc = AddAMSAcc = """AddAMSAcc(v_qsnout, v_terminal, v_injection, q)
+
+add CologneAMS accelerator.
+
+v_qsnout    = q-snount voltage
+v_terminal  = terminal voltage
+v_injection = injection voltage
+q           = ion charge state"""
+
+
+VBFN = AddVBFN = """AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0)
+
+add FN-preacceleration.
+
+extraktion = extraction energy
+deltaV     = preacceleration voltage
+laenge     = length of the preacceleration
+b          = correction factor for input and output aperture if b1 and b2 are not set
+b1, b2     = correction factors for input and output
+segment    = just used internally"""

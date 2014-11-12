@@ -294,10 +294,12 @@ def AddMatrix(num, mat, length):
 Matrix = AddMatrix
 
 
-def AddAMSAcc(v_qsnout, v_gesamt, v_vorbeschl, q):
+def AddAMSAcc(v_qsnout, v_terminal, v_injection, q):
     """ Beschleunigung Cologne AMS nach HINTERBERGER """
     global lastFunction
     lastFunction = "AddAMSAcc"
+    v_gesamt = v_terminal
+    v_vorbeschl = v_injection
 
     #Widerstand 1-4 Zweig1
     R_a1 = 400.e6 + 10.e3
