@@ -1584,10 +1584,10 @@ class CQtLimioptic(QtGui.QMainWindow):
 #############################
         def LoadFile(self, filename=None):
                 if not filename:
-                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim;*.*")
+                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim")
                 else:
                     self.FileName = filename
-                if (self.FileName.endswith("lim")):
+                if (self.FileName.endsWith("lim")):
                         myfile = open(self.FileName, 'r')
                         self.textedit.setText(myfile.read())
                         myfile.close()
@@ -1604,7 +1604,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                         except:
                             print "could not load variables"
 
-                elif (self.FileName.endswith("lim2")):
+                elif (self.FileName.endsWith("lim2")):
                     (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
                     self.textedit.setText(text)
 
@@ -1658,17 +1658,17 @@ class CQtLimioptic(QtGui.QMainWindow):
                 pickle.dump((str(self.textedit.toPlainText()), INPUT, BEZEICHNUNGEN), open(self.FileName, "wb"))
 
         def SaveFileAs(self):
-                self.FileName = QtGui.QFileDialog.getSaveFileName(self, "Save file", ".", "*.lim2;*.lim;*.*")
-                if (self.FileName.endswith("lim")):
+                self.FileName = QtGui.QFileDialog.getSaveFileName(self, "Save file", ".", "*.lim2;*.lim")
+                if (self.FileName.endsWith("lim")):
                     self.SaveAlt()
-                elif (self.FileName.endswith("lim2")):
+                elif (self.FileName.endsWith("lim2")):
                     self.SaveNeu()
 
         def SaveFile(self):
                 try:
-                    if (self.FileName.endswith("lim")):
+                    if (self.FileName.endsWith("lim")):
                         self.SaveAlt()
-                    elif (self.FileName.endswith("lim2")):
+                    elif (self.FileName.endsWith("lim2")):
                         self.SaveNeu()
                 except:
                         print "Noch kein Filename definiert!"
