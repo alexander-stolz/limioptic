@@ -606,6 +606,8 @@ class Text3D(vtk.vtkActor):
 
         self.SetMapper(self.mapper)
         self.SetPosition(pos, posY, 0)
+        self.SetScale(.2, .2, .2)
+        self.RotateZ(45)
 
 
 class doit3d(threading.Thread):
