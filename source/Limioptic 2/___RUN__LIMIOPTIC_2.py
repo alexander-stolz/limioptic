@@ -1586,10 +1586,10 @@ class CQtLimioptic(QtGui.QMainWindow):
 #############################
         def LoadFile(self, filename=None):
                 if not filename:
-                    self.FileName = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim")
+                    self.FileName = str(QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim"))
                 else:
                     self.FileName = filename
-                if (self.FileName.endsWith("lim")):
+                if (self.FileName.endswith("lim")):
                         myfile = open(self.FileName, 'r')
                         self.textedit.setText(myfile.read())
                         myfile.close()
@@ -1606,8 +1606,8 @@ class CQtLimioptic(QtGui.QMainWindow):
                         except:
                             print "could not load variables"
 
-                elif (self.FileName.endsWith("lim2")):
-                    (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
+                elif (self.FileName.endswith("lim2")):
+                    (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(self.FileName, "rb"))
                     self.textedit.setText(text)
 
                 self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
@@ -1877,7 +1877,7 @@ class myedit(QtGui.QTextEdit):
                 links.append(str(url.toLocalFile()))
             self.emit(QtCore.SIGNAL("dropped"), links)
             if len(links) == 1:
-                if links[0].endswith(".lim"):
+                if (links[0].endswith(".lim")) or (links[0].endswith(".lim2")):
                     myapp.LoadFile(links[0])
                 if links[0].endswith("TRANSMIT.txt") or links[0].endswith(".out"):
                     myapp.InsertSource(links[0])
