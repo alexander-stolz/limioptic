@@ -10,7 +10,6 @@ import array
 import math
 import random
 import vtk
-#import pickle
 from scipy import optimize
 from numpy import linspace
 
@@ -244,7 +243,7 @@ def AddSource(file=None):
     global lastFunction, SOURCE, SOURCEFILES
     lastFunction = "AddSource"
 
-    if (not file is None) and (not file in SOURCEFILES):
+    if (file is not None) and (file not in SOURCEFILES):
         try:
             SOURCEFILES.append(file)
             for line in open(file, "r"):
@@ -283,7 +282,7 @@ def AddMatrix(num, mat, length):
     global lastFunction
     lastFunction = "AddMatrix"
 
-    matrixarray = ctypes.c_double*36
+    matrixarray = ctypes.c_double * 36
     matrix      = matrixarray()
     for i in xrange(36):
         matrix[i] = ctypes.c_double(float(mat[i]))
@@ -444,11 +443,11 @@ def AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0):
     if segment == 0:
         AddSegment11(T0, T1, .09, .09, laenge, b1, b2)
     elif segment == 1:
-        AddSegment(math.sqrt(T1/T0), laenge)
+        AddSegment(math.sqrt(T1 / T0), laenge)
     elif segment == 2:
         AddSegment1(T0, T1, -1., .09, .09, laenge, b)
     elif segment == 3:
-        AddSegment2VBFN(T0, T1, .09, laenge, 0., -(T1-T0)/laenge, 0., -1.)
+        AddSegment2VBFN(T0, T1, .09, laenge, 0., -(T1 - T0) / laenge, 0., -1.)
 VBFN = AddVBFN
 
 
@@ -485,19 +484,19 @@ def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=
     T3 = T2 + q * E3 * l3
     T4 = T3 + q * E4 * l4
 
-    #D1 = .088 #LE1
-    D2 = .03  #LE1
-    D3 = .03  #LE2
-    D4 = .03  #LE2
-    D5 = .03  #HE1
-    D6 = .03  #HE1
-    D7 = .03  #HE2
-    D8 = .03  #HE2
+    #D1 = .088 # LE1
+    D2 = .03  # LE1
+    D3 = .03  # LE2
+    D4 = .03  # LE2
+    D5 = .03  # HE1
+    D6 = .03  # HE1
+    D7 = .03  # HE2
+    D8 = .03  # HE2
 
-    AddSegment11(T0, T1, D1, D2, l1, b1, b2)             #LE1
-    AddSegment11(T1, T1, D2, D3, space1, b1, b2)         #Space1
-    AddSegment11(T1, T2, D3, D4, l2, b1, b2)             #LE2
-    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  #Terminal
+    AddSegment11(T0, T1, D1, D2, l1, b1, b2)             # LE1
+    AddSegment11(T1, T1, D2, D3, space1, b1, b2)         # Space1
+    AddSegment11(T1, T2, D3, D4, l2, b1, b2)             # LE2
+    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  # Terminal
 
     if (beamprofile):
         print "\n"
@@ -508,12 +507,13 @@ def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=
 
     AddModifyEmittance(factor1, factor2)
 
-    if (beamprofile): AddBeamProfile()
+    if (beamprofile):
+        AddBeamProfile()
 
-    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  #Terminal
-    AddSegment11(T2, T3, D5, D6, l3, b1, b2)             #HE1
-    AddSegment11(T3, T3, D6, D7, space2, b1, b2)         #Space2
-    AddSegment11(T3, T4, D7, D8, l4, b1, b2)             #HE2
+    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  # Terminal
+    AddSegment11(T2, T3, D5, D6, l3, b1, b2)             # HE1
+    AddSegment11(T3, T3, D6, D7, space2, b1, b2)         # Space2
+    AddSegment11(T3, T4, D7, D8, l4, b1, b2)             # HE2
 FNAccNeu = AddFNAccNeu
 
 
@@ -914,7 +914,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     I_gesamt = float(-v_gesamt / R_gesamt)
 
     #Laenge eines Segmentes
-    L = float((2.532+.223)/100.0)
+    L = float((2.532 + .223) / 100.0)
 
     #Durchmesser des Elektrodenringes, update: neue Roehren
     D = 6.35 * 2 / 100
@@ -934,7 +934,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     E2 = R_Segment1[3] * 1.e6 * I_gesamt / L
     E3 = R_Segment1[4] * 1.e6 * I_gesamt / L
     T0 = float(v_vorbeschl)
-    T1 = float(T0+float(-R_Segment1[4-1])*1.0e6*I_gesamt)
+    T1 = float(T0 + float(-R_Segment1[4-1]) * 1.0e6 * I_gesamt)
     N = math.sqrt(T1 / T0)
     AddSegment(N, L)
 
@@ -987,7 +987,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     for i in xrange(21, 31):
         E1 = E2
         E2 = E3
-        E3 = R_Segment1[i]*1.0e6*I_gesamt / L
+        E3 = R_Segment1[i] * 1.0e6 * I_gesamt / L
         T0 = T1
         T1 = float(T0 + float(-R_Segment1[i-1]) * 1.e6 * I_gesamt)
         N  = math.sqrt(T1 / T0)
@@ -996,7 +996,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     for i in xrange(31, 76):
         E1 = E2
         E2 = E3
-        E3 = R_Segment1[i]*1.0e6*I_gesamt / L
+        E3 = R_Segment1[i] * 1.0e6 * I_gesamt / L
         T0 = T1
         T1 = float(T0 + float(-R_Segment1[i-1]) * 1.e6 * I_gesamt)
         N  = math.sqrt(T1 / T0)
@@ -1005,7 +1005,7 @@ def AddFNAcc2(v_gesamt, v_vorbeschl, q):
     for i in xrange(76, 97):
         E1 = E2
         E2 = E3
-        E3 = R_Segment1[i]*1.0e6*I_gesamt / L
+        E3 = R_Segment1[i] * 1.0e6 * I_gesamt / L
         T0 = T1
         T1 = float(T0 + float(-R_Segment1[i-1]) * 1.e6 * I_gesamt)
         N  = math.sqrt(T1 / T0)
@@ -1116,7 +1116,7 @@ def AddSegment(N, L):
     global s, geo_x, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+L)
+        geo_s.InsertNextValue(s + L)
         geo_y.InsertNextValue(55)
         geo_y.InsertNextValue(55)
         s = s + L
@@ -1146,12 +1146,12 @@ def AddSegment1(T0, T1, q, D1, D2, L, b=.57):
     if (s > -0.5):
         geo_s.InsertNextValue(s)
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+L)
-        geo_s.InsertNextValue(s+L)
-        geo_y.InsertNextValue(D1*1000./2.)
+        geo_s.InsertNextValue(s + L)
+        geo_s.InsertNextValue(s + L)
+        geo_y.InsertNextValue(D1 * 1000. / 2.)
         geo_y.InsertNextValue(55)
         geo_y.InsertNextValue(55)
-        geo_y.InsertNextValue(D2*1000./2.)
+        geo_y.InsertNextValue(D2 * 1000. / 2.)
         s = s + L
 
     T0 = float(T0)
@@ -1161,18 +1161,18 @@ def AddSegment1(T0, T1, q, D1, D2, L, b=.57):
     D1 = float(D1)
     D2 = float(D2)
 
-    E = (T1-T0) / q / L
-    N = math.sqrt(T1/T0)
+    E = (T1 - T0) / q / L
+    N = math.sqrt(T1 / T0)
 
     f1  = -q * (0. - E) / (2. * T0 * (1. + math.sqrt(1. - q * (0. - E) * b * D1 / T0)))  # 1/f1
     f2  = -q * (E - 0.) / (2. * T1 * (1. + math.sqrt(1. - q * (E - 0.) * b * D2 / T1)))  # 1/f2
     LL  = 2. * L / (1. + N)
     m11 = 1. - LL * f1
     m12 = LL
-    m21 = -f2 - (1./N - f2*LL)*f1
-    m22 = 1/N - f2*LL
+    m21 = -f2 - (1. / N - f2 * LL) * f1
+    m22 = 1 / N - f2 * LL
 
-    dkdk = 1./N/N
+    dkdk = 1. / N / N
     dmdm = 1.
 
     AddMatrix(1, [
@@ -1190,12 +1190,12 @@ def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57, f1=True, f2=True):
     if (s > -0.5):
         geo_s.InsertNextValue(s)
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+L)
-        geo_s.InsertNextValue(s+L)
-        geo_y.InsertNextValue(D1*1000./2.)
+        geo_s.InsertNextValue(s + L)
+        geo_s.InsertNextValue(s + L)
+        geo_y.InsertNextValue(D1 * 1000. / 2.)
         geo_y.InsertNextValue(55)
         geo_y.InsertNextValue(55)
-        geo_y.InsertNextValue(D2*1000./2.)
+        geo_y.InsertNextValue(D2 * 1000. / 2.)
         s = s + L
 
     T0 = float(T0)
@@ -1203,10 +1203,10 @@ def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57, f1=True, f2=True):
     L  = float(L)
     D1 = float(D1)
     D2 = float(D2)
-    deltaT = T1-T0
+    deltaT = T1 - T0
 
     try:
-        N = math.sqrt(T1/T0)
+        N = math.sqrt(T1 / T0)
     except:
         print "T0 must not be zero!"
 
@@ -1222,10 +1222,10 @@ def AddSegment11(T0, T1, D1, D2, L, b1=.57, b2=.57, f1=True, f2=True):
     LL  = 2. * L / (1. + N)
     m11 = 1. - LL * f1
     m12 = LL
-    m21 = -f2 - (1./N - f2*LL)*f1
-    m22 = 1/N - f2*LL
+    m21 = -f2 - (1. / N - f2 * LL) * f1
+    m22 = 1 / N - f2 * LL
 
-    dkdk = 1./N/N
+    dkdk = 1. / N / N
     dmdm = 1.
 
     AddMatrix(1, [
@@ -1242,28 +1242,28 @@ def AddSegment2(T0, T1, D, L, E1, E2, E3, q):
     global s, geo_x, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_y.InsertNextValue(D*1000./2.)
+        geo_y.InsertNextValue(D * 1000. / 2.)
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+L)
+        geo_s.InsertNextValue(s + L)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+L)
-        geo_y.InsertNextValue(D*1000./2.)
+        geo_s.InsertNextValue(s + L)
+        geo_y.InsertNextValue(D * 1000. / 2.)
         s = s + L
 
-    N = float(math.sqrt(T1/T0))
-    D = float(D)*100.
+    N = float(math.sqrt(T1 / T0))
+    D = float(D) * 100.
 
-    f1 = -q*(E1-E2)/2.0/T0/(1.0+math.sqrt(1.0-q*(E1-E2)/T0*0.57*D))  # 1/f1
-    LL = 2.0*L/(1.0+N)
+    f1 = -q * (E1 - E2) / 2.0 / T0 / (1. + math.sqrt(1.0 - q * (E1 - E2) / T0 * 0.57 * D))  # 1/f1
+    LL = 2.0 * L / (1.0 + N)
 
     # Nur der Eintritt und die Beschleunigung werden beruecksichtigt:
-    m11 = 1.0-LL*f1
+    m11 = 1.0 - LL * f1
     m12 = LL
-    m21 = -f1/N
-    m22 = 1/N
+    m21 = -f1 / N
+    m22 = 1 / N
 
-    dkdk = 1.0/N/N
+    dkdk = 1.0 / N / N
     dmdm = 1.0
 
     AddMatrix(1, [
@@ -1279,28 +1279,28 @@ def AddSegment2VBFN(T0, T1, D, L, E1, E2, E3, q):
     global s, geo_x, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_y.InsertNextValue(D*1000./2.)
+        geo_y.InsertNextValue(D * 1000. / 2.)
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+L)
+        geo_s.InsertNextValue(s + L)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+L)
-        geo_y.InsertNextValue(D*1000./2.)
+        geo_s.InsertNextValue(s + L)
+        geo_y.InsertNextValue(D * 1000. / 2.)
         s = s + L
 
-    N = float(math.sqrt(T1/T0))
+    N = float(math.sqrt(T1 / T0))
     D = float(D) * 100.
 
-    f1 = -q * (E1-E2) / (2. * T0 * (1. + math.sqrt(1. - q * (E1-E2) * 1.13 * D / T0)))  # 1/f1
-    f2 = -q * (E2-E3) / (2. * T1 * (1. + math.sqrt(1. - q * (E2-E3) * 1.13 * D / T1)))  # 1/f2
+    f1 = -q * (E1 - E2) / (2. * T0 * (1. + math.sqrt(1. - q * (E1 - E2) * 1.13 * D / T0)))  # 1/f1
+    f2 = -q * (E2 - E3) / (2. * T1 * (1. + math.sqrt(1. - q * (E2 - E3) * 1.13 * D / T1)))  # 1/f2
     LL = 2. * L / (1. + N)
 
-    m11 = 1.0-LL*f1
+    m11 = 1.0 - LL * f1
     m12 = LL
-    m21 = -f2-(1.0/N-f2*LL)*f1
-    m22 = 1/N-f2*LL
+    m21 = -f2 - (1.0 / N - f2 * LL) * f1
+    m22 = 1 / N - f2 * LL
 
-    dkdk = 1.0/N/N
+    dkdk = 1.0 / N / N
     dmdm = 1.0
 
     AddMatrix(1, [
@@ -1407,11 +1407,12 @@ def AddFoil(dk=0., strag_k=0., strag_phi=0.):
         ctypes.c_double(.5))
 Foil = AddFoil
 
+
 def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
     """ Z. B. fuer Folie in der Beamline """
     optic.ChangeBeamParameters2(
-        ctypes.c_double(float(dk/1000.)),
-        ctypes.c_double(float(dm/1000.)),
+        ctypes.c_double(float(dk / 1000.)),
+        ctypes.c_double(float(dm / 1000.)),
         ctypes.c_double(float(strag_k_over_E)),
         ctypes.c_double(float(strag_m)))
 
@@ -1423,13 +1424,13 @@ def AddSlit(x, dx, y, dy):
     global s, geo_s, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_y.InsertNextValue(x+dx/2.)
-        geo_s.InsertNextValue(s+.05)
-        geo_y.InsertNextValue(x+dx/2.)
-        geo_s.InsertNextValue(s+.05)
-        geo_y.InsertNextValue(x-dx/2.)
+        geo_y.InsertNextValue(x + dx / 2.)
+        geo_s.InsertNextValue(s + .05)
+        geo_y.InsertNextValue(x + dx / 2.)
+        geo_s.InsertNextValue(s + .05)
+        geo_y.InsertNextValue(x - dx / 2.)
         geo_s.InsertNextValue(s)
-        geo_y.InsertNextValue(x-dx/2.)
+        geo_y.InsertNextValue(x - dx / 2.)
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(-20.)
     optic.AddSlit(
@@ -1480,12 +1481,12 @@ def AddAMSSO110EL(phi1, v_el):
     f = .001 / (
         + 0.024838874085440145
         - 0.1721716204656418 * x
-        + 0.6764569821500281 * x**2
-        - 1.7844240368333488 * x**3
-        + 3.118746647284872  * x**4
-        - 3.434443885979744  * x**5
-        + 2.152129217984039  * x**6
-        - 0.5841534279352003 * x**7)
+        + 0.6764569821500281 * x ** 2
+        - 1.7844240368333488 * x ** 3
+        + 3.118746647284872  * x ** 4
+        - 3.434443885979744  * x ** 5
+        + 2.152129217984039  * x ** 6
+        - 0.5841534279352003 * x ** 7)
 
     optic.AddThinLens(
         ctypes.c_int(1),
@@ -1511,12 +1512,12 @@ def AddAMSBIEL(phi1, v_el):
     f = .001 / (
         + 0.01993277008153473
         - 0.13793678662472572 * x
-        + 0.5408115698616647  * x**2
-        - 1.4238381952266255  * x**3
-        + 2.4846514325496316  * x**4
-        - 2.7328746285908734  * x**5
-        + 1.7109251000894101  * x**6
-        - 0.4640648127510327  * x**7)
+        + 0.5408115698616647  * x ** 2
+        - 1.4238381952266255  * x ** 3
+        + 2.4846514325496316  * x ** 4
+        - 2.7328746285908734  * x ** 5
+        + 1.7109251000894101  * x ** 6
+        - 0.4640648127510327  * x ** 7)
 
     optic.AddThinLens(
         ctypes.c_int(1),
@@ -1535,7 +1536,6 @@ def AddFNEL(phi1, v_el):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(63)
 
-
     # phi2/phi1
     x = (phi1 - v_el) / phi1
 
@@ -1543,12 +1543,12 @@ def AddFNEL(phi1, v_el):
     f = 1. / (
         + 11.542244476708195
         - 61.57930337802449  * x
-        + 183.54364546860486 * x**2
-        - 385.71960791043387 * x**3
-        + 562.1897241491755  * x**4
-        - 529.9264768291281  * x**5
-        + 288.3485380347237  * x**6
-        - 68.5022805970122   * x**7)
+        + 183.54364546860486 * x ** 2
+        - 385.71960791043387 * x ** 3
+        + 562.1897241491755  * x ** 4
+        - 529.9264768291281  * x ** 5
+        + 288.3485380347237  * x ** 6
+        - 68.5022805970122   * x ** 7)
 
     """
     x = (phi1 + v_el) / phi1
@@ -1590,7 +1590,7 @@ def AddFNSputterEL(phi1, v_el):
     f = 1. / (
         - 2.14464643
         + 38.80407837 * x
-        - 58.46349099 * x**2)
+        - 58.46349099 * x ** 2)
 
     optic.AddThinLens(
         ctypes.c_int(1),
@@ -1615,7 +1615,7 @@ def AddESD(num, arg1, arg2, arg3, arg4, arg5, geo, korrektur=None, V_ist=1., V_s
     global s, geo_s, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+num*arg2*arg3)
+        geo_s.InsertNextValue(s + num * arg2 * arg3)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
         s = s + num * arg2 * arg3
@@ -1655,7 +1655,7 @@ def AddMSA(num, arg1, arg2, arg3, geo, korrektur=None, B_ist=1., B_soll=1.):
     global s, geo_s, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+num*arg2*arg3)
+        geo_s.InsertNextValue(s + num * arg2 * arg3)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
         s = s + num * arg2 * arg3
@@ -1747,7 +1747,7 @@ def AddInhomMSA(num, rho, phi, n, geo):
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+num*rho*phi)
+        geo_s.InsertNextValue(s + num * rho * phi)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
         s = s + num * rho * phi
@@ -1765,7 +1765,7 @@ def AddQuadrupolRadFoc(num, arg1, arg2, arg3, geo):
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+num*arg3)
+        geo_s.InsertNextValue(s + num * arg3)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
         s = s + num * arg3
@@ -1782,7 +1782,7 @@ def AddQuadrupolAxFoc(num, arg1, arg2, arg3, geo):
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s+num*arg3)
+        geo_s.InsertNextValue(s + num * arg3)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
         s = s + num * arg3
@@ -1842,37 +1842,37 @@ def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
     if (s > -0.5):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.25)
+        geo_s.InsertNextValue(s + .25)
         geo_y.InsertNextValue(geo)
-        s = s+.25
+        s = s + .25
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+.076)
+        geo_s.InsertNextValue(s + .076)
         geo_y.InsertNextValue(55)
-        s = s+.076
+        s = s + .076
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.5)
+        geo_s.InsertNextValue(s + .5)
         geo_y.InsertNextValue(geo)
-        s = s+.5
+        s = s + .5
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+.076)
+        geo_s.InsertNextValue(s + .076)
         geo_y.InsertNextValue(55)
-        s = s+.076
+        s = s + .076
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.25)
+        geo_s.InsertNextValue(s + .25)
         geo_y.InsertNextValue(geo)
-        s = s+.25
+        s = s + .25
 
     #empirisch bestimmt
     vx = 30.e3 * (prozent + astigm) / 100.
     vy = 30.e3 * (prozent - astigm) / 100.
     T  = v_ext + (q + 1) * float(v_terminal)
 
-    kx  = abs(vx) / float(geo * 1.e-3)**2 * q / T
-    k   = (vx + vy) / 2. / float(geo * 1.e-3)**2 * q / T
+    kx  = abs(vx) / float(geo * 1.e-3) ** 2 * q / T
+    k   = (vx + vy) / 2. / float(geo * 1.e-3) ** 2 * q / T
 
     optic.AddQuadrupolRadFoc(
         ctypes.c_int(10),
@@ -1907,36 +1907,36 @@ def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
     if (s > -0.5):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.25)
+        geo_s.InsertNextValue(s + .25)
         geo_y.InsertNextValue(geo)
-        s = s+.25
+        s = s + .25
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+.076)
+        geo_s.InsertNextValue(s + .076)
         geo_y.InsertNextValue(55)
-        s = s+.076
+        s = s + .076
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.5)
+        geo_s.InsertNextValue(s + .5)
         geo_y.InsertNextValue(geo)
-        s = s+.5
+        s = s + .5
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(55)
-        geo_s.InsertNextValue(s+.076)
+        geo_s.InsertNextValue(s + .076)
         geo_y.InsertNextValue(55)
-        s = s+.076
+        s = s + .076
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(geo)
-        geo_s.InsertNextValue(s+.25)
+        geo_s.InsertNextValue(s + .25)
         geo_y.InsertNextValue(geo)
-        s = s+.25
+        s = s + .25
 
     vx  = 30.e3 * (prozent + astigm) / 100.
     vy  = 30.e3 * (prozent - astigm) / 100.
     T   = v_ext + (q + 1) * float(v_terminal)
 
-    kx  = abs(vx)/float(geo*1.e-3)**2*q/T
-    k   = (vx+vy)/2./float(geo*1.e-3)**2*q/T
+    kx  = abs(vx) / float(geo * 1.e-3) ** 2 * q / T
+    k   = (vx + vy) / 2. / float(geo * 1.e-3) ** 2 * q / T
 
     optic.AddQuadrupolAxFoc(
         ctypes.c_int(10),
@@ -1977,8 +1977,8 @@ def AddGeo(s1, x1, s2, x2):
 
     global s, geo_s, geo_y
     if (s > -0.5):
-        geo_s.InsertNextValue(s+s1)
-        geo_s.InsertNextValue(s+s2)
+        geo_s.InsertNextValue(s + s1)
+        geo_s.InsertNextValue(s + s2)
         geo_y.InsertNextValue(x1)
         geo_y.InsertNextValue(x2)
 
@@ -1989,8 +1989,8 @@ def AddQPT_XYX(gamma2, vx, vy, v_terminal, v_ext, q, geo):
     vy = float(vy)
     T  = v_ext + (q + 1) * float(v_terminal)
 
-    kx = abs(vx * 1.e3) / float(geo * 1.e-3)**2 * q / T
-    ky = abs(vy * 1.e3) / float(geo * 1.e-3)**2 * q / T
+    kx = abs(vx * 1.e3) / float(geo * 1.e-3) ** 2 * q / T
+    ky = abs(vy * 1.e3) / float(geo * 1.e-3) ** 2 * q / T
 
     optic.AddQuadrupolAxFoc(
         ctypes.c_int(10),
@@ -2046,7 +2046,7 @@ def PrintTrajectories(traj):
     for i in xrange(0, particlenum * particlesize, particlesize):
         for j in xrange(0, len(trajectories), particlenum * particlesize):
             for k in xrange(0, particlesize, 1):
-                print "%f" % (trajectories[j+i+k]),
+                print "%f" % (trajectories[j + i + k]),
             print "\n",
         print "\n",
 
@@ -2140,5 +2140,3 @@ if __name__ == "__main__":
         print("Usage : %s filename" % (sys.argv[0]))
     else:
         Limioptic(sys.argv[1])
-
-#TestOptFkt
