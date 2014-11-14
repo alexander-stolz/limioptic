@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <random>
-
+#include <stdio.h>
 
 #include <sstream>
 
@@ -105,7 +105,7 @@ void CLimioptic::AddGaussBeam(double x, double sx, double a, double sa,
     double iele = -1.0;
 
     int num = (int)number;
-    std::cout << num << endl;
+    //std::cout << num << endl;
 
     std::default_random_engine generator;
     std::normal_distribution<double> x_distribution(x, sx);
@@ -743,9 +743,9 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = (double)(pnum - nottransmitted);
 
-    std::cout << "transmission (beamprofile) =\t" << 1. - (double)nottransmitted / pnum << " (" << durch << "/" << pnum << " particles)\t@ " << p[i + 6 - particlesize] << " m\n";
-    std::cout << "SigmaX=\t" << sqrt(xplus / (durch - 1)) << "\tSigmaA=\t" << sqrt(aplus / (durch - 1)) << "\tEmittanzX=\t" << sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)) << "\n";
-    std::cout << "SigmaY=\t" << sqrt(yplus / (durch - 1)) << "\tSigmaB=\t" << sqrt(bplus / (durch - 1)) << "\tEmittanzY=\t" << sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)) << "\n";
+    printf("transmission (beamprofile) =\t%f (%i/%i particles)\t@%f m\n", 1. - (double)nottransmitted / pnum, durch, pnum, p[i + 6 - particlesize]);
+    printf("SigmaX=\t%f\tSigmaA=\t%f\tEmittanzX=\t%f\n", sqrt(xplus / (durch - 1)), sqrt(aplus / (durch - 1)), sqrt(xplus / (durch - 1)) * sqrt(aplus / (durch - 1)));
+    printf("SigmaY=\t%f\tSigmaB=\t%f\tEmittanzY=\t%f\n", sqrt(yplus / (durch - 1)), sqrt(bplus / (durch - 1)), sqrt(yplus / (durch - 1)) * sqrt(bplus / (durch - 1)));
 
     x_verteilung = sqrt(xplus / (durch - 1));
     y_verteilung = sqrt(yplus / (durch - 1));
@@ -868,10 +868,10 @@ void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
     }
 
     spotsize += (xplus + yplus);
-    
-    std::cout << "transmission (slit) =\t" << (double) durch / (durch + nichtdurch)
-              << ",  total: " << (1. - (double) nottransmitted / pnum)
-              << "\t@ " << p[i + 6 - particlesize] << " m\n";
+
+    printf("transmission (slit) =\t%f", (double) durch / (double) (durch + nichtdurch));
+    printf(",  total: %f", (1. - (double) nottransmitted / pnum));
+    printf("\t@ %f m\n", p[i + 6 - particlesize]);
 
     //fstream datei( "slit.dat",ios::out|ios::app);
     //datei << (double)durch/(durch+nichtdurch)<<" ";
@@ -1248,7 +1248,7 @@ void CLimioptic::ApplyAMSQuadrupolAxFoc(double *p, int nmat, double gamma2, doub
     elesize = particles.size();
     pnum = elesize / particlesize; // Anzahl der Teilchen
 
-    std::cout << kx << "    " << ky << "\n";
+    //std::cout << kx << "    " << ky << "\n";
 
     i = 0;
     for (imat = 0; imat < nmat; imat++)
@@ -1467,7 +1467,7 @@ void CLimioptic::ApplyInhomDeflectingMagnet(double *p, int nmat, double rho, dou
     Nk   =   0.5;
     Nm =  0.5;
 
-    std::cout << "n=\t" << n1 << "\n";
+    //std::cout << "n=\t" << n1 << "\n";
 
 
     i = 0;

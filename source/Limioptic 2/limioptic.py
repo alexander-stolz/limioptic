@@ -1393,7 +1393,7 @@ def ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0., strag_x=0., strag
         ctypes.c_double(1.))
 
 
-def AddFoil(dk=0., strag_k=0., strag_phi=0.):
+def AddFoil(dk=0., strag_k=0., strag_phi=0., percentage=.5):
     """ Fuer Degraderfolie """
     optic.ChangeBeamParameters(
         ctypes.c_double(float(dk)),
@@ -1404,7 +1404,7 @@ def AddFoil(dk=0., strag_k=0., strag_phi=0.):
         ctypes.c_double(0.),
         ctypes.c_double(float(strag_phi)),
         ctypes.c_double(float(strag_phi)),
-        ctypes.c_double(.5))
+        ctypes.c_double(percentage))
 Foil = AddFoil
 
 
@@ -1417,12 +1417,12 @@ def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
         ctypes.c_double(float(strag_m)))
 
 
-def AddSlit(x, dx, y, dy):
+def AddSlit(x, dx, y, dy, visible=True):
     global lastFunction
     lastFunction = "AddSlit"
 
     global s, geo_s, geo_y
-    if (s > -0.5):
+    if (s > -0.5) and (visible):
         geo_s.InsertNextValue(s)
         geo_y.InsertNextValue(x + dx / 2.)
         geo_s.InsertNextValue(s + .05)
@@ -1605,7 +1605,7 @@ def AddFNSputterEL_SIMION(phi1, v_el):
     lastFunction = "AddFNSputterEL_SIMION"
 
 
-def AddESD(num, arg1, arg2, arg3, arg4, arg5, geo, korrektur=None, V_ist=1., V_soll=1.):
+def AddESD(num, gamma2, alpha, r_hor, r_vert, beta0, geo, solid=True, korrektur=None, V_ist=1., V_soll=1.):
     global lastFunction
     lastFunction = "AddESD"
 
@@ -1615,19 +1615,44 @@ def AddESD(num, arg1, arg2, arg3, arg4, arg5, geo, korrektur=None, V_ist=1., V_s
     global s, geo_s, geo_y
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + num * arg2 * arg3)
+        geo_s.InsertNextValue(s + alpha * r_hor)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
-        s = s + num * arg2 * arg3
+        s = s + alpha * r_hor
 
-    optic.AddESD(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(arg1)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)),
-        ctypes.c_double(float(arg4)),
-        ctypes.c_double(float(arg5)),
-        ctypes.c_double(float(korrektur)))
+    if solid:
+        for i in xrange(num):
+            AddSlit(0., geo * 2., 0., 100., visible=False)
+            optic.AddESD(
+                ctypes.c_int(int(1)),
+                ctypes.c_double(float(gamma2)),
+                ctypes.c_double(float(alpha / float(num))),
+                ctypes.c_double(float(r_hor)),
+                ctypes.c_double(float(r_vert)),
+                ctypes.c_double(float(beta0)),
+                ctypes.c_double(float(korrektur)))
+        AddSlit(0., geo * 2., 0., 100., visible=False)
+    else:
+        optic.AddESD(
+            ctypes.c_int(int(num)),
+            ctypes.c_double(float(gamma2)),
+            ctypes.c_double(float(alpha)),
+            ctypes.c_double(float(r_hor)),
+            ctypes.c_double(float(r_vert)),
+            ctypes.c_double(float(beta0)),
+            ctypes.c_double(float(korrektur)))
+
+
+def ESD(alpha, r_hor, r_vert, geo=25., solid=True, korrektur=None, V_ist=1., V_soll=1.):
+
+    global lastFunction
+    lastFunction = "ESD"
+
+    alpha = math.radians(alpha)
+    beta0 = 0.
+    num = 10
+
+    AddESD(10, 1., alpha, r_hor, r_vert, beta0, geo, solid, korrektur, V_ist, V_soll)
 
 
 def AddEdgeFocusing(r, beta, K, geo):
@@ -1643,59 +1668,6 @@ def AddEdgeFocusing(r, beta, K, geo):
         ctypes.c_double(float(r)),
         ctypes.c_double(float(beta)),
         ctypes.c_double(float(betaeff)))
-
-
-def AddMSA(num, arg1, arg2, arg3, geo, korrektur=None, B_ist=1., B_soll=1.):
-    global lastFunction
-    lastFunction = "AddMSA"
-
-    if not korrektur:
-        korrektur = float(B_ist) / float(B_soll)
-
-    global s, geo_s, geo_y
-    if (s > -0.5):
-        geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + num * arg2 * arg3)
-        geo_y.InsertNextValue(geo)
-        geo_y.InsertNextValue(geo)
-        s = s + num * arg2 * arg3
-
-    optic.AddHomDeflectingMagnet(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(arg1)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)),
-        ctypes.c_double(float(korrektur)))
-
-
-def ESD(alpha, arg3, arg4, geo=25., korrektur=None, V_ist=1., V_soll=1.):
-
-    global lastFunction
-    lastFunction = "AddESD"
-
-    alpha = math.radians(alpha)
-    beta0 = 0.
-    num = 10
-
-    if not korrektur:
-        korrektur = float(V_ist) / float(V_soll)
-
-    global s, geo_s, geo_y
-    if (s > -0.5):
-        geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + alpha * arg3)
-        geo_y.InsertNextValue(geo)
-        geo_y.InsertNextValue(geo)
-        s = s + alpha * arg3
-
-    optic.AddESD(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(1)),
-        ctypes.c_double(float(alpha)),
-        ctypes.c_double(float(arg3)),
-        ctypes.c_double(float(arg4)),
-        ctypes.c_double(float(beta0)),
-        ctypes.c_double(float(korrektur)))
 
 
 def EdgeFocusing(r, beta, K=.45, geo=30.):
@@ -1715,13 +1687,9 @@ def EdgeFocusing(r, beta, K=.45, geo=30.):
         ctypes.c_double(float(betaeff)))
 
 
-def MSA(r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1.):
-
+def AddMSA(num, gamma2, r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1., solid=True):
     global lastFunction
     lastFunction = "AddMSA"
-
-    alpha = math.radians(alpha)
-    num = 10
 
     if not korrektur:
         korrektur = float(B_ist) / float(B_soll)
@@ -1734,12 +1702,33 @@ def MSA(r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1.):
         geo_y.InsertNextValue(geo)
         s = s + r * alpha
 
-    optic.AddHomDeflectingMagnet(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(1)),
-        ctypes.c_double(float(r)),
-        ctypes.c_double(float(alpha)),
-        ctypes.c_double(float(korrektur)))
+    if solid:
+        for i in xrange(num):
+            AddSlit(0., 100., 0., geo * 2., visible=False)
+            optic.AddHomDeflectingMagnet(
+                ctypes.c_int(int(1)),
+                ctypes.c_double(float(gamma2)),
+                ctypes.c_double(float(r)),
+                ctypes.c_double(float(alpha / float(num))),
+                ctypes.c_double(float(korrektur)))
+        AddSlit(0., 100., 0., geo * 2., visible=False)
+    else:
+        optic.AddHomDeflectingMagnet(
+            ctypes.c_int(int(num)),
+            ctypes.c_double(float(gamma2)),
+            ctypes.c_double(float(r)),
+            ctypes.c_double(float(alpha)),
+            ctypes.c_double(float(korrektur)))
+
+
+def MSA(r, alpha, geo=30., solid=True, korrektur=None, B_ist=1., B_soll=1.):
+    global lastFunction
+    lastFunction = "AddMSA"
+
+    alpha = math.radians(alpha)
+    num = 10
+
+    AddMSA(num, 1., r, alpha, geo, korrektur, B_ist, B_soll, solid)
 
 
 def AddInhomMSA(num, rho, phi, n, geo):
@@ -1747,10 +1736,10 @@ def AddInhomMSA(num, rho, phi, n, geo):
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + num * rho * phi)
+        geo_s.InsertNextValue(s + rho * phi)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
-        s = s + num * rho * phi
+        s = s + rho * phi
 
     optic.AddInhomDeflectingMagnet(
         ctypes.c_int(int(num)),
@@ -1759,79 +1748,81 @@ def AddInhomMSA(num, rho, phi, n, geo):
         ctypes.c_double(float(n)))
 
 
-def AddQuadrupolRadFoc(num, arg1, arg2, arg3, geo):
+def AddQuadrupolRadFoc(num, gamma2, k, length, geo, solid=True):
     global lastFunction, s, geo_s, geo_y
     lastFunction = "AddQuadrupolRadFoc"
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + num * arg3)
+        geo_s.InsertNextValue(s + length)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
-        s = s + num * arg3
-    optic.AddQuadrupolRadFoc(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(arg1)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)))
+        s = s + length
+
+    if solid:
+        for i in xrange(num):
+            AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+            optic.AddQuadrupolRadFoc(
+                ctypes.c_int(int(1)),
+                ctypes.c_double(float(gamma2)),
+                ctypes.c_double(float(k)),
+                ctypes.c_double(float(length) / float(num)))
+        AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+    else:
+        optic.AddQuadrupolRadFoc(
+            ctypes.c_int(int(num)),
+            ctypes.c_double(float(gamma2)),
+            ctypes.c_double(float(k)),
+            ctypes.c_double(float(length)))
 
 
-def AddQuadrupolAxFoc(num, arg1, arg2, arg3, geo):
+def AddQuadrupolAxFoc(num, gamma2, k, length, geo, solid=True):
     global lastFunction, s, geo_s, geo_y
     lastFunction = "AddQuadrupolAxFoc"
 
     if (s > -0.5):
         geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + num * arg3)
+        geo_s.InsertNextValue(s + length)
         geo_y.InsertNextValue(geo)
         geo_y.InsertNextValue(geo)
-        s = s + num * arg3
+        s = s + length
 
-    optic.AddQuadrupolAxFoc(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(arg1)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)))
+    if solid:
+        for i in xrange(num):
+            AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+            optic.AddQuadrupolAxFoc(
+                ctypes.c_int(int(1)),
+                ctypes.c_double(float(gamma2)),
+                ctypes.c_double(float(k)),
+                ctypes.c_double(float(length) / float(num)))
+        AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+    else:
+        optic.AddQuadrupolAxFoc(
+            ctypes.c_int(int(num)),
+            ctypes.c_double(float(gamma2)),
+            ctypes.c_double(float(k)),
+            ctypes.c_double(float(length)))
 
 
-def QuadrupolRadFoc(arg2, arg3, geo=25.):
+def QuadrupolRadFoc(k, length, geo=25., solid=True):
     global lastFunction, s, geo_s, geo_y
     lastFunction = "AddQuadrupolRadFoc"
 
     num = 10
+    gamma2 = 1.
 
-    if (s > -0.5):
-        geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + arg3)
-        geo_y.InsertNextValue(geo)
-        geo_y.InsertNextValue(geo)
-        s = s + arg3
-    optic.AddQuadrupolRadFoc(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(1.)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)))
+    AddQuadrupolRadFoc(num, gamma2, k, length, geo, solid)
 
 
-def QuadrupolAxFoc(arg2, arg3, geo=25.):
+def QuadrupolAxFoc(k, length, geo=25., solid=True):
 
     global lastFunction, s, geo_s, geo_y
     lastFunction = "AddQuadrupolAxFoc"
 
     num = 10
+    gamma2 = 1.
 
-    if (s > -0.5):
-        geo_s.InsertNextValue(s)
-        geo_s.InsertNextValue(s + arg3)
-        geo_y.InsertNextValue(geo)
-        geo_y.InsertNextValue(geo)
-        s = s + arg3
-
-    optic.AddQuadrupolAxFoc(
-        ctypes.c_int(int(num)),
-        ctypes.c_double(float(1.)),
-        ctypes.c_double(float(arg2)),
-        ctypes.c_double(float(arg3)))
+    AddQuadrupolAxFoc(num, gamma2, k, length, geo, solid)
 
 
 def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):

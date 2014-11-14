@@ -1804,7 +1804,12 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
 
         def InsertFoil(self):
-            self.textedit.textCursor().insertText('Foil(\n\tdk=0.,\t \t# delta energy in permille\n\tstrag_k=0.,\t \t# energy straggling in permille\n\tstrag_phi=0.)\t# angular straggling in mrad\t\n')
+            self.textedit.textCursor().insertText(
+                """Foil(
+\tdk=0.,\t \t# delta energy in permille
+\tstrag_k=0.,\t \t# energy straggling in permille
+\tstrag_phi=0.\t# angular straggling in mrad\t
+\tpercentage=.5)\t# percentage of the beam that is affected by energy loss\n""")
 
         def InsertWaist(self):
             self.textedit.textCursor().insertText('Waist()\n')
