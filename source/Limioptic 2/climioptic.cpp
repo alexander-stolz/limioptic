@@ -997,19 +997,31 @@ void CLimioptic::ApplyChangeBeamParameters(double *p, int nmat, double dk, doubl
     {
         for (ip = 0; ip < pnum; ip++)
         {
-            p0 = p[i + 0 - elesize] + x_distribution(generator);
-            p1 = p[i + 1 - elesize] + dx_distribution(generator);
-            p2 = p[i + 2 - elesize] + y_distribution(generator);
-            p3 = p[i + 3 - elesize] + dy_distribution(generator);
-            if (uf_distribution(generator) > (1. - percentage))
+            if ((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.))
             {
-                p4 = p[i + 4 - elesize] + k_distribution(generator);
+                p0 = 0.;
+                p1 = 0.;
+                p2 = 0.;
+                p3 = 0.;
+                p4 = 0.;
+                p5 = 0.;
             }
             else
             {
-                p4 = p[i + 4 - elesize] + k0_distribution(generator);
+                p0 = p[i + 0 - elesize] + x_distribution(generator);
+                p1 = p[i + 1 - elesize] + dx_distribution(generator);
+                p2 = p[i + 2 - elesize] + y_distribution(generator);
+                p3 = p[i + 3 - elesize] + dy_distribution(generator);
+                if (uf_distribution(generator) > (1. - percentage))
+                {
+                    p4 = p[i + 4 - elesize] + k_distribution(generator);
+                }
+                else
+                {
+                    p4 = p[i + 4 - elesize] + k0_distribution(generator);
+                }
+                p5 = p[i + 5 - elesize] + m_distribution(generator);
             }
-            p5 = p[i + 5 - elesize] + m_distribution(generator);
 
             p[i + 0] = p0;
             p[i + 1] = p1;
@@ -1057,12 +1069,24 @@ void CLimioptic::ApplyChangeBeamParameters2(double *p, int nmat, double dk, doub
     {
         for (ip = 0; ip < pnum; ip++)
         {
-            p0 = p[i + 0 - elesize];
-            p1 = p[i + 1 - elesize];
-            p2 = p[i + 2 - elesize];
-            p3 = p[i + 3 - elesize];
-            p4 = k_distribution(generator);
-            p5 = dm; //m_distribution(generator);
+            if ((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.))
+            {
+                p0 = 0.;
+                p1 = 0.;
+                p2 = 0.;
+                p3 = 0.;
+                p4 = 0.;
+                p5 = 0.;
+            }
+            else
+            {
+                p0 = p[i + 0 - elesize];
+                p1 = p[i + 1 - elesize];
+                p2 = p[i + 2 - elesize];
+                p3 = p[i + 3 - elesize];
+                p4 = k_distribution(generator);
+                p5 = dm; //m_distribution(generator);
+            }
 
             p[i + 0] = p0;
             p[i + 1] = p1;

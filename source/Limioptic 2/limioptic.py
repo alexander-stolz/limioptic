@@ -1869,7 +1869,7 @@ def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(k)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -1878,7 +1878,7 @@ def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(kx)),
-        ctypes.c_double(float(.05)))
+        ctypes.c_double(float(.5)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -1887,7 +1887,7 @@ def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(k)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
 
 
 def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
@@ -1933,7 +1933,7 @@ def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(k)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -1942,7 +1942,7 @@ def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(kx)),
-        ctypes.c_double(float(.05)))
+        ctypes.c_double(float(.5)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -1951,7 +1951,7 @@ def AddAMSQPT_YXY(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(k)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
 
 
 def AddAMSQPT(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
@@ -1987,7 +1987,7 @@ def AddQPT_XYX(gamma2, vx, vy, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(ky)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -1996,7 +1996,7 @@ def AddQPT_XYX(gamma2, vx, vy, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(kx)),
-        ctypes.c_double(float(.05)))
+        ctypes.c_double(float(.5)))
     optic.AddDrift(
         ctypes.c_int(1),
         ctypes.c_double(float(gamma2)),
@@ -2005,7 +2005,7 @@ def AddQPT_XYX(gamma2, vx, vy, v_terminal, v_ext, q, geo):
         ctypes.c_int(10),
         ctypes.c_double(float(gamma2)),
         ctypes.c_double(float(ky)),
-        ctypes.c_double(float(.025)))
+        ctypes.c_double(float(.25)))
 
 
 ###########################################################
