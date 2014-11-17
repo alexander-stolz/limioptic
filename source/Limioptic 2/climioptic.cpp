@@ -654,6 +654,7 @@ void CLimioptic::ApplyDrift(double *p, int nmat, double gamma2, double length)
 
     elesize = particles.size();
     pnum    = elesize / particlesize;  // Anzahl der Teilchen
+    length  = length / nmat;
 
     i = 0;
     for (imat = 0; imat < nmat; imat++)
