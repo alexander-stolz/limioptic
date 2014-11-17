@@ -1510,7 +1510,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 print "checking for updates..",
                 try:
                         a = urllib.urlopen("http://ams.amstolz.de/version.txt")
-                        ver = a.read()
+                        ver = str(a.read()).strip()
                         a.close()
                         if (ver == VERSION):
                                 print "this is the newest version\n"
