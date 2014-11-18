@@ -707,8 +707,8 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
     aplus = 0;
     bplus = 0;
 
-    fstream datei;
-    datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
+    //fstream datei;
+    //datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
 
     i = 0;
     for (ip = 0; ip < pnum; ip++)
@@ -718,7 +718,7 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
         yplus += (p[i + 2 - elesize] * p[i + 2 - elesize]);
         bplus += (p[i + 3 - elesize] * p[i + 3 - elesize]);
 
-
+        /*
         if (!((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.)))
         {
             datei << p[i + 0 - elesize] << " ";
@@ -727,7 +727,7 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
             datei << p[i + 3 - elesize] << " ";
             datei << p[i + 4 - elesize] << " ";
             datei << p[i + 5 - elesize] << endl;
-        }
+        }*/
 
 
         for (j = 0; j < 8; j++)
@@ -739,7 +739,7 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
         i = i + particlesize;
     }
 
-    datei.close();
+    //datei.close();
 
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = (double)(pnum - nottransmitted);

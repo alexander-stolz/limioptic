@@ -1447,7 +1447,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_output = menubar.addMenu('Tools')
                 menu_output.addAction(self.menu_output_file)
                 menu_output.addAction(self.menu_output_spicker)
-                menu_output.addAction(self.menu_output_emittance)
+                #menu_output.addAction(self.menu_output_emittance)
 
                 ## INTERFACE
                 """
