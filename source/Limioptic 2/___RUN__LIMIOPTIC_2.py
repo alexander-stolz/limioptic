@@ -63,8 +63,8 @@ except:
     pyqtgraph = False
 print "optimize",
 from scipy import optimize
-print "plotBeamprofile",
-import plotEmittance
+#print "plotBeamprofile",
+#import plotEmittance
 print "helper",
 import helper
 print "pickle"
@@ -88,7 +88,7 @@ class inputcontrol(QtGui.QDialog):
                 if (mode == "3d"):  self.plotwindow = doit3d(self)     # VTK
 
                 ### Ab hier Definition des Layouts
-                self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+                # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
                 self.setGeometry(100, screen.height() - 300, 650, 1)
 
                 self.setWindowTitle("input control")
@@ -101,9 +101,11 @@ class inputcontrol(QtGui.QDialog):
                 while (CheckInputNumber):
                         _NumberOfInputs += 1
                         texttofind = QtCore.QString("INPUT[{}]".format(_NumberOfInputs))
-                        if not (myapp.textedit.find(texttofind)): CheckInputNumber = False
+                        if not (myapp.textedit.find(texttofind)):
+                            CheckInputNumber = False
                 _NumberOfInputs += 1
-                if (_NumberOfInputs > NumberOfInputs): NumberOfInputs = _NumberOfInputs
+                if (_NumberOfInputs > NumberOfInputs):
+                    NumberOfInputs = _NumberOfInputs
 
                 self.min     = []
                 self.input   = []
@@ -132,7 +134,8 @@ class inputcontrol(QtGui.QDialog):
                         self.min[i].setSingleStep(.01)
                         self.input[i].setValue(INPUT[i])
 
-                        if (INPUT[i] > 5.):   self.min[i].setValue(INPUT[i] - 5.)
+                        if (INPUT[i] > 5.):
+                            self.min[i].setValue(INPUT[i] - 5.)
                         self.slider[i].setValue(int(INPUT[i] * 100000.))
 
                         self.layout.addWidget(self.info[i], i, 0)
