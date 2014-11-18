@@ -72,9 +72,9 @@ void AddWaist()
    optic.AddWaist();
 }
 
-void AddSlit(double x,double dx,double y,double dy)
+void AddSlit(double x,double dx,double y,double dy, int output)
 {
-   optic.AddSlit(x,dx,y,dy);
+   optic.AddSlit(x,dx,y,dy,output);
 }
 
 void AddModifyEmittance(double factor1,double factor2)
@@ -202,9 +202,9 @@ void ApplyWaist(double *p)
    optic.ApplyWaist(p);
 }
 
-void ApplySlit(double *p,double x,double dx,double y,double dy)
+void ApplySlit(double *p,double x,double dx,double y,double dy,int output)
 {
-   optic.ApplySlit(p,x,dx,y,dy);
+   optic.ApplySlit(p,x,dx,y,dy,output);
 }
 
 void ApplyModifyEmittance(double *p,int n, double factor1, double factor2)

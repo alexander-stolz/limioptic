@@ -35,7 +35,7 @@ public:
    void AddDrift(int,double,double); // Driftstrecke zur Beamline hinzufuegen
    void AddBeamProfile(int);
    void AddWaist();
-   void AddSlit(double,double,double,double);
+   void AddSlit(double,double,double,double,int);
    void AddModifyEmittance(double, double);
    void ChangeBeamParameters(double, double, double, double, double, double, double, double, double);
    void ChangeBeamParameters2(double, double, double, double);
@@ -71,7 +71,7 @@ public:
    void ApplyDrift(double*,int,double,double);
    void ApplyBeamProfile(double*, double);
    void ApplyWaist(double*);
-   void ApplySlit(double*,double,double,double,double);
+   void ApplySlit(double*,double,double,double,double,int);
    void ApplyModifyEmittance(double*, int, double, double);
    void ApplyChangeBeamParameters(double*, int, double, double, double, double, double, double, double, double, double);
    void ApplyChangeBeamParameters2(double*, int, double, double, double, double);

@@ -208,7 +208,7 @@ void CLimioptic::AddWaist()
     beamline.push_back(w);
 }
 
-void CLimioptic::AddSlit(double x, double dx, double y, double dy)
+void CLimioptic::AddSlit(double x, double dx, double y, double dy, int output)
 {
     vector<double> slit;
     slit.clear();
@@ -218,6 +218,7 @@ void CLimioptic::AddSlit(double x, double dx, double y, double dy)
     slit.push_back(dx);
     slit.push_back(y);
     slit.push_back(dy);
+    slit.push_back(output);
     beamline.push_back(slit);
 }
 
@@ -479,7 +480,7 @@ void CLimioptic::CalculateTrajectories()
             break;
         case 9:
             ApplySlit(&trajectories.front() + itraj,
-                  beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
+                  beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5], beamline[ibeamline][6]);
             break;
         case 10:
             ApplyBeamProfile(&trajectories.front() + itraj,
@@ -794,7 +795,7 @@ void CLimioptic::ApplyWaist(double *p)
     spotsize += (xplus + yplus);
 }
 
-void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
+void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy, int output)
 {
     int pnum, imat, i, j, elesize, ip;
     double p0, p1, p2, p3, p4, p5;
@@ -870,9 +871,12 @@ void CLimioptic::ApplySlit(double *p, double x, double dx, double y, double dy)
 
     spotsize += (xplus + yplus);
 
-    printf("transmission (slit) =\t%f", (double) durch / (double) (durch + nichtdurch));
-    printf(",  total: %f", (1. - (double) nottransmitted / pnum));
-    printf("\t@ %f m\n", p[i + 6 - particlesize]);
+    if (output == 1)
+    {
+        printf("transmission (slit) =\t%f", (double) durch / (double) (durch + nichtdurch));
+        printf(",  total: %f", (1. - (double) nottransmitted / pnum));
+        printf("\t@ %f m\n", p[i + 6 - particlesize]);
+    }
 
     //fstream datei( "slit.dat",ios::out|ios::app);
     //datei << (double)durch/(durch+nichtdurch)<<" ";

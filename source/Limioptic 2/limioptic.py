@@ -1417,7 +1417,7 @@ def ChangeBeamParameters2(dk=0., dm=0., strag_k_over_E=0., strag_m=0.):
         ctypes.c_double(float(strag_m)))
 
 
-def AddSlit(x, dx, y, dy, visible=True):
+def AddSlit(x, dx, y, dy, visible=True, output=True):
     global lastFunction
     lastFunction = "AddSlit"
 
@@ -1437,7 +1437,8 @@ def AddSlit(x, dx, y, dy, visible=True):
         ctypes.c_double(float(x)),
         ctypes.c_double(float(dx)),
         ctypes.c_double(float(y)),
-        ctypes.c_double(float(dy)))
+        ctypes.c_double(float(dy)),
+        ctypes.c_int(int(1 if output else 0)))
 Slit = AddSlit
 
 
@@ -1622,7 +1623,7 @@ def AddESD(num, gamma2, alpha, r_hor, r_vert, beta0, geo, solid=True, korrektur=
 
     if solid:
         for i in xrange(num):
-            AddSlit(0., geo * 2., 0., 100., visible=False)
+            AddSlit(0., geo * 2., 0., 100., visible=False, output=False)
             optic.AddESD(
                 ctypes.c_int(int(1)),
                 ctypes.c_double(float(gamma2)),
@@ -1631,7 +1632,7 @@ def AddESD(num, gamma2, alpha, r_hor, r_vert, beta0, geo, solid=True, korrektur=
                 ctypes.c_double(float(r_vert)),
                 ctypes.c_double(float(beta0)),
                 ctypes.c_double(float(korrektur)))
-        AddSlit(0., geo * 2., 0., 100., visible=False)
+        AddSlit(0., geo * 2., 0., 100., visible=False, output=False)
     else:
         optic.AddESD(
             ctypes.c_int(int(num)),
@@ -1704,14 +1705,14 @@ def AddMSA(num, gamma2, r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1., 
 
     if solid:
         for i in xrange(num):
-            AddSlit(0., 100., 0., geo * 2., visible=False)
+            AddSlit(0., 100., 0., geo * 2., visible=False, output=False)
             optic.AddHomDeflectingMagnet(
                 ctypes.c_int(int(1)),
                 ctypes.c_double(float(gamma2)),
                 ctypes.c_double(float(r)),
                 ctypes.c_double(float(alpha / float(num))),
                 ctypes.c_double(float(korrektur)))
-        AddSlit(0., 100., 0., geo * 2., visible=False)
+        AddSlit(0., 100., 0., geo * 2., visible=False, output=False)
     else:
         optic.AddHomDeflectingMagnet(
             ctypes.c_int(int(num)),
@@ -1761,13 +1762,13 @@ def AddQuadrupolRadFoc(num, gamma2, k, length, geo, solid=True):
 
     if solid:
         for i in xrange(num):
-            AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+            AddSlit(0., geo * 2., 0., geo * 2., visible=False, output=False)
             optic.AddQuadrupolRadFoc(
                 ctypes.c_int(int(1)),
                 ctypes.c_double(float(gamma2)),
                 ctypes.c_double(float(k)),
                 ctypes.c_double(float(length) / float(num)))
-        AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+        AddSlit(0., geo * 2., 0., geo * 2., visible=False, output=False)
     else:
         optic.AddQuadrupolRadFoc(
             ctypes.c_int(int(num)),
@@ -1789,13 +1790,13 @@ def AddQuadrupolAxFoc(num, gamma2, k, length, geo, solid=True):
 
     if solid:
         for i in xrange(num):
-            AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+            AddSlit(0., geo * 2., 0., geo * 2., visible=False, output=False)
             optic.AddQuadrupolAxFoc(
                 ctypes.c_int(int(1)),
                 ctypes.c_double(float(gamma2)),
                 ctypes.c_double(float(k)),
                 ctypes.c_double(float(length) / float(num)))
-        AddSlit(0., geo * 2., 0., geo * 2., visible=False)
+        AddSlit(0., geo * 2., 0., geo * 2., visible=False, output=False)
     else:
         optic.AddQuadrupolAxFoc(
             ctypes.c_int(int(num)),
