@@ -1508,7 +1508,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         def closeEvent(self, event):
             print "saving..",
             self.SaveNeu(backup_file)
-            print "\rsaved to %s", backup_file
+            print "\rsaved to %s" % (backup_file)
 
         def update(self):
                 """ Check uebers Internet ob Updates verfuegbar sind """
