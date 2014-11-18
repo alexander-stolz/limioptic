@@ -418,7 +418,8 @@ class inputcontrol(QtGui.QDialog):
                             del segment
                         del self.segments
                     plotEmittance.stop()
-                except: pass
+                except:
+                    pass
 
                 print "saving autosave..",
                 myfile = open(backup_file + ".lim", "w")
