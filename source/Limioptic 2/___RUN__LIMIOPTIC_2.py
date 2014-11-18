@@ -842,7 +842,8 @@ class doitXY(threading.Thread):
                 ### 2d Szene und xy Chart erzeugen.
                 self.view = vtk.vtkContextView()
                 self.view.GetRenderer().SetBackground(1., 1., 1.)
-                if myapp.menu_plot_bg.isChecked():  self.view.GetRenderer().SetBackground(0., 0., 0.)
+                if myapp.menu_plot_bg.isChecked():
+                    self.view.GetRenderer().SetBackground(0., 0., 0.)
                 #self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
                 self.view.GetRenderWindow().SetSize(800, 350)
 
@@ -883,7 +884,8 @@ class doitXY(threading.Thread):
                 (xi, yi, zi, segs, parts) = self.parent.calculate()
                 iele = limioptic.GetTrajectory(0, 7)
 
-                if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_markers.dat", "w")
+                if (myapp.menu_output_file.isChecked()):
+                    ausgabe = open("output_markers.dat", "w")
 
                 ### Marker setzen
                 if myapp.menu_plot_marker.isChecked():
@@ -985,7 +987,8 @@ class doitXY(threading.Thread):
                     self.Ticks.InsertNextValue(name[0])
                     self.Labels.InsertNextValue(name[1])
 
-                if (myapp.menu_output_smoothing.isChecked()):   self.view.GetRenderWindow().LineSmoothingOn()
+                if (myapp.menu_output_smoothing.isChecked()):
+                    self.view.GetRenderWindow().LineSmoothingOn()
                 self.view.Render()
 
                 self.iren = self.view.GetInteractor()
@@ -1057,12 +1060,12 @@ class doitXY(threading.Thread):
                         limioptic.s = -1.
 
                 try:
-                    if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                    if xi is None:
+                        (xi, yi, zi, segs, parts) = self.parent.calculate()
                 except Exception, e:
                     print "\n\ntraceback:", "\n===============================\n", e, "\n===============================\n\n"
                     self.threadlock.release()
                     return
-                    print "bananarama"
                 iele = limioptic.GetTrajectory(0, 7)
 
                 ### erzeuge wertetabelle
@@ -1095,6 +1098,9 @@ class doitXY(threading.Thread):
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                 except: # neu initialisieren
+                                        #self.threadlock.release()
+                                        #self.parent.closeit()
+                                        #return
                                         self.markersX.append(vtk.vtkFloatArray())
                                         self.markersX[i-1].SetName("Marker {}".format(i))
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
