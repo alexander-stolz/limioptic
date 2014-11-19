@@ -8,7 +8,7 @@ import sys
 setup( 
       author="Alexander Stolz",
       console=["setup_helper.py", "_update.py"],
-      py_modules=["___RUN__LIMIOPTIC_2", "ams_spicker", "beamprofile", "importsrc", "limioptic", "syntax", "update"],
+      py_modules=["___RUN__LIMIOPTIC_2", "ams_spicker", "beamprofile", "importsrc", "limioptic", "syntax", "_update"],
       data_files=matplotlib.get_py2exe_datafiles(),
       options={'py2exe': { 'includes' : ["matplotlib.backends.backend_tkagg", "pyqtgraph", "vtk"], 'excludes': ['_gtkagg', '_tkagg'], "bundle_files" : 3}},
       )

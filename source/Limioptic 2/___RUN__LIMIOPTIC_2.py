@@ -445,7 +445,7 @@ class inputcontrol(QtGui.QDialog):
 
                 time.sleep(.5)
                 self.close()
-                print "\rsaved to {}".format(backup_file + ".lim")
+                print "\rsaved to {}".format(backup_file)
 
         def infochange(self):
                 """ Spezialbefehle im "Beschreibung" Feld """
