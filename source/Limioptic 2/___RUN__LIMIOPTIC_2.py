@@ -420,7 +420,7 @@ class inputcontrol(QtGui.QDialog):
                         for segment in self.segments:
                             del segment
                         del self.segments
-                    plotEmittance.stop()
+                    #plotEmittance.stop()
                 except:
                     pass
 
@@ -1098,20 +1098,20 @@ class doitXY(threading.Thread):
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                 except: # neu initialisieren
-                                        #self.threadlock.release()
                                         #self.iren.GetRenderWindow().Finalize()
                                         #self.iren.TerminateApp()
                                         #self.parent.closeit()
-                                        #return
+                                        print "you need to close the output-window and rerender (Ctrl+G) to show the markers correctly"
+                                        msg = QtGui.QMessageBox()
+                                        msg.setText("you need to close the output-window and rerender\n(Ctrl+G)")
+                                        msg.exec_()
+                                        self.threadlock.release()
+                                        return
                                         self.markersX.append(vtk.vtkFloatArray())
                                         self.markersX[i-1].SetName("Marker {}".format(i))
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                         self.markertable.AddColumn(self.markersX[i-1])
-                                        print "you need to close the output-window and rerender (Ctrl+G) to show the markers correctly"
-                                        msg = QtGui.QMessageBox()
-                                        msg.setText("you need to close the output-window and rerender\n(Ctrl+G) to show the markers correctly")
-                                        msg.exec_()
                         self.markertable.Modified()
 
                 self.table.Modified()
