@@ -1099,6 +1099,8 @@ class doitXY(threading.Thread):
                                         self.markersX[i-1].InsertNextValue(self.linelist[i-1])
                                 except: # neu initialisieren
                                         #self.threadlock.release()
+                                        #self.iren.GetRenderWindow().Finalize()
+                                        #self.iren.TerminateApp()
                                         #self.parent.closeit()
                                         #return
                                         self.markersX.append(vtk.vtkFloatArray())
