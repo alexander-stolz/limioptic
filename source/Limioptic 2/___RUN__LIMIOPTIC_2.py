@@ -1101,9 +1101,9 @@ class doitXY(threading.Thread):
                                         #self.iren.GetRenderWindow().Finalize()
                                         #self.iren.TerminateApp()
                                         #self.parent.closeit()
-                                        print "you need to close the output-window and rerender (Ctrl+G) to show the markers correctly"
+                                        print "you must close the output-window and rerender (Ctrl+G)"
                                         msg = QtGui.QMessageBox()
-                                        msg.setText("you need to close the output-window and rerender\n(Ctrl+G)")
+                                        msg.setText("you must close the output-window and rerender\n(Ctrl+G)")
                                         msg.exec_()
                                         self.threadlock.release()
                                         return
