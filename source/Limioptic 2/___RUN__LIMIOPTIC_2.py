@@ -503,6 +503,10 @@ class doitqt2(threading.Thread):
     def __init__(self, parent):
         threading.Thread.__init__(self)
         self.parent = parent
+        if not myapp.menu_plot_bg.isChecked():
+            pyqtgraph.setConfigOptions(background="w")
+        else:
+            pyqtgraph.setConfigOptions(background="k")
         if myapp.menu_output_smoothing.isChecked():
             pyqtgraph.setConfigOptions(antialias=True)
         else:
@@ -557,9 +561,14 @@ class doitqt2(threading.Thread):
         iele  = limioptic.geo_s.GetNumberOfTuples()
         geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(iele)]
         geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(iele)]
-        self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
-        if myapp.menu_plot_splitview.isChecked():
-            self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170.))
+        if not myapp.menu_plot_bg.isChecked():
+            self.linegeo.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
+            if myapp.menu_plot_splitview.isChecked():
+                self.linegeo2.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
+        else:
+            self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
+            if myapp.menu_plot_splitview.isChecked():
+                self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
 
 
 class Segment:
@@ -1214,7 +1223,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_plot_y.setChecked(True)
                 self.connect(self.menu_plot_y, QtCore.SIGNAL('triggered()'), self.setxy)
                 # Background
-                self.menu_plot_bg = QtGui.QAction('black background (vtk)', self)
+                self.menu_plot_bg = QtGui.QAction('black background', self)
                 self.menu_plot_bg.setCheckable(True)
                 self.menu_plot_bg.setChecked(False)
                 # smoothing
