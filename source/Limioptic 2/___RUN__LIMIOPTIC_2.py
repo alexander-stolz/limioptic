@@ -534,16 +534,19 @@ class doitqt2(threading.Thread):
         x_all = []
         y_all = []
         z_all = []
+        #self.plot1.clear()
         for part in xrange(parts):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
+            #self.plot1.plot(x=zi, y=xi[part], pen=(255, 0, 0))
+            #self.plot1.plot(x=zi, y=yi[part], pen=(0, 255, 0))
+
         if myapp.menu_plot_x.isChecked():
             self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
         else:
             self.lineX.setData(x=[], y=[], pen=(255, 0, 0))
         if myapp.menu_plot_y.isChecked():
-            #self.lineX.setData(x=z_all, y=x_all, pen=(250, 250, 250))
             self.lineY.setData(x=z_all, y=y_all, pen=(0, 255, 0))
         else:
             self.lineY.setData(x=[], y=[], pen=(255, 0, 0))
