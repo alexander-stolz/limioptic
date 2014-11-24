@@ -512,7 +512,7 @@ class doitqt2(threading.Thread):
         else:
             pyqtgraph.setConfigOptions(antialias=False)
         self.win = MyQtWindow(title="Limioptic 2 - Output (2D)")
-        self.win.resize(800, 350)
+        self.win.resize(1000, 450)
         self.plot1 = self.win.addPlot()
         if myapp.menu_plot_splitview.isChecked():
             self.plot2 = self.win.addPlot(row=1, col=0)
@@ -554,7 +554,7 @@ class doitqt2(threading.Thread):
             del label
         self.labels = []
         for label in limioptic.textArray:
-            self.labels.append(pyqtgraph.TextItem(label[1], angle=-90, anchor=(0, .5)))
+            self.labels.append(pyqtgraph.TextItem(label[1], angle=-90, anchor=(0, .5), color=(130, 130, 130)))
             self.labels[-1].setPos(label[0], 56)
             self.plot1.addItem(self.labels[-1])
 
@@ -1974,7 +1974,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2014-11-12"
+VERSION          = "2014-11-24"
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
