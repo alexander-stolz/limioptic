@@ -1526,6 +1526,12 @@ class CQtLimioptic(QtGui.QMainWindow):
                 print helptext
                 print "------------------------------------------"
                 self.setToolTip(helptext)
+            elif selection in dir(limioptic):
+                helptext = selection + " takes:   " + (", ".join(eval("limioptic.%s.func_code.co_varnames" % (selection))))
+                print "\nHELP:\n------------------------------------------"
+                print helptext
+                print "------------------------------------------"
+                self.setToolTip(helptext)
             else:
                 self.setToolTip("double-click on function for help!")
 
