@@ -703,10 +703,10 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
     elesize = particles.size();
     pnum    = elesize / particlesize;  // Anzahl der Teilchen
 
-    xplus = 0;
-    yplus = 0;
-    aplus = 0;
-    bplus = 0;
+    xplus = 0;  // summe der x-quadrate
+    yplus = 0;  // summe der y-quadrate
+    aplus = 0;  // summe der dx-quadrate
+    bplus = 0;  // summe der dy-quadrate
 
     //fstream datei;
     //datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
