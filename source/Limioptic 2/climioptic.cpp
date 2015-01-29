@@ -2,7 +2,7 @@
 
 #include "climioptic.h"
 #include <iostream>
-#include <fstream>
+//#include <fstream>
 #include <random>
 #include <stdio.h>
 
@@ -708,8 +708,10 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
     aplus = 0;  // summe der dx-quadrate
     bplus = 0;  // summe der dy-quadrate
 
-    //fstream datei;
+    //std::ofstream datei;
     //datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
+    FILE * datei;
+    datei = fopen("particles.dat", "w");
 
     i = 0;
     for (ip = 0; ip < pnum; ip++)
@@ -719,16 +721,16 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
         yplus += (p[i + 2 - elesize] * p[i + 2 - elesize]);
         bplus += (p[i + 3 - elesize] * p[i + 3 - elesize]);
 
-        /*
+
         if (!((p[i + 0 - elesize] == 0.) && (p[i + 1 - elesize] == 0.) && (p[i + 2 - elesize] == 0.) && (p[i + 3 - elesize] == 0.)))
         {
-            datei << p[i + 0 - elesize] << " ";
-            datei << p[i + 1 - elesize] << " ";
-            datei << p[i + 2 - elesize] << " ";
-            datei << p[i + 3 - elesize] << " ";
-            datei << p[i + 4 - elesize] << " ";
-            datei << p[i + 5 - elesize] << endl;
-        }*/
+            fprintf(datei, "%f ", (p[i + 0 - elesize]));
+            fprintf(datei, "%f ", (p[i + 1 - elesize]));
+            fprintf(datei, "%f ", (p[i + 2 - elesize]));
+            fprintf(datei, "%f ", (p[i + 3 - elesize]));
+            fprintf(datei, "%f ", (p[i + 4 - elesize]));
+            fprintf(datei, "%f\n", (p[i + 5 - elesize]));
+        }
 
 
         for (j = 0; j < 8; j++)
@@ -741,6 +743,7 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
     }
 
     //datei.close();
+    fclose(datei);
 
     //pnum -= nichtdurch; // die durch einen schlitz abgefangenen partikel sollen nicht mitgezaehlt werden
     durch = (double)(pnum - nottransmitted);
