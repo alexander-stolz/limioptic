@@ -67,8 +67,10 @@ from scipy import optimize
 #import plotEmittance
 print "helper",
 import helper
-print "pickle"
+print "pickle",
 import pickle
+print "calculator"
+import function_calculator
 
 #################################################
 #################################################
