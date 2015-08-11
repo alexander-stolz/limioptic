@@ -3,6 +3,8 @@
 # utility procs formerly in init.tcl dealing with auto execution
 # of commands and can be auto loaded themselves.
 #
+# RCS: @(#) $Id: auto.tcl,v 1.28 2006/11/03 00:34:52 hobbs Exp $
+#
 # Copyright (c) 1991-1993 The Regents of the University of California.
 # Copyright (c) 1994-1998 Sun Microsystems, Inc.
 #
@@ -20,20 +22,19 @@
 # None.
 
 proc auto_reset {} {
-    global auto_execs auto_index auto_path
-    if {[array exists auto_index]} {
-	foreach cmdName [array names auto_index] {
+    if {[array exists ::auto_index]} {
+	foreach cmdName [array names ::auto_index] {
 	    set fqcn [namespace which $cmdName]
 	    if {$fqcn eq ""} {continue}
 	    rename $fqcn {}
 	}
     }
-    unset -nocomplain auto_execs auto_index ::tcl::auto_oldpath
-    if {[catch {llength $auto_path}]} {
-	set auto_path [list [info library]]
+    unset -nocomplain ::auto_execs ::auto_index ::tcl::auto_oldpath
+    if {[catch {llength $::auto_path}]} {
+	set ::auto_path [list [info library]]
     } else {
-	if {[info library] ni $auto_path} {
-	    lappend auto_path [info library]
+	if {[info library] ni $::auto_path} {
+	    lappend ::auto_path [info library]
 	}
     }
 }
@@ -54,7 +55,7 @@ proc auto_reset {} {
 
 proc tcl_findLibrary {basename version patch initScript enVarName varName} {
     upvar #0 $varName the_library
-    global auto_path env tcl_platform
+    global env
 
     set dirs {}
     set errors {}
@@ -87,10 +88,10 @@ proc tcl_findLibrary {basename version patch initScript enVarName varName} {
 	# 3. Relative to auto_path directories.  This checks relative to the
 	# Tcl library as well as allowing loading of libraries added to the
 	# auto_path that is not relative to the core library or binary paths.
-	foreach d $auto_path {
+	foreach d $::auto_path {
 	    lappend dirs [file join $d $basename$version]
-	    if {$tcl_platform(platform) eq "unix"
-		    && $tcl_platform(os) eq "Darwin"} {
+	    if {$::tcl_platform(platform) eq "unix"
+		&& $::tcl_platform(os) eq "Darwin"} {
 		# 4. On MacOSX, check the Resources/Scripts subdir too
 		lappend dirs [file join $d $basename$version Resources Scripts]
 	    }
@@ -603,15 +604,6 @@ auto_mkindex_parser::command namespace {op args} {
             }
             catch {$parser eval "_%@namespace import $args"}
         }
-	ensemble {
-	    variable parser
-	    variable contextStack
-	    if {[lindex $args 0] eq "create"} {
-		set name ::[join [lreverse $contextStack] ::]
-		# create artifical proc to force an entry in the tclIndex
-		$parser eval [list ::proc $name {} {}]
-	    }
-	}
     }
 }
 

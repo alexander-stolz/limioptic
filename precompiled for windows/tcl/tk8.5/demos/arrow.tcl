@@ -2,6 +2,8 @@
 #
 # This demonstration script creates a canvas widget that displays a
 # large line with an arrowhead whose shape can be edited interactively.
+#
+# RCS: @(#) $Id: arrow.tcl,v 1.6 2004/12/21 11:56:35 dkf Exp $
 
 if {![info exists widgetDemo]} {
     error "This script should be run from the \"widget\" demo."

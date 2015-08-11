@@ -1,6 +1,6 @@
 #!/bin/sh
 # the next line restarts using wish \
-exec wish "$0" ${1+"$@"}
+exec wish "$0" "$@"
 
 # widget --
 # This script demonstrates the various widgets provided by Tk, along with many
@@ -9,6 +9,8 @@ exec wish "$0" ${1+"$@"}
 # demonstrations. The code for the actual demonstrations is contained in
 # separate ".tcl" files is this directory, which are sourced by this script as
 # needed.
+#
+# RCS: @(#) $Id: widget,v 1.51 2008/03/11 22:30:17 das Exp $
 
 package require Tcl	8.5
 package require Tk	8.5
@@ -197,12 +199,12 @@ set lastLine ""
 .t tag bind demo <Enter> {
     set lastLine [.t index {@%x,%y linestart}]
     .t tag add hot "$lastLine +1 chars" "$lastLine lineend -1 chars"
-    .t config -cursor [::ttk::cursor link]
+    .t config -cursor hand2
     showStatus [.t index {@%x,%y}]
 }
 .t tag bind demo <Leave> {
     .t tag remove hot 1.0 end
-    .t config -cursor [::ttk::cursor text]
+    .t config -cursor xterm
     .statusBar.lab config -text ""
 }
 .t tag bind demo <Motion> {
@@ -363,8 +365,6 @@ addFormattedText {
     @@demo hscale	Horizontal scale
     @@demo vscale	Vertical scale
     @@new
-    @@demo ttkscale	Themed scale linked to a label with traces
-    @@new
     @@demo ttkprogress	Progress bar
 
     @@subtitle	Paned Windows and Notebooks
@@ -471,7 +471,6 @@ proc positionWindow w {
 proc showVars {w args} {
     catch {destroy $w}
     toplevel $w
-    if {[tk windowingsystem] eq "x11"} {wm attributes $w -type dialog}
     wm title $w [mc "Variable values"]
 
     set b [ttk::frame $w.frame]
@@ -517,7 +516,7 @@ proc invoke index {
 	return
     }
     set cursor [.t cget -cursor]
-    .t configure -cursor [::ttk::cursor busy]
+    .t configure -cursor watch
     update
     set demo [string range [lindex $tags $i] 5 end]
     uplevel 1 [list source [file join $tk_demoDirectory $demo.tcl]]
@@ -538,11 +537,11 @@ proc showStatus index {
     set cursor [.t cget -cursor]
     if {$i < 0} {
 	.statusBar.lab config -text " "
-	set newcursor [::ttk::cursor text]
+	set newcursor xterm
     } else {
 	set demo [string range [lindex $tags $i] 5 end]
 	.statusBar.lab config -text [mc "Run the \"%s\" sample program" $demo]
-	set newcursor [::ttk::cursor link]
+	set newcursor hand2
     }
     if {$cursor ne $newcursor} {
 	.t config -cursor $newcursor
@@ -573,7 +572,6 @@ proc showCode w {
     set top .code
     if {![winfo exists $top]} {
 	toplevel $top
-	if {[tk windowingsystem] eq "x11"} {wm attributes $top -type dialog}
 
 	set t [frame $top.f]
 	set text [text $t.text -font fixedFont -height 24 -wrap word \

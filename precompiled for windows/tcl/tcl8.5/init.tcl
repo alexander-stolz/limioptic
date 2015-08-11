@@ -3,6 +3,8 @@
 # Default system startup file for Tcl-based applications.  Defines
 # "unknown" procedure and auto-load facilities.
 #
+# RCS: @(#) $Id: init.tcl,v 1.104 2008/03/28 17:31:44 dgp Exp $
+#
 # Copyright (c) 1991-1993 The Regents of the University of California.
 # Copyright (c) 1994-1996 Sun Microsystems, Inc.
 # Copyright (c) 1998-1999 Scriptics Corporation.
@@ -12,11 +14,10 @@
 # of this file, and for a DISCLAIMER OF ALL WARRANTIES.
 #
 
-# This test intentionally written in pre-7.5 Tcl 
 if {[info commands package] == ""} {
     error "version mismatch: library\nscripts expect Tcl version 7.5b1 or later but the loaded version is\nonly [info patchlevel]"
 }
-package require -exact Tcl 8.5.15
+package require -exact Tcl 8.5.2
 
 # Compute the auto path to use in this interpreter.
 # The values on the path come from several locations:
@@ -108,7 +109,6 @@ namespace eval tcl {
 	    }
 	    return $val
 	}
-	namespace export min max
     }
 }
 
@@ -117,10 +117,9 @@ namespace eval tcl {
 if {(![interp issafe]) && ($tcl_platform(platform) eq "windows")} {
     namespace eval tcl {
 	proc EnvTraceProc {lo n1 n2 op} {
-	    global env
-	    set x $env($n2)
-	    set env($lo) $x
-	    set env([string toupper $lo]) $x
+	    set x $::env($n2)
+	    set ::env($lo) $x
+	    set ::env([string toupper $lo]) $x
 	}
 	proc InitWinEnv {} {
 	    global env tcl_platform
@@ -157,12 +156,12 @@ if {(![interp issafe]) && ($tcl_platform(platform) eq "windows")} {
 
 
 if {[interp issafe]} {
-    package unknown {::tcl::tm::UnknownHandler ::tclPkgUnknown}
+    package unknown ::tclPkgUnknown
 } else {
     # Set up search for Tcl Modules (TIP #189).
     # and setup platform specific unknown package handlers
-    if {$tcl_platform(os) eq "Darwin"
-	    && $tcl_platform(platform) eq "unix"} {
+    if {$::tcl_platform(os) eq "Darwin"
+	    && $::tcl_platform(platform) eq "unix"} {
 	package unknown {::tcl::tm::UnknownHandler \
 		{::tcl::MacOSXPkgUnknown ::tclPkgUnknown}}
     } else {
@@ -237,7 +236,7 @@ if {[namespace which -command tclLog] eq ""} {
 
 proc unknown args {
     variable ::tcl::UnknownPending
-    global auto_noexec auto_noload env tcl_interactive errorInfo errorCode
+    global auto_noexec auto_noload env tcl_interactive
 
     # If the command word has the form "namespace inscope ns cmd"
     # then concatenate its arguments onto the end and evaluate it.
@@ -252,8 +251,8 @@ proc unknown args {
 	return -options $opts $result
     }
 
-    catch {set savedErrorInfo $errorInfo}
-    catch {set savedErrorCode $errorCode}
+    catch {set savedErrorInfo $::errorInfo}
+    catch {set savedErrorCode $::errorCode}
     set name $cmd
     if {![info exists auto_noload]} {
 	#
@@ -276,16 +275,8 @@ proc unknown args {
 	    unset UnknownPending
 	}
 	if {$msg} {
-	    if {[info exists savedErrorCode]} {
-		set ::errorCode $savedErrorCode
-	    } else {
-		unset -nocomplain ::errorCode
-	    }
-	    if {[info exists savedErrorInfo]} {
-		set errorInfo $savedErrorInfo
-	    } else {
-		unset -nocomplain errorInfo
-	    }
+	    catch {set ::errorCode $savedErrorCode}
+	    catch {set ::errorInfo $savedErrorInfo}
 	    set code [catch {uplevel 1 $args} msg opts]
 	    if {$code ==  1} {
 		#
@@ -293,8 +284,8 @@ proc unknown args {
 		# Note the dependence on how Tcl_AddErrorInfo, etc. 
 		# construct the stack trace.
 		#
-		set errInfo [dict get $opts -errorinfo]
-		set errCode [dict get $opts -errorcode]
+		set errorInfo [dict get $opts -errorinfo]
+		set errorCode [dict get $opts -errorcode]
 		set cinfo $args
 		if {[string bytelength $cinfo] > 150} {
 		    set cinfo [string range $cinfo 0 150]
@@ -311,7 +302,7 @@ proc unknown args {
 		# and trim the extra contribution from the matching case
 		#
 		set expect "$msg\n    while executing\n\"$cinfo"
-		if {$errInfo eq $expect} {
+		if {$errorInfo eq $expect} {
 		    #
 		    # The stack has only the eval from the expanded command
 		    # Do not generate any stack trace here.
@@ -326,18 +317,18 @@ proc unknown args {
 		#
 		set expect "\n    invoked from within\n\"$cinfo"
 		set exlen [string length $expect]
-		set eilen [string length $errInfo]
+		set eilen [string length $errorInfo]
 		set i [expr {$eilen - $exlen - 1}]
-		set einfo [string range $errInfo 0 $i]
+		set einfo [string range $errorInfo 0 $i]
 		#
-		# For now verify that $errInfo consists of what we are about
+		# For now verify that $errorInfo consists of what we are about
 		# to return plus what we expected to trim off.
 		#
-		if {$errInfo ne "$einfo$expect"} {
+		if {$errorInfo ne "$einfo$expect"} {
 		    error "Tcl bug: unexpected stack trace in \"unknown\"" {} \
-			[list CORE UNKNOWN BADTRACE $einfo $expect $errInfo]
+			[list CORE UNKNOWN BADTRACE $einfo $expect $errorInfo]
 		}
-		return -code error -errorcode $errCode \
+		return -code error -errorcode $errorCode \
 			-errorinfo $einfo $msg
 	    } else {
 		dict incr opts -level
@@ -346,7 +337,7 @@ proc unknown args {
 	}
     }
 
-    if {([info level] == 1) && ([info script] eq "") 
+    if {([info level] == 1) && ([info script] eq "") \
 	    && [info exists tcl_interactive] && $tcl_interactive} {
 	if {![info exists auto_noexec]} {
 	    set new [auto_execok $name]
@@ -659,10 +650,10 @@ proc auto_execok name {
 	# Add an initial ; to have the {} extension check first.
 	set execExtensions [split ";$env(PATHEXT)" ";"]
     } else {
-	set execExtensions [list {} .com .exe .bat .cmd]
+	set execExtensions [list {} .com .exe .bat]
     }
 
-    if {[string tolower $name] in $shellBuiltins} {
+    if {$name in $shellBuiltins} {
 	# When this is command.com for some reason on Win2K, Tcl won't
 	# exec it unless the case is right, which this corrects.  COMSPEC
 	# may not point to a real file, so do the check.
@@ -700,14 +691,11 @@ proc auto_execok name {
 	}
     }
 
-    foreach ext $execExtensions {
-	unset -nocomplain checked
-	foreach dir [split $path {;}] {
-	    # Skip already checked directories
-	    if {[info exists checked($dir)] || ($dir eq {})} {
-		continue
-	    }
-	    set checked($dir) {}
+    foreach dir [split $path {;}] {
+	# Skip already checked directories
+	if {[info exists checked($dir)] || ($dir eq {})} { continue }
+	set checked($dir) {}
+	foreach ext $execExtensions {
 	    set file [file join $dir ${name}${ext}]
 	    if {[file exists $file] && ![file isdirectory $file]} {
 		return [set auto_execs($name) [list $file]]
@@ -799,7 +787,7 @@ proc tcl::CopyDirectory {action src dest} {
 	    lappend existing {*}[glob -nocomplain -directory $dest \
 		    -type hidden * .*]
 	    foreach s $existing {
-		if {[file tail $s] ni {. ..}} {
+		if {([file tail $s] ne ".") && ([file tail $s] ne "..")} {
 		    return -code error "error $action \"$src\" to\
 		      \"$dest\": file already exists"
 		}
@@ -807,7 +795,7 @@ proc tcl::CopyDirectory {action src dest} {
 	}
     } else {
 	if {[string first $nsrc $ndest] != -1} {
-	    set srclen [expr {[llength [file split $nsrc]] - 1}]
+	    set srclen [expr {[llength [file split $nsrc]] -1}]
 	    set ndest [lindex [file split $ndest] $srclen]
 	    if {$ndest eq [file tail $nsrc]} {
 		return -code error "error $action \"$src\" to\
@@ -827,8 +815,8 @@ proc tcl::CopyDirectory {action src dest} {
       [glob -nocomplain -directory $src -types hidden *]]
 
     foreach s [lsort -unique $filelist] {
-	if {[file tail $s] ni {. ..}} {
-	    file copy -force -- $s [file join $dest [file tail $s]]
+	if {([file tail $s] ne ".") && ([file tail $s] ne "..")} {
+	    file copy -force $s [file join $dest [file tail $s]]
 	}
     }
     return

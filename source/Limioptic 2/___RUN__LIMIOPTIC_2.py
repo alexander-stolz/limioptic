@@ -39,12 +39,15 @@ import threading        # multithreading
 print "time",
 import time             # debuggen + sleep
 #import serial          # auslesen des potis
-try:
-    if not PY2EXE: imp.find_module("vtk")
-    import vtk          # grafische ausgabe ueber VTK
-    print "vtk",
-except:
-    print "<vtk NOT FOUND>",
+if not PY2EXE:
+    try:
+        if not PY2EXE: imp.find_module("vtk")
+        import vtk          # grafische ausgabe ueber VTK
+        print "vtk",
+    except:
+        print "<vtk NOT FOUND>",
+        vtk = False
+else:
     vtk = False
 print "urllib",
 import urllib           # zum ueberpruefen auf updates
@@ -607,25 +610,26 @@ class Segment:
         del self.source
 
 
-class Text3D(vtk.vtkActor):
-    """ Labels in der 3D-Ausgabe """
-    def __init__(self, pos, text, posY=60.):
-        posY = posY / SUPERSCALE3D
-        self.vectorlabel = vtk.vtkVectorText()
-        self.vectorlabel.SetText(text)
-        self.extrusionfilter = vtk.vtkLinearExtrusionFilter()
-        self.extrusionfilter.SetInputConnection(self.vectorlabel.GetOutputPort())
-        self.extrusionfilter.SetExtrusionTypeToNormalExtrusion()
-        self.extrusionfilter.SetVector(0, 0, 1)
-        self.extrusionfilter.SetScaleFactor(.5)
+if vtk:
+    class Text3D(vtk.vtkActor):
+        """ Labels in der 3D-Ausgabe """
+        def __init__(self, pos, text, posY=60.):
+            posY = posY / SUPERSCALE3D
+            self.vectorlabel = vtk.vtkVectorText()
+            self.vectorlabel.SetText(text)
+            self.extrusionfilter = vtk.vtkLinearExtrusionFilter()
+            self.extrusionfilter.SetInputConnection(self.vectorlabel.GetOutputPort())
+            self.extrusionfilter.SetExtrusionTypeToNormalExtrusion()
+            self.extrusionfilter.SetVector(0, 0, 1)
+            self.extrusionfilter.SetScaleFactor(.5)
 
-        self.mapper = vtk.vtkPolyDataMapper()
-        self.mapper.SetInputConnection(self.extrusionfilter.GetOutputPort())
+            self.mapper = vtk.vtkPolyDataMapper()
+            self.mapper.SetInputConnection(self.extrusionfilter.GetOutputPort())
 
-        self.SetMapper(self.mapper)
-        self.SetPosition(pos, posY, 0)
-        self.SetScale(.2, .2, .2)
-        self.RotateZ(45)
+            self.SetMapper(self.mapper)
+            self.SetPosition(pos, posY, 0)
+            self.SetScale(.2, .2, .2)
+            self.RotateZ(45)
 
 
 class doit3d(threading.Thread):
@@ -1248,6 +1252,12 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_insert_input.setStatusTip('insert INPUT[]')
                 self.connect(self.menu_insert_input, QtCore.SIGNAL('triggered()'), self.InsertINPUT)
 
+                # NAME
+                self.menu_insert_name = QtGui.QAction('Name', self)
+                self.menu_insert_name.setShortcut('Ctrl+Shift+N')
+                self.menu_insert_name.setStatusTip('')
+                self.connect(self.menu_insert_name, QtCore.SIGNAL('triggered()'), self.InsertName)
+
                 # Source
                 self.menu_insert_source = QtGui.QAction('Source', self)
                 self.menu_insert_source.setStatusTip('Use input file')
@@ -1439,6 +1449,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 ## INSERT
                 menu_insert = menubar.addMenu('Insert')
                 menu_insert.addAction(self.menu_insert_input)
+                menu_insert.addAction(self.menu_insert_name)
                 menu_insert.addSeparator()
                 menu_insert.addAction(self.menu_insert_source)
                 menu_insert.addAction(self.menu_insert_particle)
@@ -1759,6 +1770,12 @@ class CQtLimioptic(QtGui.QMainWindow):
 #############################
         def InsertINPUT(self):
                 self.textedit.textCursor().insertText("INPUT[ ]")
+                self.textedit.moveCursor(QtGui.QTextCursor.Left)
+                self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+
+        def InsertName(self):
+                self.textedit.textCursor().insertText("Name(' ')")
+                self.textedit.moveCursor(QtGui.QTextCursor.Left)
                 self.textedit.moveCursor(QtGui.QTextCursor.Left)
                 self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
 
