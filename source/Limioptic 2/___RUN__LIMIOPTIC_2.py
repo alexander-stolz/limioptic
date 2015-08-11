@@ -1862,7 +1862,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 """Foil(
 \tdk=0.,\t \t# delta energy in permille
 \tstrag_k=0.,\t \t# energy straggling in permille
-\tstrag_phi=0.\t# angular straggling in mrad\t
+\tstrag_phi=0.,\t# angular straggling in mrad\t
 \tpercentage=.5)\t# percentage of the beam that is affected by energy loss\n""")
 
         def InsertWaist(self):
