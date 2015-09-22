@@ -9,7 +9,10 @@ import ctypes
 import array
 import math
 import random
-import vtk
+try:
+    import vtk
+except:
+    vtk = None
 from scipy import optimize
 from numpy import linspace
 
@@ -18,9 +21,34 @@ SOURCE       = []
 SOURCEFILES  = []
 PROFILEINDEX = -1
 
-geolines = vtk.vtkTable()
-geo_s    = vtk.vtkFloatArray()
-geo_y    = vtk.vtkFloatArray()
+
+class MyFloatArray():
+    def __init__(self):
+        self.arr = []
+
+    def InsertNextValue(self, x):
+        self.arr.append(x)
+
+    def Reset(self):
+        self.arr = []
+
+    def GetNumberOfTuples(self):
+        return len(self.arr)
+
+    def GetValue(self, i):
+        return self.arr[i]
+
+    def SetName(self, s):
+        self.name = s
+
+if vtk:
+    geolines = vtk.vtkTable()
+    geo_s    = vtk.vtkFloatArray()
+    geo_y    = vtk.vtkFloatArray()
+else:
+    geo_s = MyFloatArray()
+    geo_y = MyFloatArray()
+
 geo_s.SetName("S-Achse")
 geo_y.SetName("geometry")
 

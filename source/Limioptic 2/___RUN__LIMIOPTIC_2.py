@@ -50,10 +50,16 @@ else:
     vtk = False
 print "urllib",
 import urllib           # zum ueberpruefen auf updates
-print "ams_spicker",
-import ams_spicker
-print "importsrc",
-from importsrc import ImportSource
+try:
+    import ams_spicker
+    print "ams_spicker",
+except:
+    pass
+try:
+    from importsrc import ImportSource
+    print "importsrc",
+except:
+    pass
 print "syntax_highlighting",
 import syntax
 try:
