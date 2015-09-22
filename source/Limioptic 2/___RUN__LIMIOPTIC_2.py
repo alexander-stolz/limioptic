@@ -23,7 +23,7 @@ else:
 
 print "loading:",
 
-print "os",            # unterdruecken von import fehlern
+print "os",
 import os
 if not PY2EXE:
     print "imp",            # unterdruecken von import fehlern
@@ -36,7 +36,7 @@ print "threading",
 import threading        # multithreading
 print "time",
 import time             # debuggen + sleep
-#import serial          # auslesen des potis
+# import serial          # auslesen des potis
 if not PY2EXE:
     try:
         if not PY2EXE:
@@ -69,8 +69,8 @@ except:
     from PyQt4 import QtCore, QtGui
 print "optimize",
 from scipy import optimize
-#print "plotBeamprofile",
-#import plotEmittance
+# print "plotBeamprofile",
+# import plotEmittance
 print "helper",
 import helper
 print "pickle",
@@ -91,9 +91,12 @@ class inputcontrol(QtGui.QDialog):
                 self.mode = mode
                 self.changing = False
 
-                if (mode == "qt"):  self.plotwindow = doitqt2(self)    # PyQtGraph
-                if (mode == "2d"):  self.plotwindow = doitXY(self)     # VTK
-                if (mode == "3d"):  self.plotwindow = doit3d(self)     # VTK
+                if (mode == "qt"):
+                    self.plotwindow = doitqt2(self)    # PyQtGraph
+                if (mode == "2d"):
+                    self.plotwindow = doitXY(self)     # VTK
+                if (mode == "3d"):
+                    self.plotwindow = doit3d(self)     # VTK
 
                 ### Ab hier Definition des Layouts
                 # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
@@ -123,7 +126,7 @@ class inputcontrol(QtGui.QDialog):
 
                 for i in xrange(NumberOfInputs):
                         self.info.append(QtGui.QCheckBox())
-                        #self.info.append(QtGui.QLabel("#%1.0f" % (i)))
+                        # self.info.append(QtGui.QLabel("#%1.0f" % (i)))
                         self.min.append(QtGui.QDoubleSpinBox())
                         self.slider.append(QtGui.QSlider(QtCore.Qt.Horizontal, self))
                         self.input.append(QtGui.QDoubleSpinBox())
@@ -156,12 +159,12 @@ class inputcontrol(QtGui.QDialog):
                 self.vbox.addLayout(self.layout)
 
                 moreinputsbox        = QtGui.QGridLayout()
-                #self.plusbutton      = QtGui.QPushButton("+ INPUT")
-                #self.plusbutton.setToolTip("add a slider. if you don't use a slider, e.g. value = 1 and no text, it will not be saved.")
-                #self.minusbutton     = QtGui.QPushButton("- INPUT")
+                # self.plusbutton      = QtGui.QPushButton("+ INPUT")
+                # self.plusbutton.setToolTip("add a slider. if you don't use a slider, e.g. value = 1 and no text, it will not be saved.")
+                # self.minusbutton     = QtGui.QPushButton("- INPUT")
                 self.optimize_button = QtGui.QPushButton("optimize selected parameters")
-                #moreinputsbox.addWidget(self.plusbutton, 0, 2)
-                #moreinputsbox.addWidget(self.minusbutton, 0, 0)
+                # moreinputsbox.addWidget(self.plusbutton, 0, 2)
+                # moreinputsbox.addWidget(self.minusbutton, 0, 0)
                 self.NumberOfInputsSpinBox = QtGui.QSpinBox()
                 self.NumberOfInputsSpinBox.setMinimum(1)
                 self.NumberOfInputsSpinBox.setValue(8)
@@ -172,7 +175,7 @@ class inputcontrol(QtGui.QDialog):
                 moreinputsbox.setColumnStretch(1, 100)
                 self.vbox.addLayout(moreinputsbox)
 
-                #self.vbox.addWidget(self.optimize_button)
+                # self.vbox.addWidget(self.optimize_button)
 
                 if (self.mode == "3d"):
                         opacitybox   = QtGui.QHBoxLayout()
@@ -196,7 +199,7 @@ class inputcontrol(QtGui.QDialog):
                 self.setLayout(self.vbox)
 
                 # Die Elementgroessen werden neu angepasst (Buttons, Slider, ...)
-                #self.adjustSize()
+                # self.adjustSize()
 
                 # Der Thread des Output-Fensters wird gestartet
                 self.plotwindow.start()
@@ -216,8 +219,8 @@ class inputcontrol(QtGui.QDialog):
                         self.connect(self.oslider, QtCore.SIGNAL("valueChanged(int)"), self.setopacity)
                         self.connect(self.sslider, QtCore.SIGNAL("valueChanged(int)"), self.setscale)
                 self.connect(self.optimize_button, QtCore.SIGNAL("clicked()"), self.optimizeBeam)
-                #self.connect(self.minusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
-                #self.connect(self.plusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
+                # self.connect(self.minusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
+                # self.connect(self.plusbutton, QtCore.SIGNAL("clicked()"), self.minusinput)
                 self.connect(self.NumberOfInputsSpinBox, QtCore.SIGNAL("valueChanged(int)"), self.changeNumberOfInputs)
 
                 self.show()
@@ -260,8 +263,8 @@ class inputcontrol(QtGui.QDialog):
             self.resize(500, 1)
 
         def plusinput(self, row):
-            #global NumberOfInputs
-            #NumberOfInputs += 1
+            # global NumberOfInputs
+            # NumberOfInputs += 1
 
             self.info.append(QtGui.QCheckBox())
             self.min.append(QtGui.QDoubleSpinBox())
@@ -281,7 +284,8 @@ class inputcontrol(QtGui.QDialog):
             self.min[-1].setSingleStep(.01)
             self.input[-1].setValue(INPUT[row])
 
-            if (INPUT[row] > 5.):   self.min[row].setValue(INPUT[row] - 5.)
+            if (INPUT[row] > 5.):
+                self.min[row].setValue(INPUT[row] - 5.)
             self.slider[row].setValue(int(INPUT[row] * 100000.))
 
             self.layout.addWidget(self.info[-1], row, 0)
@@ -311,7 +315,7 @@ class inputcontrol(QtGui.QDialog):
                 _param_.append(INPUT[opt])
                 i += 1
 
-            #for i in xrange(NumberOfInputs):
+            # for i in xrange(NumberOfInputs):
             #    beamline = beamline.replace("INPUT[{}]".format(i), str(INPUT[i]))
 
             print "computing..."
@@ -334,7 +338,7 @@ class inputcontrol(QtGui.QDialog):
         def setopacity(self):
                 """ Nur fuer die 3D-Ausgabe """
                 OPACITY = self.oslider.value()
-                self.plotwindow.actor.GetProperty().SetOpacity(OPACITY/1000.)
+                self.plotwindow.actor.GetProperty().SetOpacity(OPACITY / 1000.)
                 self.plotwindow.render = True
 
         def setscale(self):
@@ -368,9 +372,14 @@ class inputcontrol(QtGui.QDialog):
                     for i in xrange(NumberOfInputs):
                             self.min[i].setValue(INPUT[i] - 2.5)
                             self.slider[i].setValue(250000)
-                    if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                    if (RUNNING2D): self.plotwindow.update = True
-                    if (RUNNING3D): self.plotwindow.neu()
+
+                    if (RUNNINGQT):
+                        self.plotwindow.update(self.calculate())
+                    if (RUNNING2D):
+                        self.plotwindow.update = True
+                    if (RUNNING3D):
+                        self.plotwindow.neu()
+
                     self.changing = False
 
         def centerslider(self):
@@ -389,9 +398,14 @@ class inputcontrol(QtGui.QDialog):
                                 self.input[i].setValue(self.slider[i].value() / 100000. + self.min[i].value())
                         for i in xrange(NumberOfInputs):
                                 INPUT[i] = self.input[i].value()
-                        if (RUNNINGQT): self.plotwindow.update(self.calculate())
-                        if (RUNNING2D): self.plotwindow.update = True
-                        if (RUNNING3D): self.plotwindow.neu()
+
+                        if (RUNNINGQT):
+                            self.plotwindow.update(self.calculate())
+                        if (RUNNING2D):
+                            self.plotwindow.update = True
+                        if (RUNNING3D):
+                            self.plotwindow.neu()
+
                         self.changing = False
 
         def closeit(self):
@@ -428,7 +442,7 @@ class inputcontrol(QtGui.QDialog):
                         for segment in self.segments:
                             del segment
                         del self.segments
-                    #plotEmittance.stop()
+                    # plotEmittance.stop()
                 except:
                     pass
 
@@ -536,19 +550,20 @@ class doitqt2(threading.Thread):
         self.labels = []
 
     def update(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
-        if xi is None:   (xi, yi, zi, segs, parts) = self.parent.calculate()
+        if xi is None:
+            (xi, yi, zi, segs, parts) = self.parent.calculate()
 
         # viel schneller, als mehrere plots
         x_all = []
         y_all = []
         z_all = []
-        #self.plot1.clear()
+        # self.plot1.clear()
         for part in xrange(parts):
             x_all += xi[part] + [0., 0.]
             y_all += yi[part] + [0., 0.]
             z_all += zi + [zi[-1], zi[0]]
-            #self.plot1.plot(x=zi, y=xi[part], pen=(255, 0, 0))
-            #self.plot1.plot(x=zi, y=yi[part], pen=(0, 255, 0))
+            # self.plot1.plot(x=zi, y=xi[part], pen=(255, 0, 0))
+            # self.plot1.plot(x=zi, y=yi[part], pen=(0, 255, 0))
 
         if myapp.menu_plot_x.isChecked():
             self.lineX.setData(x=z_all, y=x_all, pen=(255, 0, 0))
@@ -604,7 +619,7 @@ class Segment:
         self.actor.GetProperty().SetOpacity(.25)
         self.actor.GetProperty().SetColor(255, 255, 0)
 
-        #print "added: ", s1, s2, radius
+        # print "added: ", s1, s2, radius
 
     def __del__(self):
         del self.actor
@@ -659,14 +674,17 @@ class doit3d(threading.Thread):
                 for part in xrange(parts):
                         self.polylines[part].GetPointIds().SetNumberOfIds(segs)
                         for seg in xrange(segs):
-                                self.mypoints.InsertNextPoint(zi[seg] * SCALE3D/SUPERSCALE3D, xi[part][seg]/SUPERSCALE3D, yi[part][seg]/SUPERSCALE3D)
+                                self.mypoints.InsertNextPoint(
+                                    zi[seg] * SCALE3D / SUPERSCALE3D,
+                                    xi[part][seg] / SUPERSCALE3D,
+                                    yi[part][seg] / SUPERSCALE3D)
                                 self.polylines[part].GetPointIds().SetId(seg, part * segs + seg)
                         self.mycells.InsertNextCell(self.polylines[part])
 
                 # Sollbahn
                 self.polylines[parts].GetPointIds().SetNumberOfIds(2)
                 self.mypoints.InsertNextPoint(0., 0., 0.)
-                self.mypoints.InsertNextPoint(zi[-1] * SCALE3D/SUPERSCALE3D, 0., 0.)
+                self.mypoints.InsertNextPoint(zi[-1] * SCALE3D / SUPERSCALE3D, 0., 0.)
                 self.polylines[parts].GetPointIds().SetId(0, parts * segs)
                 self.polylines[parts].GetPointIds().SetId(1, parts * segs + 1)
                 self.mycells.InsertNextCell(self.polylines[parts])
@@ -674,28 +692,32 @@ class doit3d(threading.Thread):
                 # Marker
                 marker = 1
                 for seg in zi:
-                    self.mypoints.InsertNextPoint(seg * SCALE3D/SUPERSCALE3D, -10./SUPERSCALE3D, 0)
-                    self.mypoints.InsertNextPoint(seg * SCALE3D/SUPERSCALE3D, +10./SUPERSCALE3D, 0)
-                    self.polylines[parts+marker].GetPointIds().SetNumberOfIds(2)
-                    self.polylines[parts+marker].GetPointIds().SetId(0, parts * segs + 2 * marker)
-                    self.polylines[parts+marker].GetPointIds().SetId(1, parts * segs + 2 * marker + 1)
-                    self.mycells.InsertNextCell(self.polylines[parts+marker])
+                    self.mypoints.InsertNextPoint(seg * SCALE3D / SUPERSCALE3D, -10. / SUPERSCALE3D, 0)
+                    self.mypoints.InsertNextPoint(seg * SCALE3D / SUPERSCALE3D, +10. / SUPERSCALE3D, 0)
+                    self.polylines[parts + marker].GetPointIds().SetNumberOfIds(2)
+                    self.polylines[parts + marker].GetPointIds().SetId(0, parts * segs + 2 * marker)
+                    self.polylines[parts + marker].GetPointIds().SetId(1, parts * segs + 2 * marker + 1)
+                    self.mycells.InsertNextCell(self.polylines[parts + marker])
                     marker += 1
 
                 # Geometrie
                 if (myapp.menu_plot_geo.isChecked()):
                     iele  = limioptic.geo_s.GetNumberOfTuples()
-                    #self.polylines[-1].GetPointIds().SetNumberOfIds(iele)
+                    # self.polylines[-1].GetPointIds().SetNumberOfIds(iele)
                     self.segments = []
-                    for point in xrange(iele/2):
+                    for point in xrange(iele / 2):
                         s1 = limioptic.geo_s.GetValue(point * 2) * SCALE3D
                         s2 = limioptic.geo_s.GetValue((point * 2) + 1) * SCALE3D
                         radius = limioptic.geo_y.GetValue(point * 2)
-                        if ((s2 - s1)/SCALE3D > .1) and (radius != 55.): self.segments.append(Segment(s1/SUPERSCALE3D, s2/SUPERSCALE3D, radius/SUPERSCALE3D))
-                        #self.mypoints.InsertNextPoint(limioptic.geo_s.GetValue(point) * SCALE3D, limioptic.geo_y.GetValue(point), 0.)
-                        #self.polylines[-1].GetPointIds().SetId(point, parts * segs + 2 * marker + point)
+                        if ((s2 - s1) / SCALE3D > .1) and (radius != 55.):
+                            self.segments.append(Segment(
+                                s1 / SUPERSCALE3D,
+                                s2 / SUPERSCALE3D,
+                                radius / SUPERSCALE3D))
+                        # self.mypoints.InsertNextPoint(limioptic.geo_s.GetValue(point) * SCALE3D, limioptic.geo_y.GetValue(point), 0.)
+                        # self.polylines[-1].GetPointIds().SetId(point, parts * segs + 2 * marker + point)
 
-                    #self.mycells.InsertNextCell(self.polylines[-1])
+                    # self.mycells.InsertNextCell(self.polylines[-1])
 
                 # Datenobjekt erzeugen
                 self.mydata = vtk.vtkPolyData()
@@ -718,10 +740,10 @@ class doit3d(threading.Thread):
                 # Hier bekommt er den Mapper
                 self.actor.SetMapper(self.mapper)
                 self.actor.GetProperty().SetOpacity(OPACITY / 1000.)
-                #self.actor.GetProperty().SetColor(0., 0., 0.)
+                # self.actor.GetProperty().SetColor(0., 0., 0.)
 
                 self.ren = vtk.vtkRenderer()
-                #self.ren.SetBackground(.1, .2, .4)
+                # self.ren.SetBackground(.1, .2, .4)
                 self.ren.GradientBackgroundOn()
                 self.ren.SetBackground(.01, .01, .01)
                 self.ren.SetBackground2(.2, .2, .2)
@@ -730,16 +752,16 @@ class doit3d(threading.Thread):
                     self.ren.AddActor(segment.actor)
 
                 ### Axen
-                #self.axisactor = vtk.vtkCubeAxesActor()
-                #self.axisactor.SetXAxisRange(0., zi[-1])
-                #self.axisactor.SetYAxisRange(-30., 30)
-                #self.axisactor.SetBounds(self.actor.GetBounds())
-                #self.axisactor.SetXTitle("s in m")
-                #self.axisactor.YAxisVisibilityOff()
-                #self.axisactor.ZAxisVisibilityOff()
-                #self.axisactor.SetCamera(self.ren.GetActiveCamera())
-                #self.axisactor.GetProperty().SetColor(1, 1, 1)
-                #self.ren.AddActor(self.axisactor)
+                # self.axisactor = vtk.vtkCubeAxesActor()
+                # self.axisactor.SetXAxisRange(0., zi[-1])
+                # self.axisactor.SetYAxisRange(-30., 30)
+                # self.axisactor.SetBounds(self.actor.GetBounds())
+                # self.axisactor.SetXTitle("s in m")
+                # self.axisactor.YAxisVisibilityOff()
+                # self.axisactor.ZAxisVisibilityOff()
+                # self.axisactor.SetCamera(self.ren.GetActiveCamera())
+                # self.axisactor.GetProperty().SetColor(1, 1, 1)
+                # self.ren.AddActor(self.axisactor)
                 self.ren.ResetCamera()
 
                 ### Labels
@@ -761,12 +783,12 @@ class doit3d(threading.Thread):
                 self.iren.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
 
                 ### Text
-                #txtFilter = vtk.vtkLinearExtrusionFilter()
-                #txtFilter.SetScaleFactor(20.)
-                #txtMapper = vtk.vtkPolyDataMapper()
-                #txtMapper.SetInputConnection(txtFilter.GetOutputPort())
+                # txtFilter = vtk.vtkLinearExtrusionFilter()
+                # txtFilter.SetScaleFactor(20.)
+                # txtMapper = vtk.vtkPolyDataMapper()
+                # txtMapper.SetInputConnection(txtFilter.GetOutputPort())
 
-                #for name in limioptic.textArray
+                # for name in limioptic.textArray
                 #    text = vtk.vtkVectorText()
                 #    text.SetText(name[1])
                 #    txtFilter.SetInputConnection(text.GetOutputPort())
@@ -781,13 +803,13 @@ class doit3d(threading.Thread):
                 self.w2iFilter.SetMagnification(10)
                 self.writer.SetInput(self.w2iFilter.GetOutput())
 
-                #self.exporter = vtk.vtkGL2PSExporter()
-                #self.exporter.SetRenderWindow(self.renwin)
-                #self.exporter.SetFileFormatToPS()
-                #self.exporter.CompressOff()
-                #self.exporter.SetSortToBsp()
-                #self.exporter.DrawBackgroundOn()
-                #self.exporter.Write3DPropsAsRasterImageOn()
+                # self.exporter = vtk.vtkGL2PSExporter()
+                # self.exporter.SetRenderWindow(self.renwin)
+                # self.exporter.SetFileFormatToPS()
+                # self.exporter.CompressOff()
+                # self.exporter.SetSortToBsp()
+                # self.exporter.DrawBackgroundOn()
+                # self.exporter.Write3DPropsAsRasterImageOn()
 
                 # Damit der Speicher wieder freigegeben wird, wenn das Fenster geschlossen wird.
                 self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow3d: a.closeit())
@@ -814,7 +836,8 @@ class doit3d(threading.Thread):
         def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
                 """ Wird aufgerufen wenn eine Variable geaendert wird, oder Strg + H gedrueckt wird """
 
-                if xi is None:  (xi, yi, zi, segs, parts) = self.parent.calculate()
+                if xi is None:
+                    (xi, yi, zi, segs, parts) = self.parent.calculate()
 
                 for part in xrange(parts):
                         for seg in xrange(segs):
@@ -825,8 +848,8 @@ class doit3d(threading.Thread):
 
         def animate(self, obj=None, event=None):
                 """ Nur animieren, wenn etwas geaendert wurde. Die Funktion wird alle 50 ms aufgerufen """
-                #if self.render:
-                #self.render = False
+                # if self.render:
+                # self.render = False
                 self.threadlock.acquire()
                 self.renwin.Render()
                 self.threadlock.release()
@@ -865,7 +888,7 @@ class doitXY(threading.Thread):
                 self.view.GetRenderer().SetBackground(1., 1., 1.)
                 if myapp.menu_plot_bg.isChecked():
                     self.view.GetRenderer().SetBackground(0., 0., 0.)
-                #self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
+                # self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
                 self.view.GetRenderWindow().SetSize(800, 350)
 
                 self.chart = vtk.vtkChartXY()
@@ -895,11 +918,11 @@ class doitXY(threading.Thread):
                     limioptic.s = -1.
 
                 ### Exporter
-                #self.writer = vtk.vtk.vtkPNGWriter()
-                #self.w2iFilter = vtk.vtkWindowToImageFilter()
-                #self.w2iFilter.SetInput(self.view.GetRenderWindow())
-                #self.w2iFilter.SetMagnification(10)
-                #self.writer.SetInput(self.w2iFilter.GetOutput())
+                # self.writer = vtk.vtk.vtkPNGWriter()
+                # self.w2iFilter = vtk.vtkWindowToImageFilter()
+                # self.w2iFilter.SetInput(self.view.GetRenderWindow())
+                # self.w2iFilter.SetMagnification(10)
+                # self.writer.SetInput(self.w2iFilter.GetOutput())
 
                 ### Berechnungen durchfuehren
                 (xi, yi, zi, segs, parts) = self.parent.calculate()
@@ -922,27 +945,29 @@ class doitXY(threading.Thread):
                         self.linelist = []
                         if (len(iele) > 0):
                                 for i in xrange(1, len(iele)):
-                                        if (iele[i] != iele[i-1]):
-                                                self.linelist.append(zi[i-1])
-                                self.linelist.append(zi[len(iele)-1])
+                                        if (iele[i] != iele[i - 1]):
+                                                self.linelist.append(zi[i - 1])
+                                self.linelist.append(zi[len(iele) - 1])
 
-                        if (myapp.menu_output_file.isChecked()):    print >> ausgabe, 0, 0
+                        if (myapp.menu_output_file.isChecked()):
+                            print >> ausgabe, 0, 0
                         for i in xrange(1, len(self.linelist)):
                                 self.markersX.append(vtk.vtkFloatArray())
-                                self.markersX[i-1].SetName("Marker %1.0f" % (i))
-                                self.markersX[i-1].InsertNextValue(self.linelist[i-1])
-                                self.markersX[i-1].InsertNextValue(self.linelist[i-1])
+                                self.markersX[i - 1].SetName("Marker %1.0f" % (i))
+                                self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                                self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
                                 if (myapp.menu_output_file.isChecked()):
-                                        print >> ausgabe, self.linelist[i-1], 0
-                                        print >> ausgabe, self.linelist[i-1], 10
-                                        print >> ausgabe, self.linelist[i-1], -10
-                                        print >> ausgabe, self.linelist[i-1], 0
-                                self.markertable.AddColumn(self.markersX[i-1])
+                                        print >> ausgabe, self.linelist[i - 1], 0
+                                        print >> ausgabe, self.linelist[i - 1], 10
+                                        print >> ausgabe, self.linelist[i - 1], -10
+                                        print >> ausgabe, self.linelist[i - 1], 0
+                                self.markertable.AddColumn(self.markersX[i - 1])
                                 self.line2 = self.chart.AddPlot(0)
                                 self.line2.SetInput(self.markertable, i, 0)
                                 self.line2.SetColor(.7, .7, .7)
                                 self.line2.SetWidth(1.)
-                        if (myapp.menu_output_file.isChecked()):    ausgabe.close()
+                        if (myapp.menu_output_file.isChecked()):
+                            ausgabe.close()
 
                 ### Erzeuge Wertetabelle
                 self.table = vtk.vtkTable()
@@ -953,45 +978,54 @@ class doitXY(threading.Thread):
 
                 self.arrZ.SetNumberOfValues(segs)
                 self.arrZ.Reset()
-                for seg in xrange(segs):    self.arrZ.InsertNextValue(zi[seg])
+                for seg in xrange(segs):
+                    self.arrZ.InsertNextValue(zi[seg])
 
                 self.table.AddColumn(self.arrZ)
 
                 j = 0
                 if (plotx):
-                        if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_xbeam.dat", "w")
+                        if (myapp.menu_output_file.isChecked()):
+                            ausgabe = open("output_xbeam.dat", "w")
                         for j in xrange(parts):
                                 self.arrX.append(vtk.vtkFloatArray())
                                 self.arrX[j].SetName("X-Strahl %1.0f Start: %1.2f" % (j, xi[j][0]))
                                 for i in xrange(segs):
                                         self.arrX[j].InsertNextValue(xi[j][i])
-                                        if (myapp.menu_output_file.isChecked()) and not (xi[j][i] == yi[j][i] == 0.):    print >> ausgabe, zi[i], xi[j][i]
+                                        if (myapp.menu_output_file.isChecked()) and not (xi[j][i] == yi[j][i] == 0.):
+                                            print >> ausgabe, zi[i], xi[j][i]
                                 self.table.AddColumn(self.arrX[j])
-                                if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
+                                if (myapp.menu_output_file.isChecked()):
+                                    ausgabe.write("\n")
 
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, j + 1)
-                                #self.line.SetColor(255, 0, 0, 255)
+                                # self.line.SetColor(255, 0, 0, 255)
                                 self.line.SetColor(XCOLOR[0], XCOLOR[1], XCOLOR[2], XCOLOR[3])
                                 self.line.SetWidth(.7)
-                        if (myapp.menu_output_file.isChecked()):    ausgabe.close()
+                        if (myapp.menu_output_file.isChecked()):
+                            ausgabe.close()
                 if (ploty):
-                        if (myapp.menu_output_file.isChecked()):    ausgabe = open("output_ybeam.dat", "w")
+                        if (myapp.menu_output_file.isChecked()):
+                            ausgabe = open("output_ybeam.dat", "w")
                         for l in xrange(parts):
                                 self.arrY.append(vtk.vtkFloatArray())
                                 self.arrY[l].SetName("Y-Strahl %1.0f Start: %1.2f" % (l, yi[l][0]))
                                 for i in xrange(segs):
                                         self.arrY[l].InsertNextValue(yi[l][i])
-                                        if (myapp.menu_output_file.isChecked()) and not (xi[l][i] == yi[l][i] == 0.):    print >> ausgabe, zi[i], yi[l][i]
+                                        if (myapp.menu_output_file.isChecked()) and not (xi[l][i] == yi[l][i] == 0.):
+                                            print >> ausgabe, zi[i], yi[l][i]
                                 self.table.AddColumn(self.arrY[l])
-                                if (myapp.menu_output_file.isChecked()):    ausgabe.write("\n")
+                                if (myapp.menu_output_file.isChecked()):
+                                    ausgabe.write("\n")
 
                                 self.line = self.chart.AddPlot(0)
                                 self.line.SetInput(self.table, 0, l + j + xy)
-                                #self.line.SetColor(0, 255, 0, 255)
+                                # self.line.SetColor(0, 255, 0, 255)
                                 self.line.SetColor(YCOLOR[0], YCOLOR[1], YCOLOR[2], YCOLOR[3])
                                 self.line.SetWidth(.7)
-                        if (myapp.menu_output_file.isChecked()):    ausgabe.close()
+                        if (myapp.menu_output_file.isChecked()):
+                            ausgabe.close()
 
                 if (myapp.menu_plot_geo.isChecked()):
                         limioptic.geolines.AddColumn(limioptic.geo_s)
@@ -1047,7 +1081,7 @@ class doitXY(threading.Thread):
                 if key == "Right":  self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
                 if key == "Left":   self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
                 self.threadlock.release()
-            #elif key == "space":
+            # elif key == "space":
             #    global SCREENSHOTNUMBER
             #    now = time.localtime()
             #    self.w2iFilter.Modified()
@@ -1062,8 +1096,8 @@ class doitXY(threading.Thread):
             #    SCREENSHOTNUMBER += 1
 
         def animate(self, obj=None, event=None):
-                #if self.render:
-                #self.render = False
+                # if self.render:
+                # self.render = False
                 self.threadlock.acquire()
                 self.view.Render()
                 self.threadlock.release()
@@ -1102,7 +1136,8 @@ class doitXY(threading.Thread):
                                         self.arrY[part].InsertNextValue(yi[part][seg])
 
                 self.arrZ.Reset()
-                for i in xrange(segs):  self.arrZ.InsertNextValue(zi[i])
+                for i in xrange(segs):
+                    self.arrZ.InsertNextValue(zi[i])
 
                 ### Marker setzen
                 if myapp.menu_plot_marker.isChecked():
