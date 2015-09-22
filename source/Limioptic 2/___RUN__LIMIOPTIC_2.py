@@ -30,8 +30,6 @@ if not PY2EXE:
     import imp
 print "sys",
 import sys
-print "Qt",
-from PyQt4 import QtCore, QtGui
 print "limioptic",
 import limioptic        # ionenoptische berechnungen
 print "threading",
@@ -41,7 +39,8 @@ import time             # debuggen + sleep
 #import serial          # auslesen des potis
 if not PY2EXE:
     try:
-        if not PY2EXE: imp.find_module("vtk")
+        if not PY2EXE:
+            imp.find_module("vtk")
         import vtk          # grafische ausgabe ueber VTK
         print "vtk",
     except:
@@ -58,12 +57,16 @@ from importsrc import ImportSource
 print "syntax_highlighting",
 import syntax
 try:
-    if not PY2EXE:  imp.find_module("pyqtgraph")
+    if not PY2EXE:
+        imp.find_module("pyqtgraph")
     import pyqtgraph
+    from pyqtgraph import QtCore, QtGui
     print "PyQtGraph",
 except:
     print "<PyQtGraph NOT FOUND>",
     pyqtgraph = False
+    print "Qt",
+    from PyQt4 import QtCore, QtGui
 print "optimize",
 from scipy import optimize
 #print "plotBeamprofile",
