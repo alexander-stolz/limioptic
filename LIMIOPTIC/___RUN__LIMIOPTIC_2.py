@@ -31,7 +31,7 @@ if not PY2EXE:
 print "sys",
 import sys
 print "limioptic",
-import limioptic_base as limioptic        # ionenoptische berechnungen
+import limioptic       # ionenoptische berechnungen
 print "threading",
 import threading        # multithreading
 print "time",
