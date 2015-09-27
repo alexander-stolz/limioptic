@@ -1,5 +1,9 @@
-from PyQt4.QtCore import QRegExp
-from PyQt4.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+try:
+    from PyQt4.QtCore import QRegExp
+    from PyQt4.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+except:
+    from pyqtgraph.QtCore import QRegExp
+    from pyqtgraph.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
 def format(color, style=''):
