@@ -1,3 +1,14 @@
+"""
+Aus der Erinnerung:
+
+X: Position in mm vom BPM Draht
+Y: Strom in muA
+
+Am FN habe ich mit dem BPM Strahldicken bestimmt und mit den Simion- und Limioptic-Simulationen verglichen.
+Es war mir damit möglich die FNVB-Fokussierung zu bestimmen (s. Bestimmung der FNVB) und die FN-Quelle in Limioptic einzubauen.
+"""
+
+
 #!/usr/bin/env python
 
 from pylab import show, grid, figure
@@ -123,7 +134,7 @@ try:
             messungX = messungCEL3X
             messungY = messungCEL3Y
 
-        ax = fig.add_subplot((len(sys.argv)-1)//2 + (len(sys.argv)-1)%2, 2, parameterNr)
+        ax = fig.add_subplot((len(sys.argv)-1) // 2 + (len(sys.argv) - 1) % 2, 2, parameterNr)
         #ax = fig.add_subplot(1, 1, parameterNr)
         ax.plot(dataX, dataY, "-", messungX, messungY, "o")
         grid()

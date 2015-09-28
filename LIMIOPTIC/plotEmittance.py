@@ -7,8 +7,12 @@ import sys
 
 data = None
 
+
 class DataGrabber(threading.Thread):
-    def __init__(self, datafiles=["particles.dat"]):
+    def __init__(self, datafiles):
+        if datafiles == []:
+            datafiles = ["particles.dat"]
+        print datafiles
         threading.Thread.__init__(self)
         self.datafiles = datafiles
         self.plot = graphics.Plot(noline=True)
@@ -30,7 +34,7 @@ class DataGrabber(threading.Thread):
                 dx   = [float(row[1]) for row in data]
                 y    = [float(row[2]) for row in data]
                 dy   = [float(row[3]) for row in data]
-                self.plot.setData(lineindex=iplot,     data=[x, dx])
+                self.plot.setData(lineindex=iplot + 0, data=[x, dx])
                 self.plot.setData(lineindex=iplot + 1, data=[y, dy])
                 iplot += 2
             #self.plot.update()
@@ -46,6 +50,7 @@ def start(num):
     data.start()
     #graphics.startApplication()
     #data.close()
+
 
 def stop():
     global data
