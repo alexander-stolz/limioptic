@@ -318,15 +318,18 @@ if __name__ == "__main__":
     import Tkinter
     import tkFileDialog
 
-    root = Tkinter.Tk()
-    root.withdraw()
+    if len(sys.argv) == 1:
+        root = Tkinter.Tk()
+        root.withdraw()
 
-    options = {}
-    options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt"), ("all files", ".*")]
-    source = tkFileDialog.askopenfile(mode="r", **options).name
+        options = {}
+        options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt"), ("all files", ".*")]
+        source = tkFileDialog.askopenfile(mode="r", **options).name
 
-    root.quit()
-    root.destroy()
+        root.quit()
+        root.destroy()
+    else:
+        source = sys.argv[1]
 
     myapp.LoadSource(source, filetype=("SRIM" if source.endswith("TRANSMIT.txt") else "limioptic"))
     #myapp.NormalizeEnergy()
