@@ -31,7 +31,7 @@ if not PY2EXE:
 print "sys",
 import sys
 print "limioptic",
-import limioptic        # ionenoptische berechnungen
+import limioptic       # ionenoptische berechnungen
 print "threading",
 import threading        # multithreading
 print "time",
@@ -1235,19 +1235,22 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_translate_2d = QtGui.QAction('2D (VTK)', self)
                 menu_translate_2d.setShortcut('Ctrl+G')
                 menu_translate_2d.setStatusTip('Translate Text to GUI 2D')
-                if not vtk: menu_translate_2d.setEnabled(False)
+                if not vtk:
+                    menu_translate_2d.setEnabled(False)
                 self.connect(menu_translate_2d, QtCore.SIGNAL('triggered()'), self.plot2d)
                 # translate 3d
                 menu_translate_3d = QtGui.QAction('3D (VTK)', self)
                 menu_translate_3d.setShortcut('Ctrl+H')
                 menu_translate_3d.setStatusTip('Translate Text to GUI 3D')
-                if not vtk: menu_translate_3d.setEnabled(False)
+                if not vtk:
+                    menu_translate_3d.setEnabled(False)
                 self.connect(menu_translate_3d, QtCore.SIGNAL('triggered()'), self.plot3d)
                 # translate qt 2d
                 menu_translate_qt = QtGui.QAction('2D (PyQtGraph)', self)
                 menu_translate_qt.setShortcut('Ctrl+F')
                 menu_translate_qt.setStatusTip('Translate Text to GUI 2D')
-                if not pyqtgraph: menu_translate_qt.setEnabled(False)
+                if not pyqtgraph:
+                    menu_translate_qt.setEnabled(False)
                 self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'), self.plotqt)
 
                 # Plot markers
@@ -1566,8 +1569,9 @@ class CQtLimioptic(QtGui.QMainWindow):
                         print "last savefile was not found"
 
                 ## UPDATE
-                updatethread = threading.Thread(target=self.update, args=())
-                updatethread.start()
+                if VERSION is not "IKP":
+                    updatethread = threading.Thread(target=self.update, args=())
+                    updatethread.start()
 
         def help(self):
             selection = self.textedit.textCursor().selectedText()
@@ -1595,7 +1599,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 """ Check uebers Internet ob Updates verfuegbar sind """
                 print "checking for updates..",
                 try:
-                        a = urllib.urlopen("http://ams.amstolz.de/version.txt")
+                        a = urllib.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/Limioptic%202/version")
                         ver = str(a.read()).strip()
                         a.close()
                         if (ver == VERSION):
@@ -2040,7 +2044,7 @@ class CInsertMatrixDialog(QtGui.QDialog):
 
 ################################
 
-VERSION          = "2014-11-24"
+VERSION          = open("version", "r").read()
 PORT             = "NONE"
 INPUT            = []
 BEZEICHNUNGEN    = []
@@ -2058,7 +2062,13 @@ try:
     print >> _test, "writetest"
     _test.close()
 except Exception, e:
-    backup_file = "_save.lim2"
+    try:
+        backup_file = "/".join([os.path.expanduser("~"), "_save.lim2"])
+        _test = open(backup_file + ".test", "w")
+        print >> _test, "writetest"
+        _test.close()
+    except:
+        backup_file = "_save.lim2"
 
 for i in xrange(32):
         INPUT.append(1.)
