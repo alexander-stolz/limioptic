@@ -1853,6 +1853,81 @@ def QuadrupolAxFoc(k, length, geo=25., solid=True):
     AddQuadrupolAxFoc(num, gamma2, k, length, geo, solid)
 
 
+def AddFNQPT(gamma2, prozent, astigm, energy, q):
+    global lastFunction
+    lastFunction = "FNQPT"
+
+    max_voltage = 12.5e3    # maximaler Netzteil-Output     ; V
+    l1 = .1                 # Laenge aeussere QP            ; m     ; ==x== ========= ==x==
+    l2 = .2                 # Laenge innerer QP             ; m     ; ===== ====x==== =====
+    l0 = 0.01               # Zwischenraum geschaetzt       ; m     ; =====x=========x=====
+    geo = 35.               # Polschuhabstand               ; mm    ; Aus Bild bestimmt. Paralaxe f = a * exp(ln(116/190) * x);  http://1drv.ms/1OTpF8h
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s + .25)
+        geo_y.InsertNextValue(geo)
+        s = s + l1
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(55)
+        geo_s.InsertNextValue(s + .076)
+        geo_y.InsertNextValue(55)
+        s = s + l0
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s + .5)
+        geo_y.InsertNextValue(geo)
+        s = s + l2
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(55)
+        geo_s.InsertNextValue(s + .076)
+        geo_y.InsertNextValue(55)
+        s = s + l0
+        geo_s.InsertNextValue(s)
+        geo_y.InsertNextValue(geo)
+        geo_s.InsertNextValue(s + .25)
+        geo_y.InsertNextValue(geo)
+        s = s + l1
+
+    # von AMS uebernommen
+    vx = max_voltage * (prozent + astigm) / 100.
+    vy = max_voltage * (prozent - astigm) / 100.
+    T  = energy
+
+    kx  = abs(vx) / float(geo * 1.e-3) ** 2 * q / T
+    k   = (vx + vy) / 2. / float(geo * 1.e-3) ** 2 * q / T
+
+    optic.AddQuadrupolRadFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(k)),
+        ctypes.c_double(float(.25)))
+    optic.AddDrift(
+        ctypes.c_int(1),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(.076))
+    optic.AddQuadrupolAxFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(kx)),
+        ctypes.c_double(float(.5)))
+    optic.AddDrift(
+        ctypes.c_int(1),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(.076))
+    optic.AddQuadrupolRadFoc(
+        ctypes.c_int(10),
+        ctypes.c_double(float(gamma2)),
+        ctypes.c_double(float(k)),
+        ctypes.c_double(float(.25)))
+
+
+def FNQPT(prozent, astigm, energy, q):
+    AddFNQPT(1., prozent, astigm, energy, q)
+
+
 def AddAMSQPT_XYX(gamma2, prozent, astigm, v_terminal, v_ext, q, geo):
     global lastFunction
     lastFunction = "AddAMSQPT_XYX"
