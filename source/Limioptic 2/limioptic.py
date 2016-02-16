@@ -406,6 +406,9 @@ def AddAMSAcc(v_qsnout, v_terminal, v_injection, q):
         N  = math.sqrt(T1 / T0)
         AddSegment(N, L)
 
+    AddGeo(0, 7., 1.147 / 2., 7.)
+    AddGeo(1.147 / 2., -5., 1.147 / 2., 7.)
+    AddGeo(1.147, 7., 1.147, 55.)
     # Terminal (Laenge 1147 mm) / Stripping
     T0 = T1
     T1 = T1
