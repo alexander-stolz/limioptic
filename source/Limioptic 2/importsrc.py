@@ -322,13 +322,13 @@ if __name__ == "__main__":
     root.withdraw()
 
     options = {}
-    options["filetypes"] = [("limioptic", ".out"), ("SRIM", "TRANSMIT.txt"), ("all files", ".*")]
+    options["filetypes"] = [("limioptic", ".out"), ("SRIM", ".txt"), ("all files", ".*")]
     source = tkFileDialog.askopenfile(mode="r", **options).name
 
     root.quit()
     root.destroy()
 
-    myapp.LoadSource(source, filetype=("SRIM" if source.endswith("TRANSMIT.txt") else "limioptic"))
+    myapp.LoadSource(source, filetype=("SRIM" if source.endswith(".txt") else "limioptic"))
     #myapp.NormalizeEnergy()
     myapp.ShowFits()
     #myapp.UserInteraction.ChooseFilter()
