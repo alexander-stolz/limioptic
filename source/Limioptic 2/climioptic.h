@@ -50,8 +50,10 @@ public:
    void AddESD(int,double,double,double,double,double,double);
    // Kantenfokussierung eines Dipolmagneten hinzufuegen
    void AddEdgeFocusing(int,double,double,double);
+   void AddEdgeFocusingY(int,double,double,double);
    // homogener Ablenkmagnet hinzufuegen
    void AddHomDeflectingMagnet(int,double,double,double,double);
+   void AddHomDeflectingMagnetY(int,double,double,double,double);
    void AddInhomDeflectingMagnet(int,double,double,double);
 
    void ClearTrajectories(); // Teilchen-Trajektorien loeschen
@@ -82,7 +84,9 @@ public:
    void ApplyQuadrupolAxFoc(double*,int,double,double,double);
    void ApplyESD(double*,int,double,double,double,double,double,double);
    void ApplyEdgeFocusing(double*,int,double,double,double);
+   void ApplyEdgeFocusingY(double*,int,double,double,double);
    void ApplyHomDeflectingMagnet(double*,int,double,double,double,double);
+   void ApplyHomDeflectingMagnetY(double*,int,double,double,double,double);
    void ApplyInhomDeflectingMagnet(double*,int,double,double,double);
 
    // die Startteilchen:

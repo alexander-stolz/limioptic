@@ -36,15 +36,15 @@ class PythonHighlighter (QSyntaxHighlighter):
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
         'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False', 'INPUT', "AddWaist()"]
+        'None', 'True', 'False', 'INPUT']
 
     functions = [
-        "(Add)*ThinLens", "(Add)*MSA", "(Add)*Slit", "(Add)*ESD",
+        "(Add)*ThinLens", "(Add)*MSA", "(Add)*MSA_Y", "(Add)*Slit", "(Add)*ESD",
         "(Add)*VBFN", "(Add)*AMSAcc", "(Add)*Beam", "(Add)*FNAccNeu",
         "ChangeBeamParameters", "(Add)*GaussBeam", "(Add)*BeamRandomGauss", "(Add)*Beam3d",
         "(Add)*BeamX", "(Add)*QuadrupolRadFoc", "(Add)*QuadrupolAxFoc", "(Add)*AMSQPT", "(Add)*BeamProfile", "(Add)*Foil"]
 
-    boldGreen = []
+    boldGreen = ["(Add)*Waist"]
 
     braces = ['\{', '\}', '\(', '\)', '\[', '\]']
 

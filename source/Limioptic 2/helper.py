@@ -170,19 +170,43 @@ AMSAcc = AddAMSAcc = """AddAMSAcc(v_qsnout, v_terminal, v_injection, q)
 
 add CologneAMS accelerator.
 
-v_qsnout    = q-snount voltage
-v_terminal  = terminal voltage
-v_injection = injection voltage
-q           = ion charge state"""
+v_qsnout    = q-snount voltage [V]
+v_terminal  = terminal voltage [V]
+v_injection = injection voltage [V]
+q           = ion charge state [e]"""
 
 
 VBFN = AddVBFN = """AddVBFN(extraktion, deltaV, laenge=.276, b=1.13, b1=-1., b2=-1., segment=0)
 
 add FN-preacceleration.
 
-extraktion = extraction energy
-deltaV     = preacceleration voltage
-laenge     = length of the preacceleration
+extraktion = extraction energy [keV]
+deltaV     = preacceleration voltage [v]
+laenge     = length of the preacceleration [m]
 b          = correction factor for input and output aperture if b1 and b2 are not set
 b1, b2     = correction factors for input and output
 segment    = just used internally"""
+
+
+MSA = """MSA(r, alpha, geo=30., solid=True, korrektur=None, B_ist=1., B_soll=1.)
+
+add Homogeneous Magnet (bends in X direction)
+
+r     = bending radius
+alpha = bending angle [deg]
+geo   = pole shoe distance from symmetry axis [mm]
+solid = does it cut the beam? [True, False]
+
+the rest is used internally."""
+
+
+MSA_Y = """MSA_Y(r, alpha, geo=30., solid=True, korrektur=None, B_ist=1., B_soll=1.)
+
+add Homogeneous Magnet (bends in Y direction)
+
+r     = bending radius
+alpha = bending angle [deg]
+geo   = pole shoe distance from symmetry axis [mm]
+solid = does it cut the beam? [True, False]
+
+the rest is used internally."""

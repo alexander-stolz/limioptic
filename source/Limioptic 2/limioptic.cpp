@@ -107,9 +107,19 @@ void AddEdgeFocusing(int num,double r,double beta,double betaeff)
    optic.AddEdgeFocusing(num,r,beta,betaeff);
 }
 
+void AddEdgeFocusingY(int num,double r,double beta,double betaeff)
+{
+   optic.AddEdgeFocusingY(num,r,beta,betaeff);
+}
+
 void AddHomDeflectingMagnet(int num,double gamma2,double r,double alpha, double korrektur)
 {
    optic.AddHomDeflectingMagnet(num,gamma2,r,alpha, korrektur);
+}
+
+void AddHomDeflectingMagnetY(int num,double gamma2,double r,double alpha, double korrektur)
+{
+   optic.AddHomDeflectingMagnetY(num,gamma2,r,alpha, korrektur);
 }
 
 void AddInhomDeflectingMagnet(int num,double rho,double phi,double n1)
@@ -233,9 +243,19 @@ void ApplyEdgeFocusing(double *p,int n,double r,double beta,double betaeff)
    optic.ApplyEdgeFocusing(p,n,r,beta,betaeff);
 }
 
+void ApplyEdgeFocusingY(double *p,int n,double r,double beta,double betaeff)
+{
+   optic.ApplyEdgeFocusingY(p,n,r,beta,betaeff);
+}
+
 void ApplyHomDeflectingMagnet(double *p,int n,double gamma2,double r,double alpha, double korrektur)
 {
    optic.ApplyHomDeflectingMagnet(p,n,gamma2,r,alpha, korrektur);
+}
+
+void ApplyHomDeflectingMagnetY(double *p,int n,double gamma2,double r,double alpha, double korrektur)
+{
+   optic.ApplyHomDeflectingMagnetY(p,n,gamma2,r,alpha, korrektur);
 }
 
 void ApplyInhomDeflectingMagnet(double *p,int num,double rho,double phi,double n1)

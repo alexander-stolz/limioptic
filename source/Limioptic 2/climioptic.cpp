@@ -356,11 +356,36 @@ void CLimioptic::AddEdgeFocusing(int number, double r, double beta, double betae
     beamline.push_back(ef);
 }
 
+void CLimioptic::AddEdgeFocusingY(int number, double r, double beta, double betaeff)
+{
+    vector<double> ef;
+    ef.clear();
+    ef.push_back(17.0);
+    ef.push_back((double)(number));
+    ef.push_back(r);
+    ef.push_back(beta);
+    ef.push_back(betaeff);
+    beamline.push_back(ef);
+}
+
 void CLimioptic::AddHomDeflectingMagnet(int number, double gamma2, double r, double alpha, double korrektur)
 {
     vector<double> hdm;
     hdm.clear();
     hdm.push_back(8.0);
+    hdm.push_back((double)(number));
+    hdm.push_back(gamma2);
+    hdm.push_back(r);
+    hdm.push_back(alpha);
+    hdm.push_back(korrektur);
+    beamline.push_back(hdm);
+}
+
+void CLimioptic::AddHomDeflectingMagnetY(int number, double gamma2, double r, double alpha, double korrektur)
+{
+    vector<double> hdm;
+    hdm.clear();
+    hdm.push_back(19.0);
     hdm.push_back((double)(number));
     hdm.push_back(gamma2);
     hdm.push_back(r);
@@ -474,6 +499,10 @@ void CLimioptic::CalculateTrajectories()
             ApplyEdgeFocusing(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
                   beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4]);
             break;
+        case 17:
+            ApplyEdgeFocusingY(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
+                  beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4]);
+            break;
         case 8:
             ApplyHomDeflectingMagnet(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
                   beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
@@ -513,6 +542,10 @@ void CLimioptic::CalculateTrajectories()
         case 18:
             ApplyInhomDeflectingMagnet(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
                   beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4]);
+            break;
+        case 19:
+            ApplyHomDeflectingMagnetY(&trajectories.front() + itraj, (int)beamline[ibeamline][1],
+                  beamline[ibeamline][2], beamline[ibeamline][3], beamline[ibeamline][4], beamline[ibeamline][5]);
             break;
         default:
             printf("Unknown ion optic element! Aborting ..\n");
@@ -1420,6 +1453,51 @@ void CLimioptic::ApplyEdgeFocusing(double *p, int nmat, double r, double beta, d
     }
 }
 
+void CLimioptic::ApplyEdgeFocusingY(double *p, int nmat, double r, double beta, double betaeff)
+{
+    int pnum, imat, i, j, elesize, ip;
+    double p0, p1, p2, p3, p4, p5;
+
+    elesize = particles.size();
+    pnum = elesize / particlesize; // Anzahl der Teilchen
+
+    i = 0;
+    for (imat = 0; imat < nmat; imat++)
+    {
+        for (ip = 0; ip < pnum; ip++)
+        {
+            p0 = p[i + 0 - elesize];
+            p3 = p[i + 2 - elesize] * tan(beta) / r
+               + p[i + 3 - elesize];
+            p2 = p[i + 2 - elesize];
+            p1 = p[i + 0 - elesize] * (-tan(betaeff) / r)
+               + p[i + 1 - elesize];
+            p4 = p[i + 4 - elesize];
+            p5 = p[i + 5 - elesize];
+
+            p[i + 0] = p0;
+            p[i + 1] = p1;
+            p[i + 2] = p2;
+            p[i + 3] = p3;
+            p[i + 4] = p4;
+            p[i + 5] = p5;
+            p[i + 6] = p[i + 6 - elesize] + 0.0; // Die Kante hat die Laenge Null
+
+            // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
+            for (j = 7; j < particlesize; j++)
+            {
+                p[i + j] = p[i + j - elesize];
+            }
+            if (imat == 0)
+            {
+                p[i + 7] = p[i + 7] + 1.0;    // Index des ionenoptischen Elements raufzaehlen
+            }
+
+            i = i + particlesize;
+        }
+    }
+}
+
 void CLimioptic::ApplyHomDeflectingMagnet(double *p, int nmat, double gamma2, double r,
         double alpha, double korrektur)
 {
@@ -1451,6 +1529,63 @@ void CLimioptic::ApplyHomDeflectingMagnet(double *p, int nmat, double gamma2, do
             p2 = p[i + 2 - elesize] +
                  p[i + 3 - elesize] * r * alpha;
             p3 = p[i + 3 - elesize];
+            p4 = p[i + 4 - elesize]; //weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
+            p5 = p[i + 5 - elesize];
+
+            p[i + 0] = p0;
+            p[i + 1] = p1;
+            p[i + 2] = p2;
+            p[i + 3] = p3;
+            p[i + 4] = p4;
+            p[i + 5] = p5;
+            p[i + 6] = p[i + 6 - elesize] + l;
+
+            // Kopiere die restlichen Teilcheneigenschaften (falls vorhanden)
+            for (j = 7; j < particlesize; j++)
+            {
+                p[i + j] = p[i + j - elesize];
+            }
+            if (imat == 0)
+            {
+                p[i + 7] = p[i + 7] + 1.0;    // Index des ionenoptischen Elements raufzaehlen
+            }
+
+            i = i + particlesize;
+        }
+    }
+}
+
+void CLimioptic::ApplyHomDeflectingMagnetY(double *p, int nmat, double gamma2, double r,
+        double alpha, double korrektur)
+{
+    int pnum, imat, i, j, elesize, ip;
+    double p0, p1, p2, p3, p4, p5;
+    double l;
+
+    alpha = alpha / nmat;
+
+    l = r * alpha;
+    korrektur = ((korrektur * korrektur) - 1.) * 1000.;
+
+    elesize = particles.size();
+    pnum = elesize / particlesize; // Anzahl der Teilchen
+
+    i = 0;
+    for (imat = 0; imat < nmat; imat++)
+    {
+        for (ip = 0; ip < pnum; ip++)
+        {
+            p2 = p[i + 2 - elesize] * cos(alpha) +
+                 p[i + 3 - elesize] * r * sin(alpha) +
+                 p[i + 4 - elesize] * r * (1. - cos(alpha)) / 2 +
+                 (p[i + 5 - elesize] + korrektur) * r * (1. - cos(alpha)) / 2; // angepasst
+            p3 = p[i + 2 - elesize] * (-sin(alpha) / r) +
+                 p[i + 3 - elesize] * cos(alpha) +
+                 p[i + 4 - elesize] * sin(alpha) / 2 +
+                 (p[i + 5 - elesize] + korrektur) * sin(alpha) / 2; // angepasst
+            p0 = p[i + 0 - elesize] +
+                 p[i + 1 - elesize] * r * alpha;
+            p1 = p[i + 1 - elesize];
             p4 = p[i + 4 - elesize]; //weg:  p[i+0-elesize]*(-sin(alpha))+p[i+1-elesize]*(-r*(1.0-cos(alpha)))+p[i+4-elesize]+p[i+5-elesize]*(r*alpha/gamma2-r*(alpha-sin(alpha)));
             p5 = p[i + 5 - elesize];
 

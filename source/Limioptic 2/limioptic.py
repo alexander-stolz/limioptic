@@ -1718,6 +1718,38 @@ def EdgeFocusing(r, beta, K=.45, geo=30.):
         ctypes.c_double(float(betaeff)))
 
 
+def AddEdgeFocusingY(r, beta, K, geo):
+    global lastFunction
+    lastFunction = "AddEdgeFocusingY"
+
+    g = 2. * geo / 1.e3
+
+    betaeff = beta - g / r * K * (1. + math.sin(beta) * math.sin(beta)) / (math.cos(beta))
+
+    optic.AddEdgeFocusingY(
+        ctypes.c_int(1),
+        ctypes.c_double(float(r)),
+        ctypes.c_double(float(beta)),
+        ctypes.c_double(float(betaeff)))
+
+
+def EdgeFocusingY(r, beta, K=.45, geo=30.):
+
+    global lastFunction
+    lastFunction = "AddEdgeFocusingY"
+
+    g = 2. * geo / 1.e3
+    beta = math.radians(beta)
+
+    betaeff = beta - g / r * K * (1. + math.sin(beta) * math.sin(beta)) / (math.cos(beta))
+
+    optic.AddEdgeFocusingY(
+        ctypes.c_int(1),
+        ctypes.c_double(float(r)),
+        ctypes.c_double(float(beta)),
+        ctypes.c_double(float(betaeff)))
+
+
 def AddMSA(num, gamma2, r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1., solid=True):
     global lastFunction
     lastFunction = "AddMSA"
@@ -1760,6 +1792,50 @@ def MSA(r, alpha, geo=30., solid=True, korrektur=None, B_ist=1., B_soll=1.):
     num = 10
 
     AddMSA(num, 1., r, alpha, geo, korrektur, B_ist, B_soll, solid)
+
+
+def AddMSA_Y(num, gamma2, r, alpha, geo=30., korrektur=None, B_ist=1., B_soll=1., solid=True):
+    global lastFunction
+    lastFunction = "AddMSA_Y"
+
+    if not korrektur:
+        korrektur = float(B_ist) / float(B_soll)
+
+    global s, geo_s, geo_y
+    if (s > -0.5):
+        geo_s.InsertNextValue(s)
+        geo_s.InsertNextValue(s + r * alpha)
+        geo_y.InsertNextValue(geo)
+        geo_y.InsertNextValue(geo)
+        s = s + r * alpha
+
+    if solid:
+        for i in xrange(num):
+            AddSlit(0., 100., 0., geo * 2., visible=False, output=False)
+            optic.AddHomDeflectingMagnetY(
+                ctypes.c_int(int(1)),
+                ctypes.c_double(float(gamma2)),
+                ctypes.c_double(float(r)),
+                ctypes.c_double(float(alpha / float(num))),
+                ctypes.c_double(float(korrektur)))
+        AddSlit(0., 100., 0., geo * 2., visible=False, output=False)
+    else:
+        optic.AddHomDeflectingMagnetY(
+            ctypes.c_int(int(num)),
+            ctypes.c_double(float(gamma2)),
+            ctypes.c_double(float(r)),
+            ctypes.c_double(float(alpha)),
+            ctypes.c_double(float(korrektur)))
+
+
+def MSA_Y(r, alpha, geo=30., solid=True, korrektur=None, B_ist=1., B_soll=1.):
+    global lastFunction
+    lastFunction = "AddMSA_Y"
+
+    alpha = math.radians(alpha)
+    num = 10
+
+    AddMSA_Y(num, 1., r, alpha, geo, korrektur, B_ist, B_soll, solid)
 
 
 def AddInhomMSA(num, rho, phi, n, geo):

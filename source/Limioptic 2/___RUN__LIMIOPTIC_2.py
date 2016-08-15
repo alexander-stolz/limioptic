@@ -73,10 +73,10 @@ from scipy import optimize
 # import plotEmittance
 print "helper",
 import helper
-print "pickle",
+print "pickle"
 import pickle
-print "calculator"
-import function_calculator
+#print "calculator"
+#import function_calculator
 
 #################################################
 #################################################
@@ -1253,6 +1253,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                     menu_translate_qt.setEnabled(False)
                 self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'), self.plotqt)
 
+                ### PLOT ###
                 # Plot markers
                 self.menu_plot_marker = QtGui.QAction('marker', self)
                 self.menu_plot_marker.setCheckable(True)
@@ -1287,6 +1288,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_plot_splitview.setCheckable(True)
                 self.menu_plot_splitview.setChecked(False)
 
+                ### INSERT ###
                 # INPUT
                 self.menu_insert_input = QtGui.QAction('INPUT[]', self)
                 self.menu_insert_input.setShortcut('Ctrl+Shift+I')
@@ -1369,6 +1371,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_insert_hdm.setShortcut('Ctrl+Shift+M')
                 self.menu_insert_hdm.setStatusTip('Insert a homogeneous deflecting magnet')
                 self.connect(self.menu_insert_hdm, QtCore.SIGNAL('triggered()'), self.InsertHomDeflectingMagnet)
+                # MSA_Y
+                self.menu_insert_hdmy = QtGui.QAction('MSA_Y', self)
+                self.menu_insert_hdmy.setStatusTip('Insert a homogeneous deflecting magnet which bends to the Y axis')
+                self.connect(self.menu_insert_hdmy, QtCore.SIGNAL('triggered()'), self.InsertHomDeflectingMagnetY)
                 # Quadrupol
                 self.menu_insert_quadrupol = QtGui.QAction('Quadrupol', self)
                 self.menu_insert_quadrupol.setShortcut('Ctrl+Shift+Q')
@@ -1417,7 +1423,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_insert_amsacc.setShortcut('Ctrl+Shift+A')
                 self.connect(self.menu_insert_amsacc, QtCore.SIGNAL('triggered()'), self.InsertAMSAcc)
 
-                ## OUTPUT
+                ### TOOLS ###
                 # dat
                 self.menu_output_file = QtGui.QAction('-> output_*.dat', self)
                 self.menu_output_file.setStatusTip('send output -> *.dat files for publication.')
@@ -1434,6 +1440,11 @@ class CQtLimioptic(QtGui.QMainWindow):
                 self.menu_output_emittance.setStatusTip('Plot Beamprofile')
                 self.menu_output_emittance.setCheckable(False)
                 self.connect(self.menu_output_emittance, QtCore.SIGNAL('triggered()'), self.emittance)
+                # calculator
+                self.menu_output_calc = QtGui.QAction("Calculator", self)
+                self.menu_output_calc.setStatusTip('calculator')
+                self.menu_output_calc.setCheckable(False)
+                self.connect(self.menu_output_calc, QtCore.SIGNAL('triggered()'), self.calc)
 
 
 
@@ -1503,6 +1514,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_drift)
                 menu_insert.addAction(self.menu_insert_esd)
                 menu_insert.addAction(self.menu_insert_hdm)
+                menu_insert.addAction(self.menu_insert_hdmy)
                 menu_insert.addAction(self.menu_insert_quadrupol)
                 menu_insert.addAction(self.menu_insert_ThinLens)
                 menu_insert.addAction(self.menu_insert_slit)
@@ -1521,10 +1533,11 @@ class CQtLimioptic(QtGui.QMainWindow):
                 menu_insert.addAction(self.menu_insert_vbfn)
                 menu_insert.addAction(self.menu_insert_fnaccneu)
 
-                ## OUTPUT
+                ## TOOLS
                 menu_output = menubar.addMenu('Tools')
                 menu_output.addAction(self.menu_output_file)
                 menu_output.addAction(self.menu_output_spicker)
+                #menu_output.addAction(self.menu_output_calc)
                 #menu_output.addAction(self.menu_output_emittance)
 
                 ## INTERFACE
@@ -1657,6 +1670,10 @@ class CQtLimioptic(QtGui.QMainWindow):
                 """ Der AMS-Spicker """
                 self.swidget = ams_spicker.Spicker()
                 self.swidget.show()
+
+#############################
+        def calc(self):
+            os.system("python function_calculator.py")
 
 #############################
         def emittance(self):
@@ -1918,6 +1935,11 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.textedit.textCursor().insertText('MSA(r, alpha)\n')    # Magnet
             self.textedit.textCursor().insertText('EdgeFocusing(r, beta, K=.45, R)\n\n')  # Kantenfokussierung
 
+        def InsertHomDeflectingMagnetY(self):
+            self.textedit.textCursor().insertText('EdgeFocusingY(r, beta, K=.45, R)\n')    # Kantenfokussierung
+            self.textedit.textCursor().insertText('MSA_Y(r, alpha)\n')    # Magnet
+            self.textedit.textCursor().insertText('EdgeFocusingY(r, beta, K=.45, R)\n\n')  # Kantenfokussierung
+
         def InsertQuadrupol(self):
             self.textedit.textCursor().insertText('QuadrupolRadFoc(k, l, R)\n')   # radial fokussierend
             self.textedit.textCursor().insertText('QuadrupolAxFoc(k, l, R)\n\n')  # axial fokusierend
@@ -2055,6 +2077,9 @@ SUPERSCALE3D     = 10.
 SCREENSHOTNUMBER = 0
 XCOLOR           = 255, 0, 0, 255
 YCOLOR           = 0, 255, 0, 255
+LICENCE          = "\nThe program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.\n"
+
+print LICENCE
 
 try:
     backup_file = "/".join([os.environ["PROGRAMDATA"], "_save.lim2"])
