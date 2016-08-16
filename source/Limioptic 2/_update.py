@@ -27,6 +27,8 @@ else:
 	print "___LIMIOPTIC.exe updated"
 	ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/liblimioptic-win.so", "liblimioptic-win.so")
 	print "liblimioptic-win updated"
+	ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/_Calculator.exe", "_Calculator.exe")
+	print "_Calculator.exe updated"
 
 print "update complete."
 raw_input("press enter to exit")
