@@ -320,7 +320,7 @@ def AddMatrix(num, mat, length):
 Matrix = AddMatrix
 
 
-def AddAMSAcc(v_qsnout, v_terminal, v_injection, q):
+def AddAMSAcc(v_qsnout, v_terminal, v_injection, q, waist=False):
     """ Beschleunigung Cologne AMS nach HINTERBERGER """
     global lastFunction
     lastFunction = "AddAMSAcc"
@@ -413,7 +413,10 @@ def AddAMSAcc(v_qsnout, v_terminal, v_injection, q):
     T0 = T1
     T1 = T1
     N  = math.sqrt(T1 / T0)
-    AddSegment(N, 1147.e-3)
+    AddSegment(N, 1147.e-3 / 2.)
+    if waist:
+        AddWaist()
+    AddSegment(N, 1147.e-3 / 2.)
 
     ### HE2 : Ende Terminal..letzte Elektrode
     R_gesamt = float(9.0 * 120.e6 + 156. * 300.e6)
