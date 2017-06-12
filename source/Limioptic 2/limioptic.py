@@ -550,6 +550,72 @@ def AddFNAccNeu(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=
 FNAccNeu = AddFNAccNeu
 
 
+def AddFNAccNeu_14(vt, T0, q, b=0.57, b1=-1., b2=-1., D1=.088, factor1=1., factor2=1., beamprofile=False, addwaist=False):
+    """ FN Beschleuniger einfach (ohne einzelne Elektroden) """
+    global lastFunction
+    lastFunction = "AddFNAccNeu_14"
+
+    if ((b1 == -1.) and (b2 == -1.)):
+        b1 = b
+        b2 = b
+    R1 = 53660.e6
+    R2 = 53850.e6 * 0
+    R3 = 55710.e6 * 0
+    R4 = 55800.e6
+    RLE = R1 + R2
+    RHE = R3 + R4
+
+    l1 = 2.438
+    l2 = 2.438
+    l3 = 2.438
+    l4 = 2.438
+    space1 = .273
+    space2 = .273
+    terminal = .609 + .609
+
+    E1 = R1 * vt / RLE / l1
+    E2 = R2 * vt / RLE / l2
+    E3 = R3 * vt / RHE / l3
+    E4 = R4 * vt / RHE / l4
+
+    T1 = T0 + E1 * l1
+    T2 = T1 + E2 * l2
+    T3 = T2 + q * E3 * l3
+    T4 = T3 + q * E4 * l4
+
+    #D1 = .088 # LE1
+    D2 = .03  # LE1
+    D3 = .03  # LE2
+    D4 = .03  # LE2
+    D5 = .03  # HE1
+    D6 = .03  # HE1
+    D7 = .03  # HE2
+    D8 = .03  # HE2
+
+    AddSegment11(T0, T1, D1, D2, l1, b1, b2)             # LE1
+    AddSegment11(T1, T1, D2, D3, space1, b1, b2)         # Space1
+    AddSegment11(T1, T2, D3, D4, l2, b1, b2)             # LE2
+    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  # Terminal
+
+    if (beamprofile):
+        print "\n"
+        AddBeamProfile()
+
+    if (addwaist):
+        AddWaist()
+
+    AddModifyEmittance(factor1, factor2)
+
+    if (beamprofile):
+        AddBeamProfile()
+
+    AddSegment11(T2, T2, D4, D5, terminal / 2., b1, b2)  # Terminal
+    AddSegment11(T2, T3, D5, D6, l3, b1, b2)             # HE1
+    AddSegment11(T3, T3, D6, D7, space2, b1, b2)         # Space2
+    AddSegment11(T3, T4, D7, D8, l4, b1, b2)             # HE2
+FNAccNeu = AddFNAccNeu
+
+
 # Beschleunigung Cologne FN
 def AddFNAcc(v_gesamt, v_vorbeschl, q):
     global lastFunction
@@ -1508,6 +1574,8 @@ def AddAMSSO110EL(phi1, v_el):
 
     # phi2/phi1
     x = (phi1 - v_el) / float(phi1)
+    if (x < .2) or (x > .7):
+        print "SO110 EL voltage out of range."
 
     #f = .001/(0.022648131734415336-0.13770935811064514*x+0.44804113697363235*x**2-0.9575118663530009*x**3+1.3523795047227753*x**4-1.2071207469218252*x**5+0.6161254239513653*x**6-0.13696307518260592*x**7)#reihenentwicklung fuer x=.3 ... .8
 
@@ -1541,6 +1609,8 @@ def AddAMSBIEL(phi1, v_el):
 
     # phi2/phi1
     x = (phi1 - v_el) / phi1
+    if (x < .2) or (x > .7):
+        print "BI EL voltage out of range."
 
     #reihenentwicklung fuer x=.2 ... .7
     f = .001 / (
@@ -1572,6 +1642,8 @@ def AddFNEL(phi1, v_el):
 
     # phi2/phi1
     x = (phi1 - v_el) / phi1
+    if (x < .2) or (x > .7):
+        print "FN EL voltage out of range."
 
     #reihenentwicklung fuer x=.2 ... .7
     f = 1. / (

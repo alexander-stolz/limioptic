@@ -7,7 +7,7 @@ class Spicker(gui.QDialog):
     def __init__(self):
         gui.QDialog.__init__(self)
         vbox = gui.QVBoxLayout()
-        
+
         inputbox = gui.QGridLayout()
         self.q = gui.QSpinBox()
         self.q.setPrefix("q= ")
@@ -51,7 +51,7 @@ class Spicker(gui.QDialog):
         self.mout.setValue(14)
         mbox.addWidget(self.min)
         mbox.addWidget(self.mout)
-        
+
         inputbox.addWidget(self.q,0,0)
         inputbox.addWidget(self.vext,0,1)
         inputbox.addWidget(self.term,0,2)
@@ -125,9 +125,9 @@ class Spicker(gui.QDialog):
             self.mstrom[i-1].setSuffix(" A")
             self.mstrom[i-1].setRange(-1000,1000)
             msalayout.addWidget(self.mstrom[i-1],i,1)
-            
+
             self.mfeld.append(gui.QDoubleSpinBox())
-            self.mfeld[i-1].setDecimals(4)
+            self.mfeld[i-1].setDecimals(6)
             self.mfeld[i-1].setPrefix("Feld= ")
             self.mfeld[i-1].setSuffix(" T")
             self.mfeld[i-1].setRange(-100,100)
@@ -154,10 +154,10 @@ class Spicker(gui.QDialog):
         esdlayout.setColumnStretch(1,100)
         esdlayout.setColumnStretch(2,100)
         vbox.addLayout(esdlayout)
-        
-        
+
+
         self.setLayout(vbox)
-        
+
 
         self.connect(self.q,    core.SIGNAL("valueChanged(int)"),self.rechne)
         self.connect(self.min,  core.SIGNAL("valueChanged(int)"),self.rechne)
@@ -186,12 +186,12 @@ class Spicker(gui.QDialog):
         for  i in range(0,4):
             self.percent[i].setValue(ky[i]/xi*100.)
             self.ast[i].setValue((kx[i]-ky[i])/xi*100.)
-            
+
         if (self.GIC.isChecked()): radius[2] = 1.545
         if (self.TOF.isChecked()): radius[2] = 1.545*30./20.
         if (self.SIG.isChecked()): radius[2] = 1.545*30./(-15.)
         if (self.AFD.isChecked()): radius[2] = -1.545
-        
+
         for i in range(1,4):
             feld = chi/radius[i]
             self.mfeld[i].setValue(feld)
@@ -199,7 +199,7 @@ class Spicker(gui.QDialog):
         feld = math.sqrt(2.*self.min.value()*self.vext.value()*1000.)*math.sqrt(1.660538921e-27 / 1.602176565e-19)/radius[0]
         self.mfeld[0].setValue(feld)
         self.mstrom[0].setValue(self.magnetstrom(0,feld))
-        
+
         self.espannung[0].setValue(self.vext.value()*.05325/.469)
         self.espannung[1].setValue(T/q*.032/2.816/1000.)
 
@@ -210,16 +210,16 @@ class Spicker(gui.QDialog):
             if (x >= 0): return .357713+127.112*x+58.7234*x**2-192.05*x**3+306.316*x**4-230.378*x**5+66.9716*x**6
             if (x <  0): return -(.357713-127.112*x+58.7234*x**2+192.05*x**3+306.316*x**4+230.378*x**5+66.9716*x**6)
         if (m == 3): return 0.370571+163.385*x+4.48565*x**2
-    
-    
-    
+
+
+
 radius = [.403,2.112,1.611,.455] #msas
 steigung = [203.56,183.38,135.95,0.] #AFD fehlt noch
 kx = [4.32,3.74,2.33,3.65]
 ky = [4.72,3.91,3.05,3.67]
 
 if __name__ == "__main__":
-    
+
     app = gui.QApplication(sys.argv)
     myapp = Spicker()
 

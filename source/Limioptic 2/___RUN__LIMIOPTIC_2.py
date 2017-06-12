@@ -587,14 +587,15 @@ class doitqt2(threading.Thread):
         iele  = limioptic.geo_s.GetNumberOfTuples()
         geo_s = [limioptic.geo_s.GetValue(i) for i in xrange(iele)]
         geo_y = [limioptic.geo_y.GetValue(i) for i in xrange(iele)]
-        if not myapp.menu_plot_bg.isChecked():
-            self.linegeo.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
-            if myapp.menu_plot_splitview.isChecked():
-                self.linegeo2.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
-        else:
-            self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
-            if myapp.menu_plot_splitview.isChecked():
-                self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
+        if myapp.menu_plot_geo.isChecked():
+            if not myapp.menu_plot_bg.isChecked():
+                self.linegeo.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
+                if myapp.menu_plot_splitview.isChecked():
+                    self.linegeo2.setData(x=geo_s, y=geo_y, pen=(0, 0, 250))
+            else:
+                self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
+                if myapp.menu_plot_splitview.isChecked():
+                    self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
 
 
 class Segment:
@@ -1586,8 +1587,9 @@ class CQtLimioptic(QtGui.QMainWindow):
                     updatethread = threading.Thread(target=self.update, args=())
                     updatethread.start()
 
-        def help(self):
-            selection = self.textedit.textCursor().selectedText()
+        def help(self, selection=""):
+            if (not selection):
+                selection = self.textedit.textCursor().selectedText()
             if selection in dir(helper):
                 helptext = eval("helper.%s" % (selection))
                 print "\nHELP:\n------------------------------------------"
@@ -1609,67 +1611,67 @@ class CQtLimioptic(QtGui.QMainWindow):
             print "\rsaved to %s" % (backup_file)
 
         def update(self):
-                """ Check uebers Internet ob Updates verfuegbar sind """
-                print "checking for updates..",
-                try:
-                        a = urllib.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/Limioptic%202/version")
-                        ver = str(a.read()).strip()
-                        a.close()
-                        if (ver == VERSION):
-                                print "this is the newest version\n"
-                        else:
-                                print "there is a newer version online. run \"__update.bat\" to update\n"
-                                print "Your version:", VERSION, "Latest Version:", ver, "\n"
-                except:
-                        print "update check failed\n"
+            """ Check uebers Internet ob Updates verfuegbar sind """
+            print "checking for updates..",
+            try:
+                a = urllib.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/Limioptic%202/version")
+                ver = str(a.read()).strip()
+                a.close()
+                if (ver == VERSION):
+                    print "this is the newest version\n"
+                else:
+                    print "there is a newer version online. run \"__update.bat\" to update\n"
+                    print "Your version:", VERSION, "Latest Version:", ver, "\n"
+            except:
+                print "update check failed\n"
 
 #############################
         def setunsaved(self):
-                try:
-                        self.setWindowTitle("Limioptic 2 -     changed     - {}".format(self.FileName))
-                except:
-                        self.setWindowTitle("Limioptic 2 - unsaved")
+            try:
+                self.setWindowTitle("Limioptic 2 -     changed     - {}".format(self.FileName))
+            except:
+                self.setWindowTitle("Limioptic 2 - unsaved")
 
 #############################
         def setcom1(self):
-                global PORT
-                PORT = "COM1"
+            global PORT
+            PORT = "COM1"
 
         def setcom2(self):
-                global PORT
-                PORT = "COM2"
+            global PORT
+            PORT = "COM2"
 
         def setcom3(self):
-                global PORT
-                PORT = "COM3"
+            global PORT
+            PORT = "COM3"
 
         def setcom4(self):
-                global PORT
-                PORT = "COM4"
+            global PORT
+            PORT = "COM4"
 
         def setcom5(self):
-                global PORT
-                PORT = "COM5"
+            global PORT
+            PORT = "COM5"
 
 ##############################
         def setxy(self):
-                """ Nur x, nur y, oder beides zeichnen. """
-                global xy, plotx, ploty
-                xy = 0
-                plotx = False
-                ploty = False
-                if (self.menu_plot_x.isChecked()):
-                        xy += 1
-                        plotx = True
-                if (self.menu_plot_y.isChecked()):
-                        xy += 1
-                        ploty = True
+            """ Nur x, nur y, oder beides zeichnen. """
+            global xy, plotx, ploty
+            xy = 0
+            plotx = False
+            ploty = False
+            if (self.menu_plot_x.isChecked()):
+                xy += 1
+                plotx = True
+            if (self.menu_plot_y.isChecked()):
+                xy += 1
+                ploty = True
 
 #############################
         def spicker(self):
-                """ Der AMS-Spicker """
-                self.swidget = ams_spicker.Spicker()
-                self.swidget.show()
+            """ Der AMS-Spicker """
+            self.swidget = ams_spicker.Spicker()
+            self.swidget.show()
 
 #############################
         def calc(self):
@@ -1681,73 +1683,73 @@ class CQtLimioptic(QtGui.QMainWindow):
 
 #############################
         def todat(self):
-                """ Ausgabe in Datei """
-                if (self.menu_output_file.isChecked()):
-                        if (RUNNING2D):
-                                msg = QtGui.QMessageBox()
-                                msg.setText("Please close the plot-window and rerender!\n*.dat files will be produced every time the plot-window opens.")
-                                msg.exec_()
-                        else:
-                                msg = QtGui.QMessageBox()
-                                msg.setText("Press Ctrl+G to produce *.dat files!")
-                                msg.exec_()
+            """ Ausgabe in Datei """
+            if (self.menu_output_file.isChecked()):
+                if (RUNNING2D):
+                    msg = QtGui.QMessageBox()
+                    msg.setText("Please close the plot-window and rerender!\n*.dat files will be produced every time the plot-window opens.")
+                    msg.exec_()
+                else:
+                    msg = QtGui.QMessageBox()
+                    msg.setText("Press Ctrl+G to produce *.dat files!")
+                    msg.exec_()
 
 #############################
         def LoadFile(self, filename=None):
-                if not filename:
-                    self.FileName = str(QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim"))
-                else:
-                    self.FileName = filename
-                if (self.FileName.endswith("lim")):
-                        myfile = open(self.FileName, 'r')
-                        self.textedit.setText(myfile.read())
-                        myfile.close()
-
-                        try:
-                            global NumberOfInputs, BEZEICHNUNGEN, INPUT
-                            i = -1
-                            for line in open(self.FileName.split(".", 1)[0] + ".var"):
-                                i += 1
-                                BEZEICHNUNGEN[i] = line.split(" = ")[0]
-                                INPUT[i] = float(line.split(" = ")[1])
-                            NumberOfInputs = i + 1
-                            print "the last values were restored"
-                        except:
-                            print "could not load variables"
-
-                elif (self.FileName.endswith("lim2")):
-                    (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(self.FileName, "rb"))
-                    self.textedit.setText(text)
-
-                self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
-                print "{} was loaded".format(self.FileName)
-
-        def LoadAutosave(self):
-                global NumberOfInputs, BEZEICHNUNGEN, INPUT
+            if not filename:
+                self.FileName = str(QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim"))
+            else:
+                self.FileName = filename
+            if (self.FileName.endswith("lim")):
+                myfile = open(self.FileName, 'r')
+                self.textedit.setText(myfile.read())
+                myfile.close()
 
                 try:
-                    if backup_file.endswith("lim2"):
-                        (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
-                        self.textedit.setText(text)
-                        return 0
-                    else:
-                        myfile = open(backup_file + ".lim", "r")
-                        title  = "Limioptic 2  -  _save.lim"
-                        self.textedit.setText(myfile.read())
-                        myfile.close()
-                        self.setWindowTitle(title)
-                except:
-                        print "_save.lim not found!"
-
-                try:
+                    global NumberOfInputs, BEZEICHNUNGEN, INPUT
                     i = -1
-                    for line in open(backup_file + ".var", "r"):
+                    for line in open(self.FileName.split(".", 1)[0] + ".var"):
                         i += 1
                         BEZEICHNUNGEN[i] = line.split(" = ")[0]
                         INPUT[i] = float(line.split(" = ")[1])
                     NumberOfInputs = i + 1
+                    print "the last values were restored"
                 except:
-                    print "_save.var not found"
+                    print "could not load variables"
+
+            elif (self.FileName.endswith("lim2")):
+                (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(self.FileName, "rb"))
+                self.textedit.setText(text)
+
+            self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+            print "{} was loaded".format(self.FileName)
+
+        def LoadAutosave(self):
+            global NumberOfInputs, BEZEICHNUNGEN, INPUT
+
+            try:
+                if backup_file.endswith("lim2"):
+                    (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(backup_file, "rb"))
+                    self.textedit.setText(text)
+                    return 0
+                else:
+                    myfile = open(backup_file + ".lim", "r")
+                    title  = "Limioptic 2  -  _save.lim"
+                    self.textedit.setText(myfile.read())
+                    myfile.close()
+                    self.setWindowTitle(title)
+            except:
+                    print "_save.lim not found!"
+
+            try:
+                i = -1
+                for line in open(backup_file + ".var", "r"):
+                    i += 1
+                    BEZEICHNUNGEN[i] = line.split(" = ")[0]
+                    INPUT[i] = float(line.split(" = ")[1])
+                NumberOfInputs = i + 1
+            except:
+                print "_save.var not found"
 
         def SaveAlt(self):
             myfile = open(self.FileName, "w")
@@ -1776,115 +1778,124 @@ class CQtLimioptic(QtGui.QMainWindow):
                     self.SaveNeu()
 
         def SaveFile(self):
-                try:
-                    if (self.FileName.endsWith("lim")):
-                        self.SaveAlt()
-                    elif (self.FileName.endsWith("lim2")):
-                        self.SaveNeu()
-                except:
-                        print "Noch kein Filename definiert!"
-                        self.SaveFileAs()
+            try:
+                if (self.FileName.endsWith("lim")):
+                    self.SaveAlt()
+                elif (self.FileName.endsWith("lim2")):
+                    self.SaveNeu()
+            except:
+                print "Noch kein Filename definiert!"
+                self.SaveFileAs()
 
 #############################
         def plot2d(self):
-                global RUNNING2D, RUNNING
-                self.SaveNeu(backup_file)
+            global RUNNING2D, RUNNING
+            self.SaveNeu(backup_file)
 
-                if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file
-                        self.inputwindow2d = inputcontrol("2d")
-                        RUNNING2D = RUNNING = True
-                        self.inputwindow2d.exec_()
-                        RUNNING2D = RUNNING = False
-                elif RUNNING2D:
-                        self.inputwindow2d.plotwindow.neu()
+            if not RUNNING:
+                print "Sicherungsdatei: ", backup_file
+                self.inputwindow2d = inputcontrol("2d")
+                RUNNING2D = RUNNING = True
+                self.inputwindow2d.exec_()
+                RUNNING2D = RUNNING = False
+            elif RUNNING2D:
+                self.inputwindow2d.plotwindow.neu()
 
         def plotqt(self):
-                global RUNNINGQT, RUNNING
-                self.SaveNeu(backup_file)
+            global RUNNINGQT, RUNNING
+            self.SaveNeu(backup_file)
 
-                if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file
-                        self.inputwindowqt = inputcontrol("qt")
-                        RUNNINGQT = RUNNING = True
-                        self.inputwindowqt.exec_()
-                        RUNNINGQT = RUNNING = False
-                elif RUNNINGQT:
-                        self.inputwindowqt.plotwindow.update()
+            if not RUNNING:
+                print "Sicherungsdatei: ", backup_file
+                self.inputwindowqt = inputcontrol("qt")
+                RUNNINGQT = RUNNING = True
+                self.inputwindowqt.exec_()
+                RUNNINGQT = RUNNING = False
+            elif RUNNINGQT:
+                self.inputwindowqt.plotwindow.update()
 
         def plot3d(self):
-                global RUNNING3D, RUNNING
-                self.SaveNeu(backup_file)
+            global RUNNING3D, RUNNING
+            self.SaveNeu(backup_file)
 
-                if not RUNNING:
-                        print "Sicherungsdatei: ", backup_file
-                        self.inputwindow3d = inputcontrol("3d")
-                        RUNNING3D = RUNNING = True
-                        self.inputwindow3d.exec_()
-                        RUNNING3D = RUNNING = False
-                elif RUNNING3D:
-                        self.inputwindow3d.plotwindow.neu()
+            if not RUNNING:
+                print "Sicherungsdatei: ", backup_file
+                self.inputwindow3d = inputcontrol("3d")
+                RUNNING3D = RUNNING = True
+                self.inputwindow3d.exec_()
+                RUNNING3D = RUNNING = False
+            elif RUNNING3D:
+                self.inputwindow3d.plotwindow.neu()
 
 ##### INSERT Funktionen #####
 #############################
         def InsertINPUT(self):
-                self.textedit.textCursor().insertText("INPUT[ ]")
-                self.textedit.moveCursor(QtGui.QTextCursor.Left)
-                self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+            self.textedit.textCursor().insertText("INPUT[ ]")
+            self.textedit.moveCursor(QtGui.QTextCursor.Left)
+            self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+            print "define slider number"
 
         def InsertName(self):
-                self.textedit.textCursor().insertText("Name(' ')")
-                self.textedit.moveCursor(QtGui.QTextCursor.Left)
-                self.textedit.moveCursor(QtGui.QTextCursor.Left)
-                self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+            self.textedit.textCursor().insertText("Name(' ')")
+            self.textedit.moveCursor(QtGui.QTextCursor.Left)
+            self.textedit.moveCursor(QtGui.QTextCursor.Left)
+            self.textedit.moveCursor(QtGui.QTextCursor.Left, QtGui.QTextCursor.KeepAnchor)
+            print "define label"
 
         def InsertParticle(self):
-                self.textedit.textCursor().insertText("AddParticle(4, 15, 4, 15, 0, 0)\t\t\t# (x, x\', y, y\', dk, dm)\n")
+            self.textedit.textCursor().insertText("AddParticle(4, 15, 4, 15, 0, 0)\t\t\t# (x, x\', y, y\', dk, dm)\n")
+            self.help("AddParticle")
 
         def InsertSource(self, _filename=None):
-                global SourceObj
-                if _filename is None:
-                    _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
-                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
-                else:
-                    SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
-                #SourceObj.NormalizeEnergy()
-                SourceObj.ShowFits()
-                SourceObj.UserInteraction.ChooseFilter()
-                #SourceObj.Source = SourceObj.Selection
-                #SourceObj.ShowFits()
-                print "Source", SourceObj.SourceFile, "loaded"
-                self.textedit.textCursor().insertText("AddSource()\n")
-                self.textedit.textCursor().insertText(
-                    "# ChangeBeamParameters("
-                    "strag_x={}, "
-                    "strag_dx={}, "
-                    "strag_y={}, "
-                    "strag_dy={}, "
-                    "strag_k={})\n".format(
-                        SourceObj.foilparameters["x"],
-                        SourceObj.foilparameters["x'"],
-                        SourceObj.foilparameters["y"],
-                        SourceObj.foilparameters["y'"],
-                        SourceObj.foilparameters["dk"]))
+            global SourceObj
+            if _filename is None:
+                _filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", ".")
+                SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
+            else:
+                SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
+            #SourceObj.NormalizeEnergy()
+            SourceObj.ShowFits()
+            SourceObj.UserInteraction.ChooseFilter()
+            #SourceObj.Source = SourceObj.Selection
+            #SourceObj.ShowFits()
+            print "Source", SourceObj.SourceFile, "loaded"
+            self.textedit.textCursor().insertText("AddSource()\n")
+            self.textedit.textCursor().insertText(
+                "# ChangeBeamParameters("
+                "strag_x={}, "
+                "strag_dx={}, "
+                "strag_y={}, "
+                "strag_dy={}, "
+                "strag_k={})\n".format(
+                    SourceObj.foilparameters["x"],
+                    SourceObj.foilparameters["x'"],
+                    SourceObj.foilparameters["y"],
+                    SourceObj.foilparameters["y'"],
+                    SourceObj.foilparameters["dk"]))
 
         def InsertBeam(self):
             self.textedit.textCursor().insertText('############################################\nBeam(4, 15, 4, 15, 0, 0)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+            self.help("Beam")
 
         def InsertBeamX(self):
             self.textedit.textCursor().insertText('############################################\nBeamX(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta: 1...360)\n############################################\n\n')
+            self.help("BeamX")
 
         def InsertBeam3d(self):
             self.textedit.textCursor().insertText('############################################\nBeam3d(4,15,4,15,0,0,10)\t# (xmax, x\'max, ymax, y\'max, dk, dm, delta_phi: 1...360)\n############################################\n\n')
+            self.help("Beam3d")
 
         def InsertRGauss(self):
             self.textedit.textCursor().insertText('############################################\nBeamRandomGauss(4,15,4,15,0,0,1000)\t# (xmax, x\'max, ymax, y\'max, dk, dm, num)\n############################################\n\n')
+            self.help("BeamRandomGauss")
 
         def InsertGaussBeam(self):
             self.textedit.textCursor().insertText('############################################\nGaussBeam(4, 15, 4, 15)\t# (sigma_x, sigma_x\', sigma_y, sigma_y\', x, x\', y, y\', dk, dm, sigma_k, sigma_m, strag_k, strag_m, number)\n############################################\n\n')
+            self.help("GaussBeam")
 
         def InsertAMSAcc(self):
             self.textedit.textCursor().insertText('AMSAcc(50.e3, 5500.e3, 35.e3, 4)\t# (v_qsnout, v_terminal, v_ext, q)\n\n')
+            self.help("AMSAcc")
 
         def InsertFNAcc(self):
             #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
@@ -1895,6 +1906,7 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertVBFN(self):
             self.textedit.textCursor().insertText('VBFN(extraktion, deltaV, laenge)\t# (v_ext, deltaV, length, [b, b1, b2])\n\n')
+            self.help("VBFN")
 
         def InsertMatrix(self):
             # uebergebe Zeiger auf das TextEdit an den Dialog
@@ -1903,18 +1915,23 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertDrift(self):
             self.textedit.textCursor().insertText('Drift(5.)\t\t\t\t\t\t# (length)\n')
+            self.help("Drift")
 
         def InsertSlit(self):
             self.textedit.textCursor().insertText('Slit(0,10,0,10)\t# (x, dx, y, dy)\n')
+            self.help("Slit")
 
         def InsertBPM(self):
             self.textedit.textCursor().insertText('BeamProfile()\n')
+            self.help("BeamProfile")
 
         def InsertModifyEmittance(self):
             self.textedit.textCursor().insertText('ModifyEmittance(1., 1.)\t# (factor x, factor dx)\n')
+            self.help("ModifyEmittance")
 
         def InsertChgParams(self):
             self.textedit.textCursor().insertText('ChangeBeamParameters(dk=0., dm=0., strag_k=0., strag_m=0.)\t\n')
+            self.help("ChangeBeamParameters")
 
         def InsertFoil(self):
             self.textedit.textCursor().insertText(
@@ -1926,14 +1943,17 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def InsertWaist(self):
             self.textedit.textCursor().insertText('Waist()\n')
+            self.help("Waist")
 
         def InsertESD(self):
             self.textedit.textCursor().insertText('ESD(30., 2., 1.e9)\t# (alpha, r_hor, r_vert, R)\n\n')
+            self.help("ESD")
 
         def InsertHomDeflectingMagnet(self):
             self.textedit.textCursor().insertText('EdgeFocusing(r, beta, K=.45, R)\n')    # Kantenfokussierung
             self.textedit.textCursor().insertText('MSA(r, alpha)\n')    # Magnet
             self.textedit.textCursor().insertText('EdgeFocusing(r, beta, K=.45, R)\n\n')  # Kantenfokussierung
+            self.help("MSA")
 
         def InsertHomDeflectingMagnetY(self):
             self.textedit.textCursor().insertText('EdgeFocusingY(r, beta, K=.45, R)\n')    # Kantenfokussierung
@@ -1943,9 +1963,11 @@ class CQtLimioptic(QtGui.QMainWindow):
         def InsertQuadrupol(self):
             self.textedit.textCursor().insertText('QuadrupolRadFoc(k, l, R)\n')   # radial fokussierend
             self.textedit.textCursor().insertText('QuadrupolAxFoc(k, l, R)\n\n')  # axial fokusierend
+            self.help("QuadrupolRadFoc")
 
         def InsertThinLens(self):
             self.textedit.textCursor().insertText('EinzelLens(2.)\t\t\t\t# (f, [R])\n\n')
+            self.help("EinzelLens")
 
         def InsertSO110EL(self):
             self.textedit.textCursor().insertText('AMSSO110EL(vext, vlens)\n\n')
@@ -2013,56 +2035,56 @@ class myedit(QtGui.QTextEdit):
 ##### Dialoge #####
 ###################
 class CInsertParticleDialog(QtGui.QDialog):
-        """ Wird nicht mehr benoetigt """
-        def __init__(self, myarg1):
-                QtGui.QDialog.__init__(self)
-                self.setFixedSize(400, 200)
-                self.setWindowTitle('Insert Particle Dialog')
+    """ Wird nicht mehr benoetigt """
+    def __init__(self, myarg1):
+        QtGui.QDialog.__init__(self)
+        self.setFixedSize(400, 200)
+        self.setWindowTitle('Insert Particle Dialog')
 
-                # Zeiger auf das QTextEdit speichern
-                self.parent_textedit = myarg1
+        # Zeiger auf das QTextEdit speichern
+        self.parent_textedit = myarg1
 
-                self.insert_syntax_button = QtGui.QPushButton('just insert syntax', self)
-                self.insert_syntax_button.setGeometry(50, 50, 160, 25)
-                self.connect(self.insert_syntax_button, QtCore.SIGNAL('clicked()'), self.InsertSyntax)
+        self.insert_syntax_button = QtGui.QPushButton('just insert syntax', self)
+        self.insert_syntax_button.setGeometry(50, 50, 160, 25)
+        self.connect(self.insert_syntax_button, QtCore.SIGNAL('clicked()'), self.InsertSyntax)
 
 
 class DialogWindow(QtGui.QDialog):
-        def __init__(self, title, text):
-                QtGui.QDialog.__init__(self)
-                self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-                self.setWindowTitle(title)
-                self.abouttext = QtGui.QTextEdit()
-                hbox = QtGui.QHBoxLayout()
-                hbox.addWidget(self.abouttext)
-                self.setLayout(hbox)
-                self.abouttext.setText(text)
-                self.show()
+    def __init__(self, title, text):
+        QtGui.QDialog.__init__(self)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowTitle(title)
+        self.abouttext = QtGui.QTextEdit()
+        hbox = QtGui.QHBoxLayout()
+        hbox.addWidget(self.abouttext)
+        self.setLayout(hbox)
+        self.abouttext.setText(text)
+        self.show()
 
 
 class CInsertMatrixDialog(QtGui.QDialog):
-        def __init__(self, myarg1):
-                QtGui.QDialog.__init__(self)
-                self.setFixedSize(200, 100)
-                self.setWindowTitle('Insert general 6x6 Matrix Dialog')
+    def __init__(self, myarg1):
+        QtGui.QDialog.__init__(self)
+        self.setFixedSize(200, 100)
+        self.setWindowTitle('Insert general 6x6 Matrix Dialog')
 
-                # Zeiger auf das QTextEdit speichern
-                self.parent_textedit = myarg1
+        # Zeiger auf das QTextEdit speichern
+        self.parent_textedit = myarg1
 
-                self.insert_ThinLens_example_button = QtGui.QPushButton('insert unity matrix', self)
-                self.insert_ThinLens_example_button.setGeometry(50, 50, 100, 50)
-                self.connect(self.insert_ThinLens_example_button, QtCore.SIGNAL('clicked()'), self.InsertThinLensExample)
+        self.insert_ThinLens_example_button = QtGui.QPushButton('insert unity matrix', self)
+        self.insert_ThinLens_example_button.setGeometry(50, 50, 100, 50)
+        self.connect(self.insert_ThinLens_example_button, QtCore.SIGNAL('clicked()'), self.InsertThinLensExample)
 
-        def InsertThinLensExample(self):
-                # nur die Syntax fuer 'AddMatrix' einfuegen
-                self.parent_textedit.textCursor().insertText('AddMatrix(n,\n')
-                self.parent_textedit.textCursor().insertText('           [1.,0.,0.,0.,0.,0.,\n')
-                self.parent_textedit.textCursor().insertText('           0.,1.,0.,0.,0.,0.,\n')
-                self.parent_textedit.textCursor().insertText('           0.,0.,1.,0.,0.,0.,\n')
-                self.parent_textedit.textCursor().insertText('           0.,0.,0.,1.,0.,0.,\n')
-                self.parent_textedit.textCursor().insertText('           0.,0.,0.,0.,1.,0.,\n')
-                self.parent_textedit.textCursor().insertText('           0.,0.,0.,0.,0.,1.],\n')
-                self.parent_textedit.textCursor().insertText('           length)\n')
+    def InsertThinLensExample(self):
+        # nur die Syntax fuer 'AddMatrix' einfuegen
+        self.parent_textedit.textCursor().insertText('AddMatrix(n,\n')
+        self.parent_textedit.textCursor().insertText('           [1.,0.,0.,0.,0.,0.,\n')
+        self.parent_textedit.textCursor().insertText('           0.,1.,0.,0.,0.,0.,\n')
+        self.parent_textedit.textCursor().insertText('           0.,0.,1.,0.,0.,0.,\n')
+        self.parent_textedit.textCursor().insertText('           0.,0.,0.,1.,0.,0.,\n')
+        self.parent_textedit.textCursor().insertText('           0.,0.,0.,0.,1.,0.,\n')
+        self.parent_textedit.textCursor().insertText('           0.,0.,0.,0.,0.,1.],\n')
+        self.parent_textedit.textCursor().insertText('           length)\n')
 
 ################################
 
