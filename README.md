@@ -10,6 +10,8 @@
 
 5. make sure you are always up-to-date using <b>_update.py</b> if needed.
 
+NOTE: In order to save space the python VTK package is not installed by default. But it can be installed seperatedly if an increased speed or 3D view is needed.
+
 <br>
 <b>Installation (Linux):</b>
 
