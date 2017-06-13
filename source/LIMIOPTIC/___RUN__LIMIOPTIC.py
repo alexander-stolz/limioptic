@@ -1614,7 +1614,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             """ Check uebers Internet ob Updates verfuegbar sind """
             print "checking for updates..",
             try:
-                a = urllib.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/Limioptic%202/version")
+                a = urllib.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/version")
                 ver = str(a.read()).strip()
                 a.close()
                 if (ver == VERSION):
