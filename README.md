@@ -1,19 +1,14 @@
-Under some Linux systems there is a known bug which causes the vtkRenderWindowInteractor to slow down the program enormously. Plot->PyQtGraph should work until this problem is fixed.
-
 <br>
 <b>Installation (Windows):</b>
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
-(this might not work on every machine)
 
-This is the web-installer! Full setup: <a href="https://sourceforge.net/projects/limioptic/">https://sourceforge.net/projects/limioptic/</a>
+1. Download and extract all files and folders
+2. execute <b>install dependencies.bat</b>
+3. copy the <b>source/LIMIOPTIC/</b> folder to any destination or leave it there
+4. execute <b>___RUN__LIMIOPTIC</b> in the LIMIOPTIC folder
 
-1. Run <b>setup.exe</b>
-2. Install the prerequisites in their default directories.
-3. <b>Make sure to select the C++ compiler during the MinGW installation!</b>
-4. If you have installed LIMIOPTIC in the default directory, you will not be able to update via update.py because of the windows rights management. <b>To fix this, copy the Limioptic 2 folder to another directory</b> (for example to the desktop).
-5. Run update.py in the Limioptic 2 directory to update LIMIOPTIC to the newest version.
-
+5. make sure you are always up-to-date using <b>_update.py</b> if needed.
 
 <br>
 <b>Installation (Linux):</b>
@@ -25,11 +20,10 @@ This is the web-installer! Full setup: <a href="https://sourceforge.net/projects
 2. Limioptic imports the following libraries. Make sure you have these:
   - python-qt4
   - (python-vtk)
-  - <a href="http://www.pyqtgraph.org/">PyQtGraph</a> (depends on numpy and scipy)
+  - pyqtgraph
   - scipy
   - pylab
-
-
+  - matplotlib
 
 <br>
 <b>Licence</b>
