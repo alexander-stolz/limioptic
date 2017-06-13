@@ -1,0 +1,55 @@
+body.fullscreen {
+  position: absolute;
+  height: 100%;
+  background-color: white;
+
+}
+
+#close-x {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: none;
+  z-index: 1;
+  cursor: pointer;
+
+  /* Disable text seleciton on 'x' */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+
+  /* circle around the 'x' */
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+
+  height: 31px;
+  width: 31px;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+#close-x-icon {
+  position: absolute;
+  background-image: url("/static/images/sprites/web_core/xclose.png");
+  width: 11px;
+  height: 11px;
+  top: 10px;
+  left: 10px;
+}
+
+/* Retina version of close 'x' icon. */
+/* 1.25 dpr */
+@media
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 120dpi){
+  #close-x-icon {
+    background-image: url("/static/images/sprites/web_core_2x/xclose.png");
+    background-size: 11px 11px;
+  }
+}
+
+body.fullscreen #close-x {
+  display: block;
+}
