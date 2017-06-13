@@ -9,7 +9,7 @@ Die eigentliche Berechnung findet in climioptic.cpp statt.
 
 Licence
 =============
-The program Limioptic 2 maintained by Alexander Stolz is
+The software LIMIOPTIC maintained by Alexander Stolz is
 freely available and distributable. However, if you use
 it for some work whose results are made public, then you
 have to reference it properly.
@@ -1983,16 +1983,14 @@ class CQtLimioptic(QtGui.QMainWindow):
 
         def About(self):
             title = "About Limioptic 2"
-            text = "Limioptic 2 by Alexander Stolz\nVersion {}\n\n"\
+            text = "LIMIOPTIC by Alexander Stolz\nVersion {}\n\n"\
                 "Feel free to send me any feedback or suggestions to amstolz@gmail.com.\n\n"\
-                "Visit www.limioptic.de for more information.\n\nThanks for using Limioptic!\n\n"\
-                "Why the 2?\nThe very first version based on the program Limioptic by Stefan Heinze. Thanks!\n\n"\
-                "Thanks Mama, Papa and the rest of my beautiful family!".format(VERSION)
+                "Visit www.limioptic.de for more information.\n\nThanks for using LIMIOPTIC!\n\n".format(VERSION)
             self.dialog = DialogWindow(title, text)
 
         def Licence(self):
             title = "Limioptic 2 Licence"
-            text = "The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. "\
+            text = "The software LIMIOPTIC maintained by Alexander Stolz is freely available and distributable. "\
                 "However, if you use it for some work whose results are made public, then you have to reference it properly."
             self.dialog = DialogWindow(title, text)
 
@@ -2099,7 +2097,7 @@ SUPERSCALE3D     = 10.
 SCREENSHOTNUMBER = 0
 XCOLOR           = 255, 0, 0, 255
 YCOLOR           = 0, 255, 0, 255
-LICENCE          = "\nThe program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.\n"
+LICENCE          = "\nThe software LIMIOPTIC maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.\n"
 
 print LICENCE
 
