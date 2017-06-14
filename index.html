@@ -9,7 +9,7 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Limioptic 2</title>
+    <title>LIMIOPTIC</title>
   </head>
 
   <body>
@@ -34,7 +34,7 @@
       <section id="main_content" class="inner">
         <p></p>
 
-<p><strong><p>Limioptic 2</p></strong></p>
+<p><strong><p>LIMIOPTIC</p></strong></p>
 
 <p>
   <img src="images/limi2d.png"><br>
@@ -54,6 +54,96 @@ See: <a href="https://github.com/alexander-stolz/limioptic">https://github.com/a
 <p><br></p>
 
 <h2><div>Documentation</div></h2>
+
+Before any ion optical element is added to the beamline, one or more particles must be defined. An easy method to create a bunch of particles is to use the function <u>Beam()</u>.
+
+<pre ><code><font color="gray"># Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0)</font>
+
+Beam(
+  xmax = 4,
+  amax = 15,
+  ymax = 4,
+  bmax = 15,
+  dk = 0,
+  dm = 0)
+</code></pre>
+
+Dubble-clicking on any function shows additional information.
+
+<pre>
+HELP:
+------------------------------------------
+Beam(xmax, amax, ymax, bmax, dk, dm, num=250, x=0, y=0)
+
+produces a simple beam for fast calculations.
+
+xmax   = maximal radial deviation [mm]
+amax   = maximal radial angle [mrad]
+ymax   = maximal axial deviation [mm]
+bmax   = maximal axial angle [mrad]
+dk     = relative energy deviation [permille]
+dm     = relative mass deviation [permille]
+num    = number of particles,
+x, y   = radial/axial deviation
+------------------------------------------
+</pre>
+
+Also variables can be defined and used as arguments. The special variables INPUT[0], INPUT[1], etc. correspond to the values of the sliders in the input window. To see this window, the plotting has to be initiated with Ctrl + F.
+
+<pre ><code>relative_energy_deviation = 10.          <font color="gray"># permille</font>
+relative_mass_deviation   = INPUT[0]     <font color="gray"># value of first slider</font>
+
+Beam(
+  xmax = 4,
+  amax = 15,
+  ymax = 4,
+  bmax = 15,
+  dk = relative_energy_deviation,
+  dm = relative_mass_deviation)
+</code></pre>
+
+Now elements may be added.
+
+<pre ><code><font color="gray"># Fancy beamline containing a drift of 2 m,</font>
+<font color="gray"># then a lens with a focus of 1 m,</font>
+<font color="gray"># and then another drift.</font>
+<font color="gray"># Also a label is added to the lens.</font>
+
+Beam(4, 15, 4, 15, 0, 0)
+Drift(2)
+
+Name("einzel lens")
+EinzelLens(1)
+
+Drift(2)</code></pre>
+
+Now we want to focus the beam.
+
+<pre ><code><font color="gray"># Fancy beamline containing a drift of 2 m,</font>
+<font color="gray"># then a lens with a focus of 1 m,</font>
+<font color="gray"># and then another drift.</font>
+<font color="gray"># Also a label is added to the lens.</font>
+
+Beam(4, 15, 4, 15, 0, 0)
+Drift(2)
+
+Name("einzel lens")
+EinzelLens(INPUT[0])
+
+Drift(1)
+
+<font color="gray"># Tell LIMIOPTIC that a waist should be in this position.</font>
+Waist()
+
+<font color="gray"># This is just for you.</font>
+Name("here should be a waist")
+
+Drift(1)
+
+<font color="gray"># Now you can focus by hand with the first slider</font>
+<font color="gray"># OR check the box left from the slider 
+# and click on "optimize selected parameters".</font>
+</code></pre>
 
 <div>For more information about ion optic calculations see: <a href="http://books.google.de/books?id=72VOPG2Qya0C&pg=PA81&dq=wollnik+ion+optic+calculation&hl=de&sa=X&ei=2OWQUa3XAaO50QXIm4DgDg&ved=0CEMQ6AEwAw#v=onepage&q=wollnik%20ion%20optic%20calculation&f=false">Wollnik</a>, <a href="http://books.google.de/books?id=28CVMxEHrCQC&printsec=frontcover&dq=hinterberger&hl=de&sa=X&ei=6eWQUfvBJqKN0wXq8ID4CQ&ved=0CEwQ6AEwBQ#v=onepage&q=hinterberger&f=false">Hinterberger</a> (german) or my diploma thesis (german, below).<br>A list of all currently available commands will be provided soon here on this page.</div>
 
