@@ -75,8 +75,8 @@ print "helper",
 import helper
 print "pickle"
 import pickle
-#print "calculator"
-#import function_calculator
+# print "calculator"
+# import function_calculator
 
 #################################################
 #################################################
@@ -85,20 +85,23 @@ import pickle
 class inputcontrol(QtGui.QDialog):
     """ Hier wird das Fenster mit den Schiebereglern zur Variablenmanipulation definiert """
     def __init__(self, mode):
+        QtGui.QDialog.__init__(self)
+
         global NumberOfInputs
 
-        QtGui.QDialog.__init__(self)
+        self.setWindowIcon(QtGui.QIcon('logo.png'))
         self.mode = mode
         self.changing = False
 
         if (mode == "qt"):
+            self.mode = "qt"
             self.plotwindow = doitqt2(self)    # PyQtGraph
         if (mode == "2d"):
             self.plotwindow = doitXY(self)     # VTK
         if (mode == "3d"):
             self.plotwindow = doit3d(self)     # VTK
 
-        ### Ab hier Definition des Layouts
+        # Ab hier Definition des Layouts
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setGeometry(100, screen.height() - 300, 650, 1)
 
@@ -417,7 +420,9 @@ class inputcontrol(QtGui.QDialog):
 
         self.update_on = False
 
-        try:
+        if (self.mode == "qt"):
+            self.plotwindow.closeme()
+        else:
             self.plotwindow.iren.Disable()
             self.plotwindow.iren.EnableRenderOff()
             self.plotwindow.iren.TerminateApp()
@@ -442,9 +447,8 @@ class inputcontrol(QtGui.QDialog):
                 for segment in self.segments:
                     del segment
                 del self.segments
-            # plotEmittance.stop()
-        except:
-            pass
+        # del self.plotwindow
+        # plotEmittance.stop()
 
         print "saving autosave..",
         myfile = open(backup_file + ".lim", "w")
@@ -526,6 +530,7 @@ class doitqt2(threading.Thread):
     """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
         threading.Thread.__init__(self)
+        self.running = True
         self.parent = parent
         if not myapp.menu_plot_bg.isChecked():
             pyqtgraph.setConfigOptions(background="w")
@@ -536,6 +541,7 @@ class doitqt2(threading.Thread):
         else:
             pyqtgraph.setConfigOptions(antialias=False)
         self.win = MyQtWindow(title="Limioptic 2 - Output (2D)")
+        self.win.setWindowIcon(QtGui.QIcon('logo.png'))
         self.win.resize(1000, 450)
         self.plot1 = self.win.addPlot()
         if myapp.menu_plot_splitview.isChecked():
@@ -550,6 +556,10 @@ class doitqt2(threading.Thread):
             self.lineY = self.plot1.plot()
         self.linegeo = self.plot1.plot()
         self.labels = []
+
+    def run(self):
+        while self.running:
+            time.sleep(.1)
 
     def update(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
         if xi is None:
@@ -576,7 +586,7 @@ class doitqt2(threading.Thread):
         else:
             self.lineY.setData(x=[], y=[], pen=(255, 0, 0))
 
-        ### Labels
+        # Labels
         for label in self.labels:
             self.plot1.removeItem(label)
             del label
@@ -598,6 +608,15 @@ class doitqt2(threading.Thread):
                 self.linegeo.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
                 if myapp.menu_plot_splitview.isChecked():
                     self.linegeo2.setData(x=geo_s, y=geo_y, pen=(170, 170, 170))
+
+    def closeme(self):
+        print "close qt2 window"
+        del self.win
+        del self.lineX
+        del self.lineY
+        del self.linegeo
+        del self.plot1
+        self.running = False
 
 
 class Segment:
@@ -754,7 +773,7 @@ class doit3d(threading.Thread):
         for segment in self.segments:
             self.ren.AddActor(segment.actor)
 
-        ### Axen
+        # Axen
         # self.axisactor = vtk.vtkCubeAxesActor()
         # self.axisactor.SetXAxisRange(0., zi[-1])
         # self.axisactor.SetYAxisRange(-30., 30)
@@ -767,15 +786,15 @@ class doit3d(threading.Thread):
         # self.ren.AddActor(self.axisactor)
         self.ren.ResetCamera()
 
-        ### Labels
+        # Labels
         labels = []
         for label in limioptic.textArray:
-            labels.append(Text3D(label[0] * SCALE3D/SUPERSCALE3D, label[1]))
+            labels.append(Text3D(label[0] * SCALE3D / SUPERSCALE3D, label[1]))
             self.ren.AddActor(labels[-1])
-        sourcelabel = Text3D(-1 * SCALE3D/SUPERSCALE3D, "*", -8.)
+        sourcelabel = Text3D(-1 * SCALE3D / SUPERSCALE3D, "*", -8.)
         self.ren.AddActor(sourcelabel)
 
-        ### Renderfenster
+        # Renderfenster
         self.renwin = vtk.vtkRenderWindow()
         self.renwin.AddRenderer(self.ren)
         self.renwin.SetSize(900, 450)
@@ -785,7 +804,7 @@ class doit3d(threading.Thread):
         self.iren.SetRenderWindow(self.renwin)
         self.iren.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
 
-        ### Text
+        # Text
         # txtFilter = vtk.vtkLinearExtrusionFilter()
         # txtFilter.SetScaleFactor(20.)
         # txtMapper = vtk.vtkPolyDataMapper()
@@ -799,7 +818,7 @@ class doit3d(threading.Thread):
         #    txtActor.SetMapper(txtMapper)
         #    self.ren.AddActor(txtActor)
 
-        ### Exporter
+        # Exporter
         self.writer = vtk.vtk.vtkPNGWriter()
         self.w2iFilter = vtk.vtkWindowToImageFilter()
         self.w2iFilter.SetInput(self.renwin)
@@ -818,7 +837,8 @@ class doit3d(threading.Thread):
         self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow3d: a.closeit())
 
         # Linien glatter machen
-        if (myapp.menu_output_smoothing.isChecked()):   self.renwin.LineSmoothingOn()
+        if (myapp.menu_output_smoothing.isChecked()):
+            self.renwin.LineSmoothingOn()
 
         # Rot-Gruen-Brille (aktivieren mit '3')
         self.renwin.SetStereoTypeToAnaglyph()
@@ -844,7 +864,11 @@ class doit3d(threading.Thread):
 
             for part in xrange(parts):
                     for seg in xrange(segs):
-                        self.mypoints.InsertPoint(part * segs + seg, zi[seg] * SCALE3D/SUPERSCALE3D, xi[part][seg]/SUPERSCALE3D, yi[part][seg]/SUPERSCALE3D)
+                        self.mypoints.InsertPoint(
+                            part * segs + seg,
+                            zi[seg] * SCALE3D / SUPERSCALE3D,
+                            xi[part][seg] / SUPERSCALE3D,
+                            yi[part][seg] / SUPERSCALE3D)
 
             self.mypoints.Modified()
             self.render = True
@@ -886,7 +910,7 @@ class doitXY(threading.Thread):
         self.threadlock = threading.Lock()
 
         def run(self):
-            ### 2d Szene und xy Chart erzeugen.
+            # 2d Szene und xy Chart erzeugen.
             self.view = vtk.vtkContextView()
             self.view.GetRenderer().SetBackground(1., 1., 1.)
             if myapp.menu_plot_bg.isChecked():
@@ -920,21 +944,21 @@ class doitXY(threading.Thread):
             else:
                 limioptic.s = -1.
 
-            ### Exporter
+            # Exporter
             # self.writer = vtk.vtk.vtkPNGWriter()
             # self.w2iFilter = vtk.vtkWindowToImageFilter()
             # self.w2iFilter.SetInput(self.view.GetRenderWindow())
             # self.w2iFilter.SetMagnification(10)
             # self.writer.SetInput(self.w2iFilter.GetOutput())
 
-            ### Berechnungen durchfuehren
+            # Berechnungen durchfuehren
             (xi, yi, zi, segs, parts) = self.parent.calculate()
             iele = limioptic.GetTrajectory(0, 7)
 
             if (myapp.menu_output_file.isChecked()):
                 ausgabe = open("output_markers.dat", "w")
 
-            ### Marker setzen
+            # Marker setzen
             if myapp.menu_plot_marker.isChecked():
                 self.markertable = vtk.vtkTable()
                 self.markersY = vtk.vtkFloatArray()
@@ -972,7 +996,7 @@ class doitXY(threading.Thread):
                 if (myapp.menu_output_file.isChecked()):
                     ausgabe.close()
 
-            ### Erzeuge Wertetabelle
+            # Erzeuge Wertetabelle
             self.table = vtk.vtkTable()
             self.arrZ = vtk.vtkFloatArray()
             self.arrZ.SetName("Z Achse")
@@ -1079,10 +1103,14 @@ class doitXY(threading.Thread):
                 self.parent.setWindowTitle("input control (INPUT[{}])".format(self.activeInput))
             elif key in ("Up", "Down", "Left", "Right"):
                 self.threadlock.acquire()
-                if key == "Up":     self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() + .01)
-                if key == "Down":   self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() - .01)
-                if key == "Right":  self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
-                if key == "Left":   self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
+                if key == "Up":
+                    self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() + .01)
+                if key == "Down":
+                    self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() - .01)
+                if key == "Right":
+                    self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
+                if key == "Left":
+                    self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
                 self.threadlock.release()
             # elif key == "space":
             #    global SCREENSHOTNUMBER
@@ -1126,7 +1154,7 @@ class doitXY(threading.Thread):
                 return
             iele = limioptic.GetTrajectory(0, 7)
 
-            ### erzeuge wertetabelle
+            # erzeuge wertetabelle
             if (plotx):
                 for part in xrange(parts):
                     self.arrX[part].Reset()
@@ -1142,24 +1170,24 @@ class doitXY(threading.Thread):
             for i in xrange(segs):
                 self.arrZ.InsertNextValue(zi[i])
 
-            ### Marker setzen
+            # Marker setzen
             if myapp.menu_plot_marker.isChecked():
                 self.linelist = []
                 if (len(iele) > 0):
                     for i in xrange(1, len(iele)):
-                        if (iele[i] != iele[i-1]):
-                            self.linelist.append(zi[i-1])
+                        if (iele[i] != iele[i - 1]):
+                            self.linelist.append(zi[i - 1])
                     self.linelist.append(zi[len(iele) - 1])
 
                 for i in xrange(1, len(self.linelist)):
                     try:                                                        # error falls neues element hinzugefuegt wurde
-                        self.markersX[i-1].Reset()
-                        self.markersX[i-1].InsertNextValue(self.linelist[i-1])
-                        self.markersX[i-1].InsertNextValue(self.linelist[i-1])
+                        self.markersX[i - 1].Reset()
+                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
                     except:                                                     # neu initialisieren
-                        #self.iren.GetRenderWindow().Finalize()
-                        #self.iren.TerminateApp()
-                        #self.parent.closeit()
+                        # self.iren.GetRenderWindow().Finalize()
+                        # self.iren.TerminateApp()
+                        # self.parent.closeit()
                         print "you must close the output-window and rerender (Ctrl+G)"
                         msg = QtGui.QMessageBox()
                         msg.setText("you must close the output-window and rerender\n(Ctrl+G)")
@@ -1167,14 +1195,15 @@ class doitXY(threading.Thread):
                         self.threadlock.release()
                         return
                         self.markersX.append(vtk.vtkFloatArray())
-                        self.markersX[i-1].SetName("Marker {}".format(i))
-                        self.markersX[i-1].InsertNextValue(self.linelist[i-1])
-                        self.markersX[i-1].InsertNextValue(self.linelist[i-1])
-                        self.markertable.AddColumn(self.markersX[i-1])
+                        self.markersX[i - 1].SetName("Marker {}".format(i))
+                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                        self.markertable.AddColumn(self.markersX[i - 1])
                 self.markertable.Modified()
 
             self.table.Modified()
-            if (myapp.menu_plot_geo.isChecked()):   limioptic.geolines.Modified()
+            if (myapp.menu_plot_geo.isChecked()):
+                limioptic.geolines.Modified()
             if myapp.menu_plot_bg.isChecked():
                 self.view.GetRenderer().SetBackground(0, 0, 0)
             else:
@@ -1200,7 +1229,11 @@ class CQtLimioptic(QtGui.QMainWindow):
     """ Hier wird das Hauptfenster definiert in dem die Beamline eingegeben werden kann """
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        self.setGeometry(screen.width()-350, 30, 350-10, screen.height()-40)
+        self.setGeometry(
+            screen.width() - 350,
+            30,
+            350 - 10,
+            screen.height() - 40)
         self.setWindowTitle('Limioptic 2')
 
         # enable the staus bar
@@ -1256,7 +1289,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             menu_translate_qt.setEnabled(False)
         self.connect(menu_translate_qt, QtCore.SIGNAL('triggered()'), self.plotqt)
 
-        ### PLOT ###
+        # PLOT #
         # Plot markers
         self.menu_plot_marker = QtGui.QAction('marker', self)
         self.menu_plot_marker.setCheckable(True)
@@ -1291,7 +1324,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.menu_plot_splitview.setCheckable(True)
         self.menu_plot_splitview.setChecked(False)
 
-        ### INSERT ###
+        # INSERT #
         # INPUT
         self.menu_insert_input = QtGui.QAction('INPUT[]', self)
         self.menu_insert_input.setShortcut('Ctrl+Shift+I')
@@ -1412,7 +1445,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.connect(self.menu_insert_vbfn, QtCore.SIGNAL('triggered()'), self.InsertVBFN)
         # FNACC
         self.menu_insert_fnacc = QtGui.QAction('FN acceleration tube', self)
-        #self.menu_insert_fnacc.setShortcut('Ctrl+Shift+F')
+        # self.menu_insert_fnacc.setShortcut('Ctrl+Shift+F')
         self.menu_insert_fnacc.setStatusTip('Insert HVEC-FN 7 acceleration tube')
         self.connect(self.menu_insert_fnacc, QtCore.SIGNAL('triggered()'), self.InsertFNAcc)
         # FNACCNeu
@@ -1426,7 +1459,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.menu_insert_amsacc.setShortcut('Ctrl+Shift+A')
         self.connect(self.menu_insert_amsacc, QtCore.SIGNAL('triggered()'), self.InsertAMSAcc)
 
-        ### TOOLS ###
+        # TOOLS #
         # dat
         self.menu_output_file = QtGui.QAction('-> output_*.dat', self)
         self.menu_output_file.setStatusTip('send output -> *.dat files for publication.')
@@ -1449,9 +1482,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.menu_output_calc.setCheckable(False)
         self.connect(self.menu_output_calc, QtCore.SIGNAL('triggered()'), self.calc)
 
-
-
-        ## Interface
+        # Interface
         self.menu_setcom1 = QtGui.QAction('COM1', self)
         self.menu_setcom1.setStatusTip('search interface on com1')
         self.connect(self.menu_setcom1, QtCore.SIGNAL('triggered()'), self.setcom1)
@@ -1468,16 +1499,16 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.menu_setcom5.setStatusTip('search interface on com5')
         self.connect(self.menu_setcom5, QtCore.SIGNAL('triggered()'), self.setcom5)
 
-        ## About
+        # About
         self.menu_about = QtGui.QAction("About", self)
         self.connect(self.menu_about, QtCore.SIGNAL('triggered()'), self.About)
         self.menu_licence = QtGui.QAction("Licence", self)
         self.connect(self.menu_licence, QtCore.SIGNAL("triggered()"), self.Licence)
 
-        ## Menubar
+        # Menubar
         menubar = self.menuBar()
 
-        ##FILE
+        # FILE
         menu_file = menubar.addMenu('File')
         menu_file.addAction(menu_file_load)
 
@@ -1485,13 +1516,13 @@ class CQtLimioptic(QtGui.QMainWindow):
         menu_file.addAction(menu_file_save)
         menu_file.addAction(menu_file_exit)
 
-        ## TRANSLATE
+        # TRANSLATE
         menu_translate = menubar.addMenu('Plot')
         menu_translate.addAction(menu_translate_2d)
         menu_translate.addAction(menu_translate_qt)
         menu_translate.addAction(menu_translate_3d)
 
-        ## PLOT
+        # PLOT
         menu_plot = menubar.addMenu('Options')
         menu_plot.addAction(self.menu_plot_marker)
         menu_plot.addAction(self.menu_plot_geo)
@@ -1501,7 +1532,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         menu_plot.addAction(self.menu_plot_bg)
         menu_plot.addAction(self.menu_plot_splitview)
 
-        ## INSERT
+        # INSERT
         menu_insert = menubar.addMenu('Insert')
         menu_insert.addAction(self.menu_insert_input)
         menu_insert.addAction(self.menu_insert_name)
@@ -1536,14 +1567,14 @@ class CQtLimioptic(QtGui.QMainWindow):
         menu_insert.addAction(self.menu_insert_vbfn)
         menu_insert.addAction(self.menu_insert_fnaccneu)
 
-        ## TOOLS
+        # TOOLS
         menu_output = menubar.addMenu('Tools')
         menu_output.addAction(self.menu_output_file)
         menu_output.addAction(self.menu_output_spicker)
-        #menu_output.addAction(self.menu_output_calc)
-        #menu_output.addAction(self.menu_output_emittance)
+        # menu_output.addAction(self.menu_output_calc)
+        # menu_output.addAction(self.menu_output_emittance)
 
-        ## INTERFACE
+        # INTERFACE
         """
         menu_interface = menubar.addMenu('# interface')
         menu_interface.addAction(self.menu_setcom1)
@@ -1553,12 +1584,12 @@ class CQtLimioptic(QtGui.QMainWindow):
         menu_interface.addAction(self.menu_setcom5)
         """
 
-        ## ABOUT
+        # ABOUT
         menu_aboutbar = menubar.addMenu('About')
         menu_aboutbar.addAction(self.menu_about)
         menu_aboutbar.addAction(self.menu_licence)
 
-        ### GUI definieren
+        # GUI definieren
         self.main_frame = QtGui.QWidget()
         self.textedit = myedit(self)
         self.textedit.setLineWrapMode(QtGui.QTextEdit.NoWrap)
@@ -1566,11 +1597,11 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.setAcceptDrops(True)
         self.highlighter = syntax.PythonHighlighter(self.textedit.document())
 
-        #self.helpwidget = QtGui.QTextEdit()
+        # self.helpwidget = QtGui.QTextEdit()
 
         hbox1 = QtGui.QVBoxLayout()
         hbox1.addWidget(self.textedit)
-        #hbox1.addWidget(self.helpwidget)
+        # hbox1.addWidget(self.helpwidget)
         self.main_frame.setLayout(hbox1)
         self.setCentralWidget(self.main_frame)
 
@@ -1584,7 +1615,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         except:
             print "last savefile was not found"
 
-        ## UPDATE
+        # UPDATE
         if VERSION is not "IKP":
             updatethread = threading.Thread(target=self.update, args=())
             updatethread.start()
@@ -1829,8 +1860,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         elif RUNNING3D:
             self.inputwindow3d.plotwindow.neu()
 
-##### INSERT Funktionen #####
-#############################
+# INSERT Funktionen #
     def InsertINPUT(self):
         self.textedit.textCursor().insertText("INPUT[ ]")
         self.textedit.moveCursor(QtGui.QTextCursor.Left)
@@ -1855,11 +1885,11 @@ class CQtLimioptic(QtGui.QMainWindow):
             SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
         else:
             SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
-        #SourceObj.NormalizeEnergy()
+        # SourceObj.NormalizeEnergy()
         SourceObj.ShowFits()
         SourceObj.UserInteraction.ChooseFilter()
-        #SourceObj.Source = SourceObj.Selection
-        #SourceObj.ShowFits()
+        # SourceObj.Source = SourceObj.Selection
+        # SourceObj.ShowFits()
         print "Source", SourceObj.SourceFile, "loaded"
         self.textedit.textCursor().insertText("AddSource()\n")
         self.textedit.textCursor().insertText(
@@ -1900,7 +1930,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.help("AMSAcc")
 
     def InsertFNAcc(self):
-        #self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
+        # self.textedit.textCursor().insertText('AddFNAcc(6000.e3, 100.e3, 5)\t# (v_terminal, v_vorbeschl, q)\n\n')
         self.InsertFNAccNeu()
 
     def InsertFNAccNeu(self):
@@ -2032,8 +2062,7 @@ class myedit(QtGui.QTextEdit):
             event.ignore()
 
 
-##### Dialoge #####
-###################
+# Dialoge #
 class CInsertParticleDialog(QtGui.QDialog):
     """ Wird nicht mehr benoetigt """
     def __init__(self, myarg1):
@@ -2133,13 +2162,17 @@ RUNNING3D = False
 
 app = QtGui.QApplication(sys.argv)
 
-#screen = QtGui.QDesktopWidget().screenGeometry()
+# screen = QtGui.QDesktopWidget().screenGeometry()
 screen = QtGui.QDesktopWidget().availableGeometry()
-#screen = QtGui.QDesktopWidget().desktop()
+# screen = QtGui.QDesktopWidget().desktop()
 
 SourceObj = ImportSource()
 myapp = CQtLimioptic()
+myapp.setWindowIcon(QtGui.QIcon('logo.png'))
 
 myapp.show()
 
-sys.exit(app.exec_())
+app.exec_()
+del myapp
+print threading.enumerate()
+sys.exit()
