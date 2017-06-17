@@ -25,3 +25,4 @@ https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/beampro
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/_update.py _update.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/_Calculator.py _Calculator.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/version version
+https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/logo.png logo.png
