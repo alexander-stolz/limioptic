@@ -8,4 +8,4 @@ def explicit_imports_for_py2exe():
     from vtk import vtkRenderingPythonSIP
     from matplotlib.backends import backend_qt4agg
 
-import ___RUN__LIMIOPTIC_2
+import ___RUN__LIMIOPTIC
