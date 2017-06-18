@@ -6,7 +6,7 @@ import os
 import sys
 
 setup(
-    author="Alexander Stolz",
+    author="Alexander M. Stolz",
     console=["setup_helper.py", "_update.py", "_Calculator.py"],
     py_modules=["___RUN__LIMIOPTIC", "ams_spicker", "beamprofile", "importsrc", "limioptic", "syntax", "_update", "_Calculator"],
     data_files=matplotlib.get_py2exe_datafiles(),

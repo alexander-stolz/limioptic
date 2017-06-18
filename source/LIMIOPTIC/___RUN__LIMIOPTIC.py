@@ -26,22 +26,21 @@ print "loading:",
 print "os",
 import os
 if not PY2EXE:
-    print "imp",            # unterdruecken von import fehlern
+    print "imp",                                                                # unterdruecken von import fehlern
     import imp
 print "sys",
 import sys
 print "limioptic",
-import limioptic       # ionenoptische berechnungen
+import limioptic                                                                # ionenoptische berechnungen
 print "threading",
-import threading        # multithreading
+import threading                                                                # multithreading
 print "time",
-import time             # debuggen + sleep
-# import serial          # auslesen des potis
+import time                                                                     # debuggen + sleep
+# import serial                                                                 # auslesen des potis
 if not PY2EXE:
     try:
-        if not PY2EXE:
-            imp.find_module("vtk")
-        import vtk          # grafische ausgabe ueber VTK
+        imp.find_module("vtk")
+        import vtk                                                              # grafische ausgabe ueber VTK
         print "vtk",
     except:
         print "<vtk NOT FOUND>",
@@ -49,7 +48,7 @@ if not PY2EXE:
 else:
     vtk = False
 print "urllib",
-import urllib           # zum ueberpruefen auf updates
+import urllib                                                                   # zum ueberpruefen auf updates
 print "ams_spicker",
 import ams_spicker
 print "importsrc",
