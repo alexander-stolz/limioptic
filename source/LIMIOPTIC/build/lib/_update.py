@@ -16,19 +16,11 @@ if sys.argv[0].endswith(".py"):
         for i in range(1, len(b)):
             ul.urlretrieve(b[i].split()[0], b[i].split()[1])
             print "{} updated".format(b[i].split()[1])
-        print "\n", b[0]
+        print "\n",b[0]
     try:
         os.remove("liblimioptic-linux.so")
     except:
         pass
-
-    try:
-        os.remove("___RUN__LIMIOPTIC_2.py")
-        os.remove("___RUN__LIMIOPTIC_2.bat")
-    except:
-        pass
-
-
 else:
     print "precompiled version detected"
     ul.urlretrieve(r"https://github.com/alexander-stolz/limioptic/raw/master/precompiled%20for%20windows/___LIMIOPTIC.exe", "___LIMIOPTIC.exe")

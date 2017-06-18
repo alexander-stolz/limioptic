@@ -19,6 +19,7 @@ https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/libstdc
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/plotEmittance.py plotEmittance.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/graphics.py graphics.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/setup_helper.py setup_helper.py
+https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/setup.py setup.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/helper.py helper.py
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/build.bat build.bat
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/beamprofile.py beamprofile.py
