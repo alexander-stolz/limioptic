@@ -236,6 +236,8 @@ class inputcontrol(QtGui.QDialog):
             t_readserial = threading.Thread(target=self.readserial, args=())
             t_readserial.start()
 
+        # print threading.enumerate()
+
     def changeNumberOfInputs(self):
         global NumberOfInputs
 
@@ -449,6 +451,7 @@ class inputcontrol(QtGui.QDialog):
                 del self.segments
         # del self.plotwindow
         # plotEmittance.stop()
+        # print threading.enumerate()
 
         print "saving autosave..",
         myfile = open(backup_file + ".lim", "w")
@@ -530,6 +533,7 @@ class doitqt2(threading.Thread):
     """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
         threading.Thread.__init__(self)
+        self.name = "qt plot window thread"
         self.running = True
         self.parent = parent
         if not myapp.menu_plot_bg.isChecked():
@@ -611,11 +615,14 @@ class doitqt2(threading.Thread):
 
     def closeme(self):
         print "close qt2 window"
-        del self.win
-        del self.lineX
-        del self.lineY
-        del self.linegeo
-        del self.plot1
+        try:
+            del self.win
+            del self.lineX
+            del self.lineY
+            del self.linegeo
+            del self.plot1
+        except:
+            print "error in qt closeme"
         self.running = False
 
 
@@ -2174,5 +2181,6 @@ myapp.show()
 
 app.exec_()
 del myapp
+del app
 print threading.enumerate()
 sys.exit()
