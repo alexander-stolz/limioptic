@@ -15,6 +15,11 @@ except:
     vtk = None
 from scipy import optimize
 from numpy import linspace
+try:
+    import user_functions
+    from user_functions import *
+except:
+    user_functions = False
 
 s            = 0.
 SOURCE       = []
@@ -2382,6 +2387,17 @@ else:
 optic.GetSpotSize.restype = ctypes.c_double
 optic.GetSigmaX.restype = ctypes.c_double
 optic.GetSigmaY.restype = ctypes.c_double
+
+if user_functions:
+    try:
+        temp = dir()
+        for i in temp:
+            try:
+                exec("user_functions.{0} = {0}".format(i))
+            except:
+                pass
+    except:
+        print "error while importing user_functions."
 
 if __name__ == "__main__":
     if (len(sys.argv) != 2):
