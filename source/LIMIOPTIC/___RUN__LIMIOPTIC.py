@@ -543,7 +543,7 @@ class doitqt2(threading.Thread):
             pyqtgraph.setConfigOptions(antialias=True)
         else:
             pyqtgraph.setConfigOptions(antialias=False)
-        self.win = MyQtWindow(title="Limioptic 2 - Output (2D)")
+        self.win = MyQtWindow(title="LIMIOPTIC - Output (2D)")
         self.win.setWindowIcon(QtGui.QIcon('logo.png'))
         self.win.resize(1000, 450)
         self.plot1 = self.win.addPlot()
@@ -852,7 +852,7 @@ class doit3d(threading.Thread):
         self.iren.Initialize()
         self.renwin.Render()
 
-        self.renwin.SetWindowName("Limioptic 2 - Output (3D)  |  r: reset view - space: take screenshot")
+        self.renwin.SetWindowName("LIMIOPTIC - Output (3D)  |  r: reset view - space: take screenshot")
 
         # self.animate wird aufgerufen wenn der Timer zuschlaegt (alle 50 ms)
         self.iren.AddObserver("TimerEvent", self.animate)
@@ -1085,7 +1085,7 @@ class doitXY(threading.Thread):
             self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit())
             self.timer = self.iren.CreateRepeatingTimer(50)
 
-            self.view.GetRenderWindow().SetWindowName("Limioptic 2 - Output (2D)  ||  TAB: toggle axis labels | [0..7]: select input | up/down/left/right: change input")
+            self.view.GetRenderWindow().SetWindowName("LIMIOPTIC - Output (2D)  ||  TAB: toggle axis labels | [0..7]: select input | up/down/left/right: change input")
 
             self.iren.Start()
 
@@ -1240,7 +1240,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             30,
             350 - 10,
             screen.height() - 40)
-        self.setWindowTitle('Limioptic 2')
+        self.setWindowTitle('LIMIOPTIC')
 
         # enable the staus bar
         self.statusBar().showMessage('')
@@ -1667,9 +1667,9 @@ class CQtLimioptic(QtGui.QMainWindow):
 #############################
     def setunsaved(self):
         try:
-            self.setWindowTitle("Limioptic 2 -     changed     - {}".format(self.FileName))
+            self.setWindowTitle("LIMIOPTIC -     changed     - {}".format(self.FileName))
         except:
-            self.setWindowTitle("Limioptic 2 - unsaved")
+            self.setWindowTitle("LIMIOPTIC - unsaved")
 
 #############################
     def setcom1(self):
@@ -1760,7 +1760,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             (text, INPUT, BEZEICHNUNGEN) = pickle.load(open(self.FileName, "rb"))
             self.textedit.setText(text)
 
-        self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+        self.setWindowTitle("LIMIOPTIC  -  {}".format(self.FileName))
         print "{} was loaded".format(self.FileName)
 
     def LoadAutosave(self):
@@ -1773,7 +1773,7 @@ class CQtLimioptic(QtGui.QMainWindow):
                 return 0
             else:
                 myfile = open(backup_file + ".lim", "r")
-                title  = "Limioptic 2  -  _save.lim"
+                title  = "LIMIOPTIC  -  _save.lim"
                 self.textedit.setText(myfile.read())
                 myfile.close()
                 self.setWindowTitle(title)
@@ -1794,9 +1794,9 @@ class CQtLimioptic(QtGui.QMainWindow):
         myfile = open(self.FileName, "w")
         myfile.write(str(self.textedit.toPlainText()))
         myfile.close()
-        self.setWindowTitle("Limioptic 2")
+        self.setWindowTitle("LIMIOPTIC")
         print "saved to", self.FileName
-        self.setWindowTitle("Limioptic 2  -  {}".format(self.FileName))
+        self.setWindowTitle("LIMIOPTIC  -  {}".format(self.FileName))
 
         myfile = open(self.FileName.split(".", 1)[0] + ".var", "w")
         for i in xrange(NumberOfInputs):
@@ -2020,14 +2020,14 @@ class CQtLimioptic(QtGui.QMainWindow):
         self.textedit.textCursor().insertText('AddAMSQPT(gamma2, prozent, astigm, v_terminal, v_ext, q, geo)\n\n')
 
     def About(self):
-        title = "About Limioptic 2"
+        title = "About LIMIOPTIC"
         text = "LIMIOPTIC by Alexander Stolz\nVersion {}\n\n"\
             "Feel free to send me any feedback or suggestions to amstolz@gmail.com.\n\n"\
             "Visit www.limioptic.de for more information.\n\nThanks for using LIMIOPTIC!\n\n".format(VERSION)
         self.dialog = DialogWindow(title, text)
 
     def Licence(self):
-        title = "Limioptic 2 Licence"
+        title = "LIMIOPTIC Licence"
         text = "The software LIMIOPTIC maintained by Alexander Stolz is freely available and distributable. "\
             "However, if you use it for some work whose results are made public, then you have to reference it properly."
         self.dialog = DialogWindow(title, text)
@@ -2181,5 +2181,5 @@ myapp.show()
 app.exec_()
 del myapp
 del app
-print threading.enumerate()
+# print threading.enumerate()
 sys.exit()
