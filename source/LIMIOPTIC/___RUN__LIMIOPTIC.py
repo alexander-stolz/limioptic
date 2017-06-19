@@ -2181,5 +2181,7 @@ myapp.show()
 app.exec_()
 del myapp
 del app
-# print threading.enumerate()
+
+print "Have a nice day :)"
+
 sys.exit()
