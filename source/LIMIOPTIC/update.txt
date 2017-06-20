@@ -1,4 +1,4 @@
-new: user can define new functions in user_functions.py
+new: user can define new functions in user_functions.py ; added vtk to installation routine
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/_compile_win.bat _compile_win.bat
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/_compile_linux.sh _compile_linux.sh
 https://raw.github.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/___RUN__LIMIOPTIC.py ___RUN__LIMIOPTIC.py
