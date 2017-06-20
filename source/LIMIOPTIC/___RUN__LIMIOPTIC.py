@@ -862,47 +862,47 @@ class doit3d(threading.Thread):
         # Ab hier laeuft die Schleife bis das Fenster geschlossen wird
         self.iren.Start()
 
-        def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
-            """ Wird aufgerufen wenn eine Variable geaendert wird, oder Strg + H gedrueckt wird """
+    def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
+        """ Wird aufgerufen wenn eine Variable geaendert wird, oder Strg + H gedrueckt wird """
 
-            if xi is None:
-                (xi, yi, zi, segs, parts) = self.parent.calculate()
+        if xi is None:
+            (xi, yi, zi, segs, parts) = self.parent.calculate()
 
-            for part in xrange(parts):
-                    for seg in xrange(segs):
-                        self.mypoints.InsertPoint(
-                            part * segs + seg,
-                            zi[seg] * SCALE3D / SUPERSCALE3D,
-                            xi[part][seg] / SUPERSCALE3D,
-                            yi[part][seg] / SUPERSCALE3D)
+        for part in xrange(parts):
+                for seg in xrange(segs):
+                    self.mypoints.InsertPoint(
+                        part * segs + seg,
+                        zi[seg] * SCALE3D / SUPERSCALE3D,
+                        xi[part][seg] / SUPERSCALE3D,
+                        yi[part][seg] / SUPERSCALE3D)
 
-            self.mypoints.Modified()
-            self.render = True
+        self.mypoints.Modified()
+        self.render = True
 
-        def animate(self, obj=None, event=None):
-            """ Nur animieren, wenn etwas geaendert wurde. Die Funktion wird alle 50 ms aufgerufen """
-            # if self.render:
-            # self.render = False
-            self.threadlock.acquire()
+    def animate(self, obj=None, event=None):
+        """ Nur animieren, wenn etwas geaendert wurde. Die Funktion wird alle 50 ms aufgerufen """
+        # if self.render:
+        # self.render = False
+        self.threadlock.acquire()
+        self.renwin.Render()
+        self.threadlock.release()
+
+    def keypress(self, obj=None, event=None):
+        key = obj.GetKeySym()
+        if key == "space":
+            global SCREENSHOTNUMBER
+            now = time.localtime()
+            self.w2iFilter.Modified()
+            self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
+                SCREENSHOTNUMBER,
+                now[0],
+                now[1],
+                now[2],
+                now[3],
+                now[4]))
+            self.writer.Write()
+            SCREENSHOTNUMBER += 1
             self.renwin.Render()
-            self.threadlock.release()
-
-        def keypress(self, obj=None, event=None):
-            key = obj.GetKeySym()
-            if key == "space":
-                global SCREENSHOTNUMBER
-                now = time.localtime()
-                self.w2iFilter.Modified()
-                self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
-                    SCREENSHOTNUMBER,
-                    now[0],
-                    now[1],
-                    now[2],
-                    now[3],
-                    now[4]))
-                self.writer.Write()
-                SCREENSHOTNUMBER += 1
-                self.renwin.Render()
 
 
 class doitXY(threading.Thread):
@@ -915,23 +915,186 @@ class doitXY(threading.Thread):
         self.update = False
         self.threadlock = threading.Lock()
 
-        def run(self):
-            # 2d Szene und xy Chart erzeugen.
-            self.view = vtk.vtkContextView()
-            self.view.GetRenderer().SetBackground(1., 1., 1.)
+    def run(self):
+        # 2d Szene und xy Chart erzeugen.
+        self.view = vtk.vtkContextView()
+        self.view.GetRenderer().SetBackground(1., 1., 1.)
+        if myapp.menu_plot_bg.isChecked():
+            self.view.GetRenderer().SetBackground(0., 0., 0.)
+        # self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
+        self.view.GetRenderWindow().SetSize(800, 350)
+
+        self.chart = vtk.vtkChartXY()
+        self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTitle("beamline (m)")
+        self.chart.GetAxis(vtk.vtkAxis.LEFT).SetTitle("deviation (mm)")
+
+        self.Ticks  = vtk.vtkDoubleArray()
+        self.Labels = vtk.vtkStringArray()
+
+        if len(limioptic.textArray) > 0:
+            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.CUSTOM)
+            self.Ticks.Reset()
+            self.Labels.Reset()
+            for name in limioptic.textArray:
+                self.Ticks.InsertNextValue(name[0])
+                self.Labels.InsertNextValue(name[1])
+            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
+            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
+
+        self.view.GetScene().AddItem(self.chart)
+
+        if (myapp.menu_plot_geo.isChecked()):
+            limioptic.geo_s.Reset()
+            limioptic.geo_y.Reset()
+            limioptic.s = 0.
+        else:
+            limioptic.s = -1.
+
+        # Exporter
+        # self.writer = vtk.vtk.vtkPNGWriter()
+        # self.w2iFilter = vtk.vtkWindowToImageFilter()
+        # self.w2iFilter.SetInput(self.view.GetRenderWindow())
+        # self.w2iFilter.SetMagnification(10)
+        # self.writer.SetInput(self.w2iFilter.GetOutput())
+
+        # Berechnungen durchfuehren
+        (xi, yi, zi, segs, parts) = self.parent.calculate()
+        iele = limioptic.GetTrajectory(0, 7)
+
+        if (myapp.menu_output_file.isChecked()):
+            ausgabe = open("output_markers.dat", "w")
+
+        # Marker setzen
+        if myapp.menu_plot_marker.isChecked():
+            self.markertable = vtk.vtkTable()
+            self.markersY = vtk.vtkFloatArray()
+            self.markersY.SetName("Marker")
+            self.markersY.InsertNextValue(-10)
+            self.markersY.InsertNextValue(10)
+            self.markertable.AddColumn(self.markersY)
+
+            self.markersX = []
+
+            self.linelist = []
+            if (len(iele) > 0):
+                for i in xrange(1, len(iele)):
+                    if (iele[i] != iele[i - 1]):
+                        self.linelist.append(zi[i - 1])
+                    self.linelist.append(zi[len(iele) - 1])
+
+            if (myapp.menu_output_file.isChecked()):
+                print >> ausgabe, 0, 0
+            for i in xrange(1, len(self.linelist)):
+                self.markersX.append(vtk.vtkFloatArray())
+                self.markersX[i - 1].SetName("Marker %1.0f" % (i))
+                self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                if (myapp.menu_output_file.isChecked()):
+                    print >> ausgabe, self.linelist[i - 1], 0
+                    print >> ausgabe, self.linelist[i - 1], 10
+                    print >> ausgabe, self.linelist[i - 1], -10
+                    print >> ausgabe, self.linelist[i - 1], 0
+                self.markertable.AddColumn(self.markersX[i - 1])
+                self.line2 = self.chart.AddPlot(0)
+                self.line2.SetInput(self.markertable, i, 0)
+                self.line2.SetColor(.7, .7, .7)
+                self.line2.SetWidth(1.)
+            if (myapp.menu_output_file.isChecked()):
+                ausgabe.close()
+
+        # Erzeuge Wertetabelle
+        self.table = vtk.vtkTable()
+        self.arrZ = vtk.vtkFloatArray()
+        self.arrZ.SetName("Z Achse")
+        self.arrX = []
+        self.arrY = []
+
+        self.arrZ.SetNumberOfValues(segs)
+        self.arrZ.Reset()
+        for seg in xrange(segs):
+            self.arrZ.InsertNextValue(zi[seg])
+
+        self.table.AddColumn(self.arrZ)
+
+        j = 0
+        if (plotx):
+            if (myapp.menu_output_file.isChecked()):
+                ausgabe = open("output_xbeam.dat", "w")
+            for j in xrange(parts):
+                self.arrX.append(vtk.vtkFloatArray())
+                self.arrX[j].SetName("X-Strahl %1.0f Start: %1.2f" % (j, xi[j][0]))
+                for i in xrange(segs):
+                    self.arrX[j].InsertNextValue(xi[j][i])
+                    if (myapp.menu_output_file.isChecked()) and not (xi[j][i] == yi[j][i] == 0.):
+                        print >> ausgabe, zi[i], xi[j][i]
+                self.table.AddColumn(self.arrX[j])
+                if (myapp.menu_output_file.isChecked()):
+                    ausgabe.write("\n")
+
+                self.line = self.chart.AddPlot(0)
+                self.line.SetInput(self.table, 0, j + 1)
+                # self.line.SetColor(255, 0, 0, 255)
+                self.line.SetColor(XCOLOR[0], XCOLOR[1], XCOLOR[2], XCOLOR[3])
+                self.line.SetWidth(.7)
+            if (myapp.menu_output_file.isChecked()):
+                ausgabe.close()
+        if (ploty):
+            if (myapp.menu_output_file.isChecked()):
+                ausgabe = open("output_ybeam.dat", "w")
+            for l in xrange(parts):
+                self.arrY.append(vtk.vtkFloatArray())
+                self.arrY[l].SetName("Y-Strahl %1.0f Start: %1.2f" % (l, yi[l][0]))
+                for i in xrange(segs):
+                    self.arrY[l].InsertNextValue(yi[l][i])
+                    if (myapp.menu_output_file.isChecked()) and not (xi[l][i] == yi[l][i] == 0.):
+                        print >> ausgabe, zi[i], yi[l][i]
+                self.table.AddColumn(self.arrY[l])
+                if (myapp.menu_output_file.isChecked()):
+                    ausgabe.write("\n")
+
+                self.line = self.chart.AddPlot(0)
+                self.line.SetInput(self.table, 0, l + j + xy)
+                # self.line.SetColor(0, 255, 0, 255)
+                self.line.SetColor(YCOLOR[0], YCOLOR[1], YCOLOR[2], YCOLOR[3])
+                self.line.SetWidth(.7)
+            if (myapp.menu_output_file.isChecked()):
+                ausgabe.close()
+
+        if (myapp.menu_plot_geo.isChecked()):
+            limioptic.geolines.AddColumn(limioptic.geo_s)
+            limioptic.geolines.AddColumn(limioptic.geo_y)
+            self.line3 = self.chart.AddPlot(0)
+            self.line3.SetInput(limioptic.geolines, 0, 1)
             if myapp.menu_plot_bg.isChecked():
-                self.view.GetRenderer().SetBackground(0., 0., 0.)
-            # self.view.GetRenderWindow().SetSize(screen.width() - 375, screen.height() - 40)
-            self.view.GetRenderWindow().SetSize(800, 350)
+                self.line3.SetColor(1, 1, 0)
+            else:
+                self.line3.SetColor(0., 0., 1.)
+            self.line3.SetWidth(.7)
 
-            self.chart = vtk.vtkChartXY()
-            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTitle("beamline (m)")
-            self.chart.GetAxis(vtk.vtkAxis.LEFT).SetTitle("deviation (mm)")
+        for name in limioptic.textArray:
+            self.Ticks.InsertNextValue(name[0])
+            self.Labels.InsertNextValue(name[1])
 
-            self.Ticks  = vtk.vtkDoubleArray()
-            self.Labels = vtk.vtkStringArray()
+        if (myapp.menu_output_smoothing.isChecked()):
+            self.view.GetRenderWindow().LineSmoothingOn()
+        self.view.Render()
 
-            if len(limioptic.textArray) > 0:
+        self.iren = self.view.GetInteractor()
+        self.iren.AddObserver("TimerEvent", self.animate)
+        self.iren.AddObserver("KeyPressEvent", self.keypress)
+        self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit())
+        self.timer = self.iren.CreateRepeatingTimer(50)
+
+        self.view.GetRenderWindow().SetWindowName("LIMIOPTIC - Output (2D)  ||  TAB: toggle axis labels | [0..7]: select input | up/down/left/right: change input")
+
+        self.iren.Start()
+
+    def keypress(self, obj=None, event=None):
+        key = obj.GetKeySym()
+        if key == "Tab":
+            if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
+                self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.AUTO)
+            else:
                 self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.CUSTOM)
                 self.Ticks.Reset()
                 self.Labels.Reset()
@@ -940,293 +1103,130 @@ class doitXY(threading.Thread):
                     self.Labels.InsertNextValue(name[1])
                 self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
                 self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
+            self.render = True
+        elif key in (str(i) for i in xrange(8)):
+            self.activeInput = int(key)
+            self.parent.setWindowTitle("input control (INPUT[{}])".format(self.activeInput))
+        elif key in ("Up", "Down", "Left", "Right"):
+            self.threadlock.acquire()
+            if key == "Up":
+                self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() + .01)
+            if key == "Down":
+                self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() - .01)
+            if key == "Right":
+                self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
+            if key == "Left":
+                self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
+            self.threadlock.release()
+        # elif key == "space":
+        #    global SCREENSHOTNUMBER
+        #    now = time.localtime()
+        #    self.w2iFilter.Modified()
+        #    self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
+        #        SCREENSHOTNUMBER,
+        #        now[0],
+        #        now[1],
+        #        now[2],
+        #        now[3],
+        #        now[4]))
+        #    self.writer.Write()
+        #    SCREENSHOTNUMBER += 1
 
-            self.view.GetScene().AddItem(self.chart)
+    def animate(self, obj=None, event=None):
+        # if self.render:
+        # self.render = False
+        self.threadlock.acquire()
+        self.view.Render()
+        self.threadlock.release()
+        if self.update:
+            self.update = False
+            self.neu()
 
-            if (myapp.menu_plot_geo.isChecked()):
-                limioptic.geo_s.Reset()
-                limioptic.geo_y.Reset()
-                limioptic.s = 0.
-            else:
-                limioptic.s = -1.
+    def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
+        self.threadlock.acquire()
+        if (myapp.menu_plot_geo.isChecked()):
+            limioptic.geo_s.Reset()
+            limioptic.geo_y.Reset()
+            limioptic.s = 0.
+        else:
+            limioptic.s = -1.
 
-            # Exporter
-            # self.writer = vtk.vtk.vtkPNGWriter()
-            # self.w2iFilter = vtk.vtkWindowToImageFilter()
-            # self.w2iFilter.SetInput(self.view.GetRenderWindow())
-            # self.w2iFilter.SetMagnification(10)
-            # self.writer.SetInput(self.w2iFilter.GetOutput())
+        try:
+            if xi is None:
+                (xi, yi, zi, segs, parts) = self.parent.calculate()
+        except Exception, e:
+            print "\n\ntraceback:", "\n===============================\n", e, "\n===============================\n\n"
+            self.threadlock.release()
+            return
+        iele = limioptic.GetTrajectory(0, 7)
 
-            # Berechnungen durchfuehren
-            (xi, yi, zi, segs, parts) = self.parent.calculate()
-            iele = limioptic.GetTrajectory(0, 7)
+        # erzeuge wertetabelle
+        if (plotx):
+            for part in xrange(parts):
+                self.arrX[part].Reset()
+                for seg in xrange(segs):
+                    self.arrX[part].InsertNextValue(xi[part][seg])
+        if (ploty):
+            for part in xrange(parts):
+                self.arrY[part].Reset()
+                for seg in xrange(segs):
+                    self.arrY[part].InsertNextValue(yi[part][seg])
 
-            if (myapp.menu_output_file.isChecked()):
-                ausgabe = open("output_markers.dat", "w")
+        self.arrZ.Reset()
+        for i in xrange(segs):
+            self.arrZ.InsertNextValue(zi[i])
 
-            # Marker setzen
-            if myapp.menu_plot_marker.isChecked():
-                self.markertable = vtk.vtkTable()
-                self.markersY = vtk.vtkFloatArray()
-                self.markersY.SetName("Marker")
-                self.markersY.InsertNextValue(-10)
-                self.markersY.InsertNextValue(10)
-                self.markertable.AddColumn(self.markersY)
+        # Marker setzen
+        if myapp.menu_plot_marker.isChecked():
+            self.linelist = []
+            if (len(iele) > 0):
+                for i in xrange(1, len(iele)):
+                    if (iele[i] != iele[i - 1]):
+                        self.linelist.append(zi[i - 1])
+                self.linelist.append(zi[len(iele) - 1])
 
-                self.markersX = []
-
-                self.linelist = []
-                if (len(iele) > 0):
-                    for i in xrange(1, len(iele)):
-                        if (iele[i] != iele[i - 1]):
-                            self.linelist.append(zi[i - 1])
-                        self.linelist.append(zi[len(iele) - 1])
-
-                if (myapp.menu_output_file.isChecked()):
-                    print >> ausgabe, 0, 0
-                for i in xrange(1, len(self.linelist)):
+            for i in xrange(1, len(self.linelist)):
+                try:                                                        # error falls neues element hinzugefuegt wurde
+                    self.markersX[i - 1].Reset()
+                    self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                    self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
+                except:                                                     # neu initialisieren
+                    # self.iren.GetRenderWindow().Finalize()
+                    # self.iren.TerminateApp()
+                    # self.parent.closeit()
+                    print "you must close the output-window and rerender (Ctrl+G)"
+                    msg = QtGui.QMessageBox()
+                    msg.setText("you must close the output-window and rerender\n(Ctrl+G)")
+                    msg.exec_()
+                    self.threadlock.release()
+                    return
                     self.markersX.append(vtk.vtkFloatArray())
-                    self.markersX[i - 1].SetName("Marker %1.0f" % (i))
+                    self.markersX[i - 1].SetName("Marker {}".format(i))
                     self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
                     self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
-                    if (myapp.menu_output_file.isChecked()):
-                        print >> ausgabe, self.linelist[i - 1], 0
-                        print >> ausgabe, self.linelist[i - 1], 10
-                        print >> ausgabe, self.linelist[i - 1], -10
-                        print >> ausgabe, self.linelist[i - 1], 0
                     self.markertable.AddColumn(self.markersX[i - 1])
-                    self.line2 = self.chart.AddPlot(0)
-                    self.line2.SetInput(self.markertable, i, 0)
-                    self.line2.SetColor(.7, .7, .7)
-                    self.line2.SetWidth(1.)
-                if (myapp.menu_output_file.isChecked()):
-                    ausgabe.close()
+            self.markertable.Modified()
 
-            # Erzeuge Wertetabelle
-            self.table = vtk.vtkTable()
-            self.arrZ = vtk.vtkFloatArray()
-            self.arrZ.SetName("Z Achse")
-            self.arrX = []
-            self.arrY = []
+        self.table.Modified()
+        if (myapp.menu_plot_geo.isChecked()):
+            limioptic.geolines.Modified()
+        if myapp.menu_plot_bg.isChecked():
+            self.view.GetRenderer().SetBackground(0, 0, 0)
+        else:
+            self.view.GetRenderer().SetBackground(1, 1, 1)
 
-            self.arrZ.SetNumberOfValues(segs)
-            self.arrZ.Reset()
-            for seg in xrange(segs):
-                self.arrZ.InsertNextValue(zi[seg])
-
-            self.table.AddColumn(self.arrZ)
-
-            j = 0
-            if (plotx):
-                if (myapp.menu_output_file.isChecked()):
-                    ausgabe = open("output_xbeam.dat", "w")
-                for j in xrange(parts):
-                    self.arrX.append(vtk.vtkFloatArray())
-                    self.arrX[j].SetName("X-Strahl %1.0f Start: %1.2f" % (j, xi[j][0]))
-                    for i in xrange(segs):
-                        self.arrX[j].InsertNextValue(xi[j][i])
-                        if (myapp.menu_output_file.isChecked()) and not (xi[j][i] == yi[j][i] == 0.):
-                            print >> ausgabe, zi[i], xi[j][i]
-                    self.table.AddColumn(self.arrX[j])
-                    if (myapp.menu_output_file.isChecked()):
-                        ausgabe.write("\n")
-
-                    self.line = self.chart.AddPlot(0)
-                    self.line.SetInput(self.table, 0, j + 1)
-                    # self.line.SetColor(255, 0, 0, 255)
-                    self.line.SetColor(XCOLOR[0], XCOLOR[1], XCOLOR[2], XCOLOR[3])
-                    self.line.SetWidth(.7)
-                if (myapp.menu_output_file.isChecked()):
-                    ausgabe.close()
-            if (ploty):
-                if (myapp.menu_output_file.isChecked()):
-                    ausgabe = open("output_ybeam.dat", "w")
-                for l in xrange(parts):
-                    self.arrY.append(vtk.vtkFloatArray())
-                    self.arrY[l].SetName("Y-Strahl %1.0f Start: %1.2f" % (l, yi[l][0]))
-                    for i in xrange(segs):
-                        self.arrY[l].InsertNextValue(yi[l][i])
-                        if (myapp.menu_output_file.isChecked()) and not (xi[l][i] == yi[l][i] == 0.):
-                            print >> ausgabe, zi[i], yi[l][i]
-                    self.table.AddColumn(self.arrY[l])
-                    if (myapp.menu_output_file.isChecked()):
-                        ausgabe.write("\n")
-
-                    self.line = self.chart.AddPlot(0)
-                    self.line.SetInput(self.table, 0, l + j + xy)
-                    # self.line.SetColor(0, 255, 0, 255)
-                    self.line.SetColor(YCOLOR[0], YCOLOR[1], YCOLOR[2], YCOLOR[3])
-                    self.line.SetWidth(.7)
-                if (myapp.menu_output_file.isChecked()):
-                    ausgabe.close()
-
-            if (myapp.menu_plot_geo.isChecked()):
-                limioptic.geolines.AddColumn(limioptic.geo_s)
-                limioptic.geolines.AddColumn(limioptic.geo_y)
-                self.line3 = self.chart.AddPlot(0)
-                self.line3.SetInput(limioptic.geolines, 0, 1)
-                if myapp.menu_plot_bg.isChecked():
-                    self.line3.SetColor(1, 1, 0)
-                else:
-                    self.line3.SetColor(0., 0., 1.)
-                self.line3.SetWidth(.7)
-
+        if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
+            self.Ticks.Reset()
+            self.Labels.Reset()
             for name in limioptic.textArray:
                 self.Ticks.InsertNextValue(name[0])
                 self.Labels.InsertNextValue(name[1])
+            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
+            self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
 
-            if (myapp.menu_output_smoothing.isChecked()):
-                self.view.GetRenderWindow().LineSmoothingOn()
-            self.view.Render()
+        self.threadlock.release()
 
-            self.iren = self.view.GetInteractor()
-            self.iren.AddObserver("TimerEvent", self.animate)
-            self.iren.AddObserver("KeyPressEvent", self.keypress)
-            self.iren.AddObserver("ExitEvent", lambda o, e, a=myapp.inputwindow2d: a.closeit())
-            self.timer = self.iren.CreateRepeatingTimer(50)
-
-            self.view.GetRenderWindow().SetWindowName("LIMIOPTIC - Output (2D)  ||  TAB: toggle axis labels | [0..7]: select input | up/down/left/right: change input")
-
-            self.iren.Start()
-
-        def keypress(self, obj=None, event=None):
-            key = obj.GetKeySym()
-            if key == "Tab":
-                if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
-                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.AUTO)
-                else:
-                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetBehavior(vtk.vtkAxis.CUSTOM)
-                    self.Ticks.Reset()
-                    self.Labels.Reset()
-                    for name in limioptic.textArray:
-                        self.Ticks.InsertNextValue(name[0])
-                        self.Labels.InsertNextValue(name[1])
-                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
-                    self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
-                self.render = True
-            elif key in (str(i) for i in xrange(8)):
-                self.activeInput = int(key)
-                self.parent.setWindowTitle("input control (INPUT[{}])".format(self.activeInput))
-            elif key in ("Up", "Down", "Left", "Right"):
-                self.threadlock.acquire()
-                if key == "Up":
-                    self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() + .01)
-                if key == "Down":
-                    self.parent.min[self.activeInput].setValue(self.parent.min[self.activeInput].value() - .01)
-                if key == "Right":
-                    self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() + .0001)
-                if key == "Left":
-                    self.parent.input[self.activeInput].setValue(self.parent.input[self.activeInput].value() - .0001)
-                self.threadlock.release()
-            # elif key == "space":
-            #    global SCREENSHOTNUMBER
-            #    now = time.localtime()
-            #    self.w2iFilter.Modified()
-            #    self.writer.SetFileName("screenshot_{} ({}.{}.{} at {}.{}).png".format(
-            #        SCREENSHOTNUMBER,
-            #        now[0],
-            #        now[1],
-            #        now[2],
-            #        now[3],
-            #        now[4]))
-            #    self.writer.Write()
-            #    SCREENSHOTNUMBER += 1
-
-        def animate(self, obj=None, event=None):
-            # if self.render:
-            # self.render = False
-            self.threadlock.acquire()
-            self.view.Render()
-            self.threadlock.release()
-            if self.update:
-                self.update = False
-                self.neu()
-
-        def neu(self, (xi, yi, zi, segs, parts)=(None, None, None, None, None)):
-            self.threadlock.acquire()
-            if (myapp.menu_plot_geo.isChecked()):
-                limioptic.geo_s.Reset()
-                limioptic.geo_y.Reset()
-                limioptic.s = 0.
-            else:
-                limioptic.s = -1.
-
-            try:
-                if xi is None:
-                    (xi, yi, zi, segs, parts) = self.parent.calculate()
-            except Exception, e:
-                print "\n\ntraceback:", "\n===============================\n", e, "\n===============================\n\n"
-                self.threadlock.release()
-                return
-            iele = limioptic.GetTrajectory(0, 7)
-
-            # erzeuge wertetabelle
-            if (plotx):
-                for part in xrange(parts):
-                    self.arrX[part].Reset()
-                    for seg in xrange(segs):
-                        self.arrX[part].InsertNextValue(xi[part][seg])
-            if (ploty):
-                for part in xrange(parts):
-                    self.arrY[part].Reset()
-                    for seg in xrange(segs):
-                        self.arrY[part].InsertNextValue(yi[part][seg])
-
-            self.arrZ.Reset()
-            for i in xrange(segs):
-                self.arrZ.InsertNextValue(zi[i])
-
-            # Marker setzen
-            if myapp.menu_plot_marker.isChecked():
-                self.linelist = []
-                if (len(iele) > 0):
-                    for i in xrange(1, len(iele)):
-                        if (iele[i] != iele[i - 1]):
-                            self.linelist.append(zi[i - 1])
-                    self.linelist.append(zi[len(iele) - 1])
-
-                for i in xrange(1, len(self.linelist)):
-                    try:                                                        # error falls neues element hinzugefuegt wurde
-                        self.markersX[i - 1].Reset()
-                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
-                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
-                    except:                                                     # neu initialisieren
-                        # self.iren.GetRenderWindow().Finalize()
-                        # self.iren.TerminateApp()
-                        # self.parent.closeit()
-                        print "you must close the output-window and rerender (Ctrl+G)"
-                        msg = QtGui.QMessageBox()
-                        msg.setText("you must close the output-window and rerender\n(Ctrl+G)")
-                        msg.exec_()
-                        self.threadlock.release()
-                        return
-                        self.markersX.append(vtk.vtkFloatArray())
-                        self.markersX[i - 1].SetName("Marker {}".format(i))
-                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
-                        self.markersX[i - 1].InsertNextValue(self.linelist[i - 1])
-                        self.markertable.AddColumn(self.markersX[i - 1])
-                self.markertable.Modified()
-
-            self.table.Modified()
-            if (myapp.menu_plot_geo.isChecked()):
-                limioptic.geolines.Modified()
-            if myapp.menu_plot_bg.isChecked():
-                self.view.GetRenderer().SetBackground(0, 0, 0)
-            else:
-                self.view.GetRenderer().SetBackground(1, 1, 1)
-
-            if self.chart.GetAxis(vtk.vtkAxis.BOTTOM).GetBehavior() == vtk.vtkAxis.CUSTOM:
-                self.Ticks.Reset()
-                self.Labels.Reset()
-                for name in limioptic.textArray:
-                    self.Ticks.InsertNextValue(name[0])
-                    self.Labels.InsertNextValue(name[1])
-                self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickPositions(self.Ticks)
-                self.chart.GetAxis(vtk.vtkAxis.BOTTOM).SetTickLabels(self.Labels)
-
-            self.threadlock.release()
-
-            self.render = True
+        self.render = True
 
 
 #################################################
@@ -1665,13 +1665,8 @@ class CQtLimioptic(QtGui.QMainWindow):
             print "update check failed\n"
 
 #############################
-    def setunsaved(self):
-        try:
-            self.setWindowTitle("LIMIOPTIC -     changed     - {}".format(self.FileName))
-        except:
-            self.setWindowTitle("LIMIOPTIC - unsaved")
 
-#############################
+# set com #
     def setcom1(self):
         global PORT
         PORT = "COM1"
@@ -1733,7 +1728,13 @@ class CQtLimioptic(QtGui.QMainWindow):
                 msg.setText("Press Ctrl+G to produce *.dat files!")
                 msg.exec_()
 
-#############################
+# save and load #
+    def setunsaved(self):
+        try:
+            self.setWindowTitle("LIMIOPTIC -     changed     - {}".format(self.FileName))
+        except:
+            self.setWindowTitle("LIMIOPTIC - unsaved")
+            
     def LoadFile(self, filename=None):
         if not filename:
             self.FileName = str(QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim"))
@@ -1826,7 +1827,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             print "Noch kein Filename definiert!"
             self.SaveFileAs()
 
-#############################
+# plot #
     def plot2d(self):
         global RUNNING2D, RUNNING
         self.SaveNeu(backup_file)
@@ -1866,7 +1867,7 @@ class CQtLimioptic(QtGui.QMainWindow):
         elif RUNNING3D:
             self.inputwindow3d.plotwindow.neu()
 
-# INSERT Funktionen #
+# insert #
     def InsertINPUT(self):
         self.textedit.textCursor().insertText("INPUT[ ]")
         self.textedit.moveCursor(QtGui.QTextCursor.Left)
