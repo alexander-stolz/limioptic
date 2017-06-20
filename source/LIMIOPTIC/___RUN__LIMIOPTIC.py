@@ -445,9 +445,9 @@ class inputcontrol(QtGui.QDialog):
                 del self.plotwindow.mycells
                 del self.plotwindow.writer
                 del self.plotwindow.w2iFilter
-                for segment in self.segments:
+                for segment in self.plotwindow.segments:
                     del segment
-                del self.segments
+                del self.plotwindow.segments
         # del self.plotwindow
         # plotEmittance.stop()
         # print threading.enumerate()
@@ -1734,7 +1734,7 @@ class CQtLimioptic(QtGui.QMainWindow):
             self.setWindowTitle("LIMIOPTIC -     changed     - {}".format(self.FileName))
         except:
             self.setWindowTitle("LIMIOPTIC - unsaved")
-            
+
     def LoadFile(self, filename=None):
         if not filename:
             self.FileName = str(QtGui.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim"))
