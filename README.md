@@ -4,7 +4,8 @@
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
 
 1. Download and extract all files and folders
-2. Execute <b>install dependencies - part 1.bat</b> to install python 2.7 to C:\Python27.
+2. Execute <b>install dependencies - part 1.bat</b> to install python.
+´Python should be installed to the default directory. If this is not possible you have to change the directory in the windows path variable accordingly´
 3. Execute <b>install dependencies - part 2.bat</b> to install the required python packages.
 4. Copy the <b>source/LIMIOPTIC/</b> folder to any destination or leave it there.
 5. Execute <b>___RUN__LIMIOPTIC</b> in the LIMIOPTIC folder.
