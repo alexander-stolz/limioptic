@@ -4,13 +4,11 @@
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
 
 1. Download and extract all files and folders
-2. execute <b>install dependencies.bat</b>
-3. copy the <b>source/LIMIOPTIC/</b> folder to any destination or leave it there
-4. execute <b>___RUN__LIMIOPTIC</b> in the LIMIOPTIC folder
+2. Execute <b>install dependencies - part 1.bat</b> to install Python 2.7 to C:\Python27.
+3. Copy the <b>source/LIMIOPTIC/</b> folder to any destination or leave it there.
+4. Execute <b>___RUN__LIMIOPTIC</b> in the LIMIOPTIC folder.
 
-5. make sure you are always up-to-date using <b>_update.py</b> if needed.
-
-NOTE: In order to save space the python VTK package is not installed by default. But it can be installed seperatedly if an increased speed or 3D view is needed.
+5. Make sure you are always up-to-date using <b>_update.py</b> if needed.
 
 <br>
 <b>Installation (Linux):</b>
