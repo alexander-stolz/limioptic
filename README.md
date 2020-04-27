@@ -3,6 +3,9 @@
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
 
+<b>Windows 10:</b>
+Make sure to deactivate the Windows "execution aliases" for python.exe!
+
 1. Download and extract all files and folders
 2. Execute <b>install dependencies - part 1.bat</b> to install python.
 `Python should be installed to the default directory. If this is not possible you have to change the directory in the windows path variable after the installation.`
