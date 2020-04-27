@@ -33,4 +33,4 @@ Make sure to deactivate the Windows "execution aliases" for python.exe!
 <br>
 <b>Licence</b>
 
-The program Limioptic 2 maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.
+The program LIMIOPTIC maintained by Alexander Stolz is freely available and distributable. However, if you use it for some work whose results are made public, then you have to reference it properly.
