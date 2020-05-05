@@ -1,7 +1,7 @@
 <br>
 <b>Introduction:</b>
 
-A short introducion can be found at <a href="www.limioptic.de">www.limioptic.de</a>.
+A short introducion can be found at <a href="http://alexander-stolz.github.io/limioptic/">www.limioptic.de</a>.
 
 
 <br>
