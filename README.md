@@ -1,4 +1,8 @@
 <br>
+<b>Introduction:</b>
+A short introducion can be found at <a href="www.limioptic.de">www.limioptic.de</a>.
+
+<br>
 <b>Installation (Windows):</b>
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
