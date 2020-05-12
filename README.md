@@ -9,8 +9,8 @@ A short introducion can be found at <a href="http://alexander-stolz.github.io/li
 
 <b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
 
-<b>Windows 10:</b>
-Make sure to deactivate the Windows "execution aliases" for python.exe!
+> <b>Windows 10:</b>
+> <b>Make sure to deactivate the Windows "execution aliases" for python.exe!</b>
 
 1. Download and extract all files and folders
 2. Execute <b>install dependencies - part 1.bat</b> to install python.
