@@ -7,7 +7,6 @@ import os
 print("reading file list..")
 a = ul.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/LIMIOPTIC/update.txt").read()
 b = "".join(map(chr, a)).split("\n")
-print(b)
 
 q = input("press ENTER to start update process. press \"q\" to cancel..  ")
 
