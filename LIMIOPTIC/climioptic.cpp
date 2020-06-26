@@ -953,7 +953,7 @@ void CLimioptic::ApplyAperture(double *p, double d, int output)
         for (ip = 0; ip < pnum; ip++)
         {
 
-            if ( pow(p[i + 0 - elesize] / 2, 2) + pow(p[i + 2 - elesize] / 2, 2) <= pow(d / 2, 2) )
+            if ( pow(p[i + 0 - elesize], 2) + pow(p[i + 2 - elesize], 2) <= pow(d / 2, 2) )
             {
                 p0 = p[i + 0 - elesize];
                 p1 = p[i + 1 - elesize];
