@@ -1,21 +1,27 @@
 #!/usr/bin/env python
 
-import urllib as ul
+import urllib.request as ul
 import sys
 import os
 
 print("reading file list..")
-a = ul.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/source/LIMIOPTIC/update.txt")
-b = a.readlines()
-a.close()
+a = ul.urlopen("https://raw.githubusercontent.com/alexander-stolz/limioptic/master/LIMIOPTIC/update.txt").read()
+b = "".join(map(chr, a)).split("\n")
+print(b)
 
 q = input("press ENTER to start update process. press \"q\" to cancel..  ")
 
 if sys.argv[0].endswith(".py"):
     if (q != "q"):
         for i in range(1, len(b)):
-            ul.urlretrieve(b[i].split()[0], b[i].split()[1])
-            print("{} updated".format(b[i].split()[1]))
+            try:
+                ul.urlretrieve(b[i].split()[0], b[i].split()[1])
+                print("{} updated".format(b[i].split()[1]))
+            except:
+                try:
+                    print(b[i].split()[1], "not found")
+                except:
+                    pass
         print("\n", b[0])
     try:
         os.remove("liblimioptic-linux.so")
