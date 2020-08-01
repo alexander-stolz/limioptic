@@ -272,7 +272,7 @@ class ImportSource():
 class UserInteraction(QDialog):
     def __init__(self, parent):
         self.parent = parent
-        gui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.setWindowTitle("Filter Particles")
 
     def ChooseFilter(self):
