@@ -1924,7 +1924,7 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 
     def InsertSource(self, _filename=None):
         global SourceObj
-        if _filename is None:
+        if not _filename:
             _filename = QtWidgets.QFileDialog.getOpenFileName(self, "Open file", ".")[0]
             SourceObj.LoadSource(_filename, filetype=("SRIM" if _filename.endswith("TRANSMIT.txt") else "limioptic"))
         else:
