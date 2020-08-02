@@ -272,7 +272,7 @@ class ImportSource():
 class UserInteraction(QDialog):
     def __init__(self, parent):
         self.parent = parent
-        gui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.setWindowTitle("Filter Particles")
 
     def ChooseFilter(self):
@@ -321,7 +321,7 @@ class UserInteraction(QDialog):
 if __name__ == "__main__":
     #source = "TRANSMIT.txt"
     #source = "C:\\Users\\astolz\\Dropbox\\uni\\aaaa\\pp_to_alex.out"
-    app = gui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     myapp = ImportSource()
 
     import tkinter
