@@ -589,6 +589,15 @@ class doitqt2(threading.Thread):
         self.linegeo = self.plot1.plot()
         self.labels = []
 
+        if myapp.menu_output_file.isChecked():
+            (xi, yi, zi, segs, parts) = self.parent.calculate()
+            with open("beam.dat", "w") as f:
+                for part in range(parts):
+                    print(f"# particle {part}", file=f)
+                    print(f"# --------------------------------------", file=f)
+                    for seg in range(segs):
+                        print(zi[seg], xi[part][seg], yi[part][seg], file=f)
+
     def run(self):
         while self.running:
             time.sleep(.1)
@@ -1503,8 +1512,8 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 
         # TOOLS #
         # dat
-        self.menu_output_file = QtWidgets.QAction('-> output_*.dat', self)
-        self.menu_output_file.setStatusTip('send output -> *.dat files for publication.')
+        self.menu_output_file = QtWidgets.QAction('-> beam.dat', self)
+        self.menu_output_file.setStatusTip('write beams to beam.dat file.')
         self.menu_output_file.setCheckable(True)
         self.menu_output_file.setChecked(False)
         self.menu_output_file.triggered.connect(self.todat)
@@ -1756,14 +1765,14 @@ class CQtLimioptic(QtWidgets.QMainWindow):
     def todat(self):
         """ Ausgabe in Datei """
         if (self.menu_output_file.isChecked()):
-            if (RUNNING2D):
-                msg = QtWidgets.QMessageBox()
-                msg.setText("Please close the plot-window and rerender!\n*.dat files will be produced every time the plot-window opens.")
-                msg.exec_()
-            else:
-                msg = QtWidgets.QMessageBox()
-                msg.setText("Press Ctrl+G to produce *.dat files!")
-                msg.exec_()
+            # if (RUNNING2D):
+            msg = QtWidgets.QMessageBox()
+            msg.setText("Please close plotwindow and press Ctrl+F to rerender!\n*.dat files will be produced every time the plot-window opens.")
+            msg.exec_()
+            # else:
+            #     msg = QtWidgets.QMessageBox()
+            #     msg.setText("Press Ctrl+G to produce *.dat files!")
+            #     msg.exec_()
 
 # save and load #
     def setunsaved(self):
