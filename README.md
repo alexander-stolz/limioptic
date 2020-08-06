@@ -14,13 +14,11 @@ A short introducion can be found at <a href="http://alexander-stolz.github.io/li
 > <b>Make sure to deactivate the Windows "execution aliases" for python.exe!</b>
 
 1. Download and extract all files and folders
-2. Execute <b>install dependencies - part 1.bat</b> to install python.
-`Python should be installed to the default directory. If this is not possible you have to change the directory in the windows path variable after the installation.`
+2. Execute <b>install dependencies - part 1.bat</b> or go to python.org to download and install python3.8 (32 Bit).
 3. Execute <b>install dependencies - part 2.bat</b> to install the required python packages.
-4. Copy the <b>source/LIMIOPTIC/</b> folder to any destination or leave it there.
-5. Execute <b>___RUN__LIMIOPTIC</b> in the LIMIOPTIC folder.
+4. Execute <b>___RUN__LIMIOPTIC.py</b> in the LIMIOPTIC folder.
 
-6. Make sure you are always up-to-date using <b>_update.py</b> if needed.
+5. Make sure you are always up-to-date using <b>_update.py</b> if needed.
 
 <br>
 <b>Installation (Linux):</b>
