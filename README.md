@@ -5,7 +5,7 @@ A short introducion can be found at <a href="http://alexander-stolz.github.io/li
 
 <br>
 <b>If you have problems with the installation `pip install pip --upgrade` might do the trick.</b>
-
+<br>
 
 <br>
 <b>Installation (Windows):</b>
