@@ -3,11 +3,12 @@
 
 A short introducion can be found at <a href="http://alexander-stolz.github.io/limioptic/">www.limioptic.de</a>.
 
+> <b>If you have problems with the installation:</b>
+> <b>`pip install pip --upgrade` might do the trick.</b>
+
 
 <br>
 <b>Installation (Windows):</b>
-
-<b>NEW: You can now just run the precompiled version for Windows. No installation needed!</b><br>
 
 > <b>Windows 10:</b>
 > <b>Make sure to deactivate the Windows "execution aliases" for python.exe!</b>
@@ -24,17 +25,14 @@ A short introducion can be found at <a href="http://alexander-stolz.github.io/li
 <br>
 <b>Installation (Linux):</b>
 
-<b>NEW: You can now just run the precompiled version for Windows with WINE. No installation needed!</b><br>
-(You will have to use the newest (beta-) version of Wine:  <a href="http://www.winehq.org/download/ubuntu">http://www.winehq.org/download/ubuntu</a>)
-
-1. Download the Limioptic 2 folder
-2. Limioptic imports the following libraries. Make sure you have these:
-  - python-qt4
-  - (python-vtk)
-  - pyqtgraph
-  - scipy
-  - pylab
-  - matplotlib
+```
+pip3 install numpy --user
+pip3 install scipy --user
+pip3 install PyQt5 --user
+pip3 install matplotlib --user
+pip3 install pyqtgraph --user
+pip3 install vtk --user
+```
 
 <br>
 <b>Licence</b>
