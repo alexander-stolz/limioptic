@@ -4,7 +4,7 @@
 A short introducion can be found at <a href="http://alexander-stolz.github.io/limioptic/">www.limioptic.de</a>.
 
 <br>
-<b>If you have problems with the installation `pip install pip --upgrade` might do the trick.</b>
+<b>If you have problems with the installation pip install pip --upgrade might do the trick.</b>
 <br>
 
 <br>
