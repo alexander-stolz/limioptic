@@ -14,8 +14,8 @@ A short introducion can be found at <a href="http://alexander-stolz.github.io/li
 > <b>Make sure to deactivate the Windows "execution aliases" for python.exe!</b>
 
 1. Download and extract all files and folders
-2. Execute <b>install dependencies - part 1.bat</b> or go to python.org to download and install python3.8 (32 Bit).
-3. Execute <b>install dependencies - part 2.bat</b> to install the required python packages.
+2. Execute <b>1) install python 3.8.bat</b> or go to python.org to download and install python3.8 (32 Bit).
+3. Execute <b>2) install python dependencies.bat</b> to install the required python packages.
 4. Execute <b>___RUN__LIMIOPTIC.py</b> in the LIMIOPTIC folder.
 
 5. Make sure you are always up-to-date using <b>_update.py</b> if needed.
@@ -29,7 +29,9 @@ pip3 install scipy --user
 pip3 install PyQt5 --user
 pip3 install matplotlib --user
 pip3 install pyqtgraph --user
-pip3 install vtk --user
+
+# vtk is not required anymore
+# pip3 install vtk --user
 ```
 
 <br>
