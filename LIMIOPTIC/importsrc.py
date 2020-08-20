@@ -2,18 +2,14 @@
 
 from pylab import *
 
-
 from PyQt5.QtWidgets import *
 from scipy import optimize
 
-
 import random
-
 
 from PyQt5 import QtGui as gui
 from PyQt5 import QtCore as core
 import sys
-
 
 #from fitting import *
 #import pickle
@@ -32,7 +28,6 @@ T    1 17 ,2071535E+08   1000177E-02 -,2065E+02 -,4704E+02   ,9999303 -,0104408 
 T    2 17 ,2055665E+08   1000197E-02 -,4745E+02  ,1586E+02   ,9999768 -,0063336  ,0025058
 ...
 """
-
 
 class ImportSource():
     def __init__(self):

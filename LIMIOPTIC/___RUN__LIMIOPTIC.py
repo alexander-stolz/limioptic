@@ -28,31 +28,24 @@ else:
     PY2EXE = True
 
 print("loading:", end=' ')
-
 print("os", end=' ')
 import os
-
 
 if not PY2EXE:
     print("imp", end=' ')                                                                # unterdruecken von import fehlern
     # import imp
 
-
 print("sys", end=' ')
 import sys
-
 
 print("limioptic", end=' ')
 import limioptic                                                                # ionenoptische berechnungen
 
-
 print("threading", end=' ')
 import threading                                                                # multithreading
 
-
 print("time", end=' ')
 import time                                                                     # debuggen + sleep
-
 
 # import serial                                                                 # auslesen des potis
 if not PY2EXE:
@@ -67,18 +60,14 @@ else:
 print("urllib", end=' ')
 import urllib.request, urllib.parse, urllib.error                                                                   # zum ueberpruefen auf updates
 
-
 # print("ams_spicker", end=' ')
 # import ams_spicker
-
 
 print("importsrc", end=' ')
 from importsrc import ImportSource
 
-
 print("syntax_highlighting", end=' ')
 import syntax
-
 
 try:
     import pyqtgraph
@@ -92,16 +81,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 print("optimize", end=' ')
 from scipy import optimize
 
-
 # print "plotBeamprofile",
 # import plotEmittance
 print("helper", end=' ')
 import helper
 
-
 print("pickle")
 import pickle
-
 
 # print "calculator"
 # import function_calculator
@@ -123,11 +109,11 @@ class inputcontrol(QtWidgets.QDialog):
 
         if (mode == "qt"):
             self.mode = "qt"
-            self.plotwindow = doitqt2(self)    # PyQtGraph
+            self.plotwindow = plot_qt(self)    # PyQtGraph
         if (mode == "2d"):
-            self.plotwindow = doitXY(self)     # VTK
+            self.plotwindow = plot_vtk(self)     # VTK
         if (mode == "3d"):
-            self.plotwindow = doit3d(self)     # VTK
+            self.plotwindow = plot_vtk3d(self)     # VTK
 
         # Ab hier Definition des Layouts
         # self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
@@ -557,7 +543,7 @@ class MyQtWindow(pyqtgraph.GraphicsWindow):
         myapp.inputwindowqt.closeit()
 
 
-class doitqt2(threading.Thread):
+class plot_qt(threading.Thread):
     """ 2D Plot mit PyQtGraph """
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -717,7 +703,7 @@ if vtk:
             self.RotateZ(45)
 
 
-class doit3d(threading.Thread):
+class plot_vtk3d(threading.Thread):
     """ 3D-Ausgabe """
     def __init__(self, parent):
         threading.Thread.__init__(self)
@@ -944,7 +930,7 @@ class doit3d(threading.Thread):
             self.renwin.Render()
 
 
-class doitXY(threading.Thread):
+class plot_vtk(threading.Thread):
     """ Die Ausgabe in 2D """
     def __init__(self, parent):
         self.parent = parent
