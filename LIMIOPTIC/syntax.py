@@ -37,13 +37,13 @@ class PythonHighlighter (QSyntaxHighlighter):
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
         'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False', 'INPUT', "AddWaist()"]
+        'None', 'True', 'False', 'INPUT', "Waist()"]
 
     functions = [
-        "AddThinLens", "AddMSA", "AddSlit", "AddESD",
-        "AddVBFN", "AddAMSAcc", "AddBeam", "AddFNAccNeu",
-        "ChangeBeamParameters", "AddGaussBeam", "AddBeamRandomGauss", "AddBeam3d",
-        "AddBeamX", "AddQuadrupolRadFoc", "AddQuadrupolAxFoc", "AddAMSQPT", "AddBeamProfile", "AddFoil"]
+        "EinzelLens", "MSA", "Slit", "ESD",
+        "VBFN", "AMSAcc", "Beam", "AddFNAccNeu",
+        "ChangeBeamParameters", "GaussBeam", "BeamRandomGauss", "Beam3d",
+        "BeamX", "QuadrupolRadFoc", "QuadrupolAxFoc", "AMSQPT", "BeamProfile", "Foil", "Aperture"]
 
     boldGreen = []
 

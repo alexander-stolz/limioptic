@@ -1423,7 +1423,7 @@ class CQtLimioptic(QtWidgets.QMainWindow):
         self.menu_insert_foil = QtWidgets.QAction('Foil', self)
         self.menu_insert_foil.triggered.connect(self.InsertFoil)
         # Waist
-        self.menu_insert_waist = QtWidgets.QAction('AddWaist', self)
+        self.menu_insert_waist = QtWidgets.QAction('Waist', self)
         self.menu_insert_waist.triggered.connect(self.InsertWaist)
         # general 6x6 Matrix
         self.menu_insert_matrix = QtWidgets.QAction('General 6x6 matrix', self)
