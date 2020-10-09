@@ -47,8 +47,8 @@ import threading                                                                
 print("time", end=' ')
 import time                                                                     # debuggen + sleep
 
-print("re", end=' ')
-import re
+# print("re", end=' ')
+# import re
 
 # import serial                                                                 # auslesen des potis
 if not PY2EXE:
@@ -344,15 +344,15 @@ class inputcontrol(QtWidgets.QDialog):
         self.optimize_button.setText("optimizing.. please wait.")
         app.processEvents()
 
-        _beamline = ""
-        for row in beamline.split("\n"):
-            if row.startswith("Slit("):
-                a, b, c, d = re.search(r"Slit\((\d+\.*\d*)\s*,\s*(\d+\.*\d*)\s*,\s*(\d+\.*\d*)\s*,(\d+\.*\d*)\)", row).groups()
-                _beamline += f"Slit({a}, {b}, {c}, {d}, output=False)\n"
-            else:
-                _beamline += row + "\n"
+        # _beamline = ""
+        # for row in beamline.split("\n"):
+        #     if row.startswith("Slit("):
+        #         a, b, c, d = re.search(r"Slit\((\d+\.*\d*)\s*,\s*(\d+\.*\d*)\s*,\s*(\d+\.*\d*)\s*,(\d+\.*\d*)\)", row).groups()
+        #         _beamline += f"Slit({a}, {b}, {c}, {d}, output=False)\n"
+        #     else:
+        #         _beamline += row + "\n"
 
-        result = optimize.minimize(limioptic.ErrFkt, _param_[:], (_beamline, INPUT, SourceObj.Source))
+        result = optimize.minimize(limioptic.ErrFkt, _param_[:], (beamline.replace("Slit(", "Slit_muted("), INPUT, SourceObj.Source))
 
         self.optimize_button.setText("optimize selected parameters")
 

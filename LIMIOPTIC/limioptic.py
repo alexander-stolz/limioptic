@@ -1547,6 +1547,10 @@ def AddSlit(x, dx, y, dy, visible=True, output=True):
 Slit = AddSlit
 
 
+def Slit_muted(x, dx, y, dy, visible=False, output=False):
+    AddSlit(x, dx, y, dy, visible, output)
+
+
 def AddAperture(d, visible=True, output=True):
     global lastFunction
     lastFunction = "AddAperture"
