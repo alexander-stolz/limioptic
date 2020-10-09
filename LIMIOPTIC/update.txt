@@ -1,4 +1,4 @@
-new: Python 3, Qt5
+new: optimizing is way faster now
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_compile_win.bat _compile_win.bat
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_compile_linux.sh _compile_linux.sh
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/___RUN__LIMIOPTIC.py ___RUN__LIMIOPTIC.py

@@ -9,6 +9,7 @@ import ctypes
 import array
 import math
 import random
+import io
 try:
     import vtk
 except:
@@ -29,7 +30,7 @@ PROFILEINDEX = -1
 
 class MyVtkFloatArray():
     def __init__(self):
-        self.arr = []
+        self.arr = array.array("f")
 
     def SetName(self, x):
         self.name = x
@@ -38,7 +39,7 @@ class MyVtkFloatArray():
         self.arr.append(x)
 
     def Reset(self):
-        self.arr = []
+        self.arr = array.array("f")
 
     def GetNumberOfTuples(self):
         return len(self.arr)
