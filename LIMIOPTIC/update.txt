@@ -27,3 +27,5 @@ https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_update.py _up
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_Calculator.py _Calculator.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/version version
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/logo.png logo.png
+https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/plotBeamEmittance.pyw
+https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/plotBeamProfile.pyw
