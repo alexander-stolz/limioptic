@@ -759,8 +759,10 @@ void CLimioptic::ApplyBeamProfile(double *p, double index)
 
     //std::ofstream datei;
     //datei.open(string("particles") + SSTR(index) + string(".dat"), ios::out);
-    FILE * datei;
-    datei = fopen("particles.dat", "w");
+    // FIXME: index: double -> int
+    string fn = ("particles_" + to_string(int(index)) + ".dat");
+    FILE *datei = fopen(fn.data(), "w");
+    // datei = 
 
     i = 0;
     for (ip = 0; ip < pnum; ip++)

@@ -334,6 +334,7 @@ class inputcontrol(QtWidgets.QDialog):
         _param_ = []
         for opt in optIndex:
             beamline = beamline.replace("INPUT[{}]".format(opt), "_param_[{}]".format(i))
+            beamline = beamline.replace("BeamProfile()", "# BeamProfile()")
             _param_.append(INPUT[opt])
             i += 1
 
@@ -1329,12 +1330,22 @@ class CQtLimioptic(QtWidgets.QMainWindow):
         menu_translate_3d.setEnabled(False)
         menu_translate_3d.triggered.connect(self.plot3d)
         # translate qt 2d
-        menu_translate_qt = QtWidgets.QAction('2D (PyQtGraph)', self)
+        menu_translate_qt = QtWidgets.QAction('Beam trajectories', self)
         menu_translate_qt.setShortcut('Ctrl+F')
         menu_translate_qt.setStatusTip('Translate Text to GUI 2D')
         if not pyqtgraph:
             menu_translate_qt.setEnabled(False)
         menu_translate_qt.triggered.connect(self.plotqt)
+        
+        menu_plot_beamprofiles = QtWidgets.QAction('Beam profiles', self)
+        # menu_plot_emittance.setShortcut('Ctrl+F')
+        # menu_plot_emittance.setStatusTip('Translate Text to GUI 2D')
+        menu_plot_beamprofiles.triggered.connect(self.beamprofile)
+
+        menu_plot_emittance = QtWidgets.QAction('Beam emittance', self)
+        # menu_plot_emittance.setShortcut('Ctrl+F')
+        # menu_plot_emittance.setStatusTip('Translate Text to GUI 2D')
+        menu_plot_emittance.triggered.connect(self.emittance)
 
         # PLOT #
         # Plot markers
@@ -1366,7 +1377,7 @@ class CQtLimioptic(QtWidgets.QMainWindow):
         self.menu_output_smoothing.setCheckable(True)
         self.menu_output_smoothing.setChecked(True)
         # split view
-        self.menu_plot_splitview = QtWidgets.QAction("split view (PyQtGraph)", self)
+        self.menu_plot_splitview = QtWidgets.QAction("split view", self)
         self.menu_plot_splitview.setStatusTip('seperate x, y')
         self.menu_plot_splitview.setCheckable(True)
         self.menu_plot_splitview.setChecked(False)
@@ -1572,6 +1583,8 @@ class CQtLimioptic(QtWidgets.QMainWindow):
         menu_translate = menubar.addMenu('Plot')
         # menu_translate.addAction(menu_translate_2d)
         menu_translate.addAction(menu_translate_qt)
+        menu_translate.addAction(menu_plot_beamprofiles)
+        menu_translate.addAction(menu_plot_emittance)
         # menu_translate.addAction(menu_translate_3d)
 
         # PLOT
@@ -1760,7 +1773,12 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 
 #############################
     def emittance(self):
-        plotEmittance.start(limioptic.PROFILEINDEX + 1)
+        # plotEmittance.start(limioptic.PROFILEINDEX + 1)
+        os.popen("python plotBeamEmittance.pyw")
+    
+    def beamprofile(self):
+        # plotEmittance.start(limioptic.PROFILEINDEX + 1)
+        os.popen("python plotBeamProfile.pyw")
 
 #############################
     def todat(self):

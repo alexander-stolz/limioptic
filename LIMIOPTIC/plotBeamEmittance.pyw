@@ -4,6 +4,8 @@ import graphics
 import threading
 import time
 import sys
+import glob
+from myunits import stringToArray
 
 data = None
 
@@ -11,11 +13,11 @@ class DataGrabber(threading.Thread):
     def __init__(self, datafiles=["particles.dat"]):
         threading.Thread.__init__(self)
         self.datafiles = datafiles
-        self.plot = graphics.Plot(noline=True)
+        self.plot = graphics.Plot(noline=True, title="Emittance. red:  x -> dx.  green: y -> dy")
         self.plot.addLine(color=(255, 0, 0))
         self.plot.addLine(color=(0, 255, 0))
         for i in range(len(datafiles) - 1):
-            _plot, index = self.plot.addPlot()
+            _plot = self.plot.addPlot()
             self.plot.addLine(plot=_plot, color=(255, 0, 0))
             self.plot.addLine(plot=_plot, color=(0, 255, 0))
         self.plot.startTimer(200)
@@ -25,16 +27,20 @@ class DataGrabber(threading.Thread):
         while self.running:
             iplot = 0
             for f in self.datafiles:
-                data = [line.split() for line in open(f)]
-                x    = [float(row[0]) for row in data]
-                dx   = [float(row[1]) for row in data]
-                y    = [float(row[2]) for row in data]
-                dy   = [float(row[3]) for row in data]
-                self.plot.setData(lineindex=iplot,     data=[x, dx])
-                self.plot.setData(lineindex=iplot + 1, data=[y, dy])
-                iplot += 2
-            #self.plot.update()
-            time.sleep(.3)
+                try:
+                    # data = open(f, "r").readlines()
+                    data = stringToArray(None, numpy=True, filename=f)
+                    x    = data[:, 0]
+                    dx   = data[:, 1]
+                    y    = data[:, 2]
+                    dy   = data[:, 3]
+                    self.plot.setData(lineindex=iplot, data=[x, dx])
+                    self.plot.setData(lineindex=iplot + 1, data=[y, dy])
+                    iplot += 2
+                except:
+                    time.sleep(.2)
+            # self.plot.update()
+            time.sleep(.5)
 
     def close(self):
         self.running = False
@@ -42,7 +48,7 @@ class DataGrabber(threading.Thread):
 
 def start(num):
     global data
-    data = DataGrabber(["particles{}.dat".format(i) for i in range(num)])
+    data = DataGrabber(["particles.dat"])
     data.start()
     #graphics.startApplication()
     #data.close()
@@ -56,7 +62,11 @@ def stop():
 
 
 if __name__ == "__main__":
-    data = DataGrabber()
+    if len(sys.argv) > 1:
+        data = DataGrabber(datafiles=sys.argv[1:])
+    else:
+        df = glob.glob("particles_*.dat")
+        data = DataGrabber(datafiles=df)
     data.start()
     graphics.startApplication()
     data.close()

@@ -3,7 +3,7 @@
 @echo.
 @echo compiling climioptic.cpp
 @echo ------------------------
-@g++ -std=c++0x -Wall -fPIC -O -c climioptic.cpp
+@g++ -std=c++0x -Wall -fPIC -O -c climioptic.cpp 
 @echo.
 @echo.
 @echo compiling limioptic.cpp
@@ -13,7 +13,7 @@
 @echo.
 @echo building library
 @echo ------------------------
-@g++ -fPIC -shared -Wl,-soname,liblimioptic-win.so -O -o liblimioptic-win.so limioptic.o climioptic.o
+@g++ -fPIC -shared -Wl,-soname,liblimioptic-win.so -O -o liblimioptic-win.so limioptic.o climioptic.o -static-libstdc++
 @echo completed.
 @echo.
 @PAUSE
