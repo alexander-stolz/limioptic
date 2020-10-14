@@ -16,13 +16,11 @@ https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/syntax.py synt
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/liblimioptic-win.so liblimioptic-win.so
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/libgcc_s_dw2-1.dll libgcc_s_dw2-1.dll
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/libstdc++-6.dll libstdc++-6.dll
-https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/plotEmittance.py plotEmittance.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/graphics.py graphics.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/setup_helper.py setup_helper.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/setup.py setup.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/helper.py helper.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/build.bat build.bat
-https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/beamprofile.py beamprofile.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_update.py _update.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/_Calculator.py _Calculator.py
 https://raw.github.com/alexander-stolz/limioptic/master/LIMIOPTIC/version version
