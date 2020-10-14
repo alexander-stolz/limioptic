@@ -1774,11 +1774,17 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 #############################
     def emittance(self):
         # plotEmittance.start(limioptic.PROFILEINDEX + 1)
-        os.popen("python plotBeamEmittance.pyw")
+        if "BeamProfile()" in myapp.textedit.toPlainText().split("\n"):
+            os.popen("python plotBeamEmittance.pyw")
+        else:
+            print("ERROR: Add at least one BeamProfile()")
     
     def beamprofile(self):
         # plotEmittance.start(limioptic.PROFILEINDEX + 1)
-        os.popen("python plotBeamProfile.pyw")
+        if "BeamProfile()" in myapp.textedit.toPlainText().split("\n"):
+            os.popen("python plotBeamProfile.pyw")
+        else:
+            print("ERROR: Add at least one BeamProfile()")
 
 #############################
     def todat(self):
