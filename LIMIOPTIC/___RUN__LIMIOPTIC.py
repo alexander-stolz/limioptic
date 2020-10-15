@@ -31,10 +31,6 @@ print("loading:", end=' ')
 print("os", end=' ')
 import os
 
-if not PY2EXE:
-    print("imp", end=' ')                                                                # unterdruecken von import fehlern
-    # import imp
-
 print("sys", end=' ')
 import sys
 
