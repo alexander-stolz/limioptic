@@ -1,0 +1,2 @@
+cd LIMIOPTIC
+python ___RUN__LIMIOPTIC.py

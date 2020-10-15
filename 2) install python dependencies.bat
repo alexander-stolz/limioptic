@@ -1,3 +1,4 @@
+python -m pip install pip --upgrade
 python -m pip install numpy
 python -m pip install scipy
 python -m pip install pyqt5
