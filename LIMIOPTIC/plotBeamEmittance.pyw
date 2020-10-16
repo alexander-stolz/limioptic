@@ -5,7 +5,7 @@ import threading
 import time
 import sys
 import glob
-from myunits import stringToArray
+from numpy import genfromtxt
 
 data = None
 
@@ -29,7 +29,7 @@ class DataGrabber(threading.Thread):
             for f in self.datafiles:
                 try:
                     # data = open(f, "r").readlines()
-                    data = stringToArray(None, numpy=True, filename=f)
+                    data = genfromtxt(f)
                     x    = data[:, 0]
                     dx   = data[:, 1]
                     y    = data[:, 2]
