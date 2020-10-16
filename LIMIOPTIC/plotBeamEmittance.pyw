@@ -62,8 +62,9 @@ def stop():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        data = DataGrabber(datafiles=sys.argv[1:])
+    if len(sys.argv) == 2:
+        df = [f"particles_{i}.dat" for i in range(int(sys.argv[1]))]
+        data = DataGrabber(datafiles=df)
     else:
         df = glob.glob("particles_*.dat")
         data = DataGrabber(datafiles=df)

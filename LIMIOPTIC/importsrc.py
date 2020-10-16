@@ -145,7 +145,7 @@ class ImportSource():
                     self.mittel[z] - 3. * self.sigma[z],
                     self.mittel[z] + 3. * self.sigma[z],
                     self.sigma[z] / 10.),
-                normed=True)
+                density=True)
 
             binsX = [(bins[i+1] + bins[i]) / 2. for i in range(len(bins) - 1)]
             binsY = n
@@ -330,7 +330,7 @@ if __name__ == "__main__":
     root.withdraw()
 
     options = {}
-    options["filetypes"] = [("limioptic", ".out"), ("SRIM", ".txt"), ("all files", ".*")]
+    options["filetypes"] = [("BeamProfile()", ".dat"), ("SRIM", ".txt")]
     source = tkinter.filedialog.askopenfile(mode="r", **options).name
 
     root.quit()

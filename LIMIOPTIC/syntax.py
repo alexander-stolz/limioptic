@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QRegExp
-
+
+
 from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 
@@ -43,7 +44,8 @@ class PythonHighlighter (QSyntaxHighlighter):
         "EinzelLens", "MSA", "Slit", "ESD",
         "VBFN", "AMSAcc", "Beam", "AddFNAccNeu",
         "ChangeBeamParameters", "GaussBeam", "BeamRandomGauss", "Beam3d",
-        "BeamX", "QuadrupolRadFoc", "QuadrupolAxFoc", "AMSQPT", "BeamProfile", "Foil", "Aperture"]
+        "BeamX", "QuadrupolRadFoc", "QuadrupolAxFoc", "AMSQPT", "BeamProfile", 
+        "Foil", "Aperture", "Source"]
 
     boldGreen = []
 

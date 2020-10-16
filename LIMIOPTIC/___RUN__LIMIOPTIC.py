@@ -88,6 +88,8 @@ import helper
 print("pickle")
 import pickle
 
+from collections import Counter
+
 # print "calculator"
 # import function_calculator
 
@@ -1770,15 +1772,17 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 #############################
     def emittance(self):
         # plotEmittance.start(limioptic.PROFILEINDEX + 1)
-        if "BeamProfile()" in myapp.textedit.toPlainText().split("\n"):
-            os.popen("python plotBeamEmittance.pyw")
+        nBPM = Counter(myapp.textedit.toPlainText().split("\n"))["BeamProfile()"]
+        if nBPM:
+            os.popen(f"python plotBeamEmittance.pyw {nBPM}")
         else:
             print("ERROR: Add at least one BeamProfile()")
     
     def beamprofile(self):
         # plotEmittance.start(limioptic.PROFILEINDEX + 1)
-        if "BeamProfile()" in myapp.textedit.toPlainText().split("\n"):
-            os.popen("python plotBeamProfile.pyw")
+        nBPM = Counter(myapp.textedit.toPlainText().split("\n"))["BeamProfile()"]
+        if nBPM:
+            os.popen(f"python plotBeamProfile.pyw {nBPM}")
         else:
             print("ERROR: Add at least one BeamProfile()")
 
@@ -1965,7 +1969,7 @@ class CQtLimioptic(QtWidgets.QMainWindow):
         # SourceObj.Source = SourceObj.Selection
         # SourceObj.ShowFits()
         print("Source", SourceObj.SourceFile, "loaded")
-        self.textedit.textCursor().insertText("AddSource()\n")
+        self.textedit.textCursor().insertText("Source()\n")
         self.textedit.textCursor().insertText(
             "# ChangeBeamParameters("
             "strag_x={}, "
