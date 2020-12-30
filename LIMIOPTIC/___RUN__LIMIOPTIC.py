@@ -1808,7 +1808,7 @@ class CQtLimioptic(QtWidgets.QMainWindow):
 
     def LoadFile(self, filename=None):
         if not filename:
-            self.FileName = (QtWidgets.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;*.lim")[0])
+            self.FileName = (QtWidgets.QFileDialog.getOpenFileName(self, "Open file", ".", "*.lim2;;*.lim")[0])
         else:
             self.FileName = filename
         if (self.FileName.endswith("lim")):
