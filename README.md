@@ -1,38 +1,31 @@
+# Easy installation:
+Python version >=3.7,<3.10 required. 3.8 is used in this example.
+## using pipx
+1. install [pipx](https://github.com/pypa/pipx): `python3.8 -m pip install pipx --user`
+2. install limioptic: `pipx install limioptic`
+3. start limioptic from everywhere with `limioptic`
+
+## pipenv
+1. `python3.8 -m pipenv shell`
+2. `pipenv install limioptic`
+
+## poetry
+1. `poetry init`
+2. Python version `>=3.7,<3.10`
+3. `poetry add limioptic`
+
+## globally (the messy way)
+1. `python3.8 -m pip install limioptic`
+
+<br>
+
+**The source code in this repo will be updated soon. At the moment the master branch contains huge blobs. So keep that in mind before cloning. `git-filter-branch` will come to the rescue soon ;)**
+
+
 <br>
 <b>Introduction:</b>
 
 A short introducion can be found at <a href="http://alexander-stolz.github.io/limioptic/">www.limioptic.de</a>.
-
-<br>
-<b>If you have problems with the installation pip install pip --upgrade might do the trick.</b>
-<br>
-
-<br>
-<b>Installation (Windows):</b>
-
-> <b>Windows 10:</b>
-> <b>Make sure to deactivate the Windows "execution aliases" for python.exe!</b>
-
-1. Download and extract all files and folders
-2. Execute <b>1) install python 3.8.bat</b> or go to python.org to download and install python3.8 (32 Bit).
-3. Execute <b>2) install python dependencies.bat</b> to install the required python packages.
-4. Execute <b>___RUN__LIMIOPTIC.py</b> in the LIMIOPTIC folder.
-
-5. Make sure you are always up-to-date using <b>_update.py</b> if needed.
-
-<br>
-<b>Installation (Linux):</b>
-
-```
-pip3 install numpy --user
-pip3 install scipy --user
-pip3 install PyQt5 --user
-pip3 install matplotlib --user
-pip3 install pyqtgraph --user
-
-# vtk is not required anymore
-# pip3 install vtk --user
-```
 
 <br>
 <b>Licence</b>
