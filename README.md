@@ -1,5 +1,8 @@
 # Easy installation:
-Python version >=3.7,<3.10 required. 3.8 is used in this example.
+Python version >=3.7,<3.10 required. 3.8 is used in this example. 
+
+**WINDOWS:** Shared dlls are 32 bit only, so 32 bit version of python is required.
+
 ## using pipx
 1. install [pipx](https://github.com/pypa/pipx): `python3.8 -m pip install pipx --user`
 2. install limioptic: `pipx install limioptic`
