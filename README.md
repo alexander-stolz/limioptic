@@ -8,14 +8,19 @@ Python version >=3.7,<3.10 required. 3.8 is used in this example.
 ## pipenv
 1. `python3.8 -m pipenv shell`
 2. `pipenv install limioptic`
+3. `limioptic` or `pipenv run limioptic`
 
 ## poetry
 1. `poetry init`
 2. Python version `>=3.7,<3.10`
 3. `poetry add limioptic`
+4. `limioptic` or `poetry run limioptic`
 
 ## globally (the messy way)
 1. `python3.8 -m pip install limioptic`
+2. `limioptic` or `python -m limioptic`
+
+you can also run limioptic as a module
 
 <br>
 
